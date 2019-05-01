@@ -6,8 +6,12 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import {AngularFireModule} from "@angular/fire";
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import {AngularFireDatabaseModule} from '@angular/fire/database';
 import {AngularFireAuthModule} from "@angular/fire/auth";
 import { ReactiveFormsModule } from '@angular/forms';
+import { FirestoreSettingsToken} from '@angular/fire/firestore';
+
 
 var config = {
   apiKey: "AIzaSyBZBjbJQEstJ1Qjx9bP8kIejypgXUsN1CM",
@@ -28,9 +32,9 @@ var config = {
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(config),
-    AngularFireAuthModule, ReactiveFormsModule 
+    AngularFireAuthModule, ReactiveFormsModule,AngularFirestoreModule,AngularFireDatabaseModule
   ],
-  providers: [],
+  providers: [{ provide: FirestoreSettingsToken, useValue: {} }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

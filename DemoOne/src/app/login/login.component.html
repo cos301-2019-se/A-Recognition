@@ -11,6 +11,9 @@
   <div class="jumbotron">
     <div class="row">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+            <ng-container *ngIf="!this.authService.message">
+                   <p class="alert alert-danger">{{authService.displayMessage}}</p> 
+            </ng-container>
         <div class="text-center">
             <form [formGroup]="userLogin"  novalidate>
                 <div *ngIf="userLogin.controls['username'].invalid && (userLogin.controls['username'].dirty || userLogin.controls['username'].touched)" class="alert alert-danger">
@@ -27,7 +30,7 @@
                     <label for="password">Password</label>
                     <input type="password" class="form-control" formControlName="password" #password placeholder="Password">
                 </div>
-                <button type="submit" (click)="authService.login(username.value, password.value)" class="btn btn-primary">Login</button> &nbsp;
+                <button type="submit" (click)="authService.login(username.value, password.value)" class="btn btn-primary" [disabled]="!userLogin.valid">Login</button> &nbsp;
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Register">Register</button>
             </form>
         </div>
@@ -45,11 +48,11 @@
             </div>
             <div class="modal-body">
                 <form [formGroup]="userRegistration"  novalidate>
-                    <div *ngIf="userRegistration.controls['username'].invalid && (userRegistration.controls['username'].dirty || userRegistration.controls['username'].touched)" class="alert alert-danger">
-                        <div *ngIf="userRegistration.controls['username'].errors.required">Name is required.</div>
+                    <div *ngIf="userRegistration.controls['user'].invalid && (userRegistration.controls['user'].dirty || userRegistration.controls['user'].touched)" class="alert alert-danger">
+                        <div *ngIf="userRegistration.controls['user'].errors.required">Name is required.</div>
                     </div>
-                    <div *ngIf="userRegistration.controls['password'].invalid && (userRegistration.controls['password'].dirty || userRegistration.controls['password'].touched)" class="alert alert-danger">
-                        <div *ngIf="userRegistration.controls['password'].errors.required">Password is required.</div>
+                    <div *ngIf="userRegistration.controls['pass'].invalid && (userRegistration.controls['pass'].dirty || userRegistration.controls['pass'].touched)" class="alert alert-danger">
+                        <div *ngIf="userRegistration.controls['pas'].errors.required">Password is required.</div>
                     </div>
                     <div class="form-group">
                         <label for="user">Username</label>
@@ -59,12 +62,28 @@
                         <label for="pass">Password</label>
                         <input type="password" class="form-control" formControlName="pass" #pass placeholder="Password">
                     </div>
-                    <button type="submit" (click)="Register(user.value,pass.value)" class="btn btn-primary" id="registerButton">Register</button>
+                    <button type="submit" (click)="Register(user.value,pass.value)" class="btn btn-primary" id="registerButton"[disabled]="!userRegistration.valid">Register</button>
                 </form>
                 <br>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
             </div>
         </div>
     </div>
 </div>
+<!-- <div *ngIf="authService.user$ | async as user">
+    <h3>Logged in as {{ user.displayName }}</h3>
+    <img src="{{ user.photoURL }}" width="50px">
+    <button (click)="authService.logout()">Logout</button>
+
+    <button (click)="authService.getCalendar()">Get Google Calendar</button>
+    <button (click)="authService.insertEvent()">Add Event</button>
+
+    <div *ngFor="let item of authService.calendarItems">
+        <h3>{{ item.summary }} - {{ item.status }}</h3>
+        <p><em>Created {{ item.created }}</em></p>
+        <p>{{ item.description }}</p>
+    </div>
+</div>
+
+<button (click)="authService.login()">Login with Google</button> -->
 
