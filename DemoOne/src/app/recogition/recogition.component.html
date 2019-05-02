@@ -18,10 +18,27 @@
           <div class="mx-auto w-50 p-3 bg-dark text-white text-center">
               <h1>Recognition</h1>
 
-              <canvas #screen>
+              <!--
+                <video #screen (timeupdate) = "getImage()">
+              -->
+              <video #screen style ="width: 640px;height: 480px;">
+              </video>
 
-              </canvas>
+              <canvas #canvas style ="overflow: auto"></canvas>
+              <!--<button (click) = "stop()">Play/Stop</button>-->
+
+              <select [(ngModel)]="selectedRoom" (change)="selectRoom($event.target.value)">
+                <option  *ngFor="let item of boardRooms" value='{{ item.name }}' >{{ item.name }}</option>
+              </select>
+
           </div>
       </div>
   </div>
 </div>
+
+
+
+<div *ngIf="alerting" #notifyer class = "notification">
+  {{alert}}
+</div>
+

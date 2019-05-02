@@ -9,9 +9,10 @@ import {AngularFireModule} from "@angular/fire";
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
 import {AngularFireAuthModule} from "@angular/fire/auth";
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FirestoreSettingsToken} from '@angular/fire/firestore';
 import { RecogitionComponent } from './recogition/recogition.component';
+import {HttpClientModule} from '@angular/common/http';
 
 
 var config = {
@@ -28,13 +29,15 @@ var config = {
     AppComponent,
     LoginComponent,
     HomeComponent,
-    RecogitionComponent
+    RecogitionComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(config),
-    AngularFireAuthModule, ReactiveFormsModule,AngularFirestoreModule,AngularFireDatabaseModule
+    AngularFireAuthModule, ReactiveFormsModule,AngularFirestoreModule,AngularFireDatabaseModule,
+    HttpClientModule,
+    FormsModule
   ],
   providers: [{ provide: FirestoreSettingsToken, useValue: {} }],
   bootstrap: [AppComponent]

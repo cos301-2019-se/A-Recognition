@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit {
     this.booking.boardRoomBooking(name,d);
   }
   onChange(deviceValue) {
-    console.log(deviceValue);
+   //console.log(deviceValue);
     this.booking.getRoomsByName().subscribe((data)=>
     {
       data.docs.forEach((doc)=>
@@ -82,7 +82,7 @@ export class HomeComponent implements OnInit {
     this.booking.getRooms().subscribe((data) =>
     {
       this.list = data;
-      console.log(data);
+      //console.log(data);
     });
     
   }

@@ -1,0 +1,10 @@
+.notification{
+    position: absolute;
+    width: 80%;
+    height: 10%;
+    background-color: green;
+    top: 30%;
+    left: 15%;
+    text-align: center;
+    font-size: 2em;
+}
