@@ -203,8 +203,10 @@ export class AppComponent {
 
     <div class="tab-pane fade " id="c-templateData">
         <pre class="line-numbers"><code class="language-html">&lt;!--The content below is only a placeholder and can be replaced.--&gt;
-
-
+&lt;div style&#x3D;&quot;text-align:center&quot;&gt;
+  &lt;h1 style&#x3D;&quot;display:none;&quot;&gt;
+    Welcome to {{ title }}!
+  &lt;/h1&gt;
 &lt;router-outlet&gt;&lt;/router-outlet&gt;
 </code></pre>
     </div>
@@ -241,7 +243,7 @@ export class AppComponent {
 <script src="../js/libs/htmlparser.js"></script>
 <script src="../js/libs/deep-iterator.js"></script>
 <script>
-        var COMPONENT_TEMPLATE = '<div><!--The content below is only a placeholder and can be replaced.--><router-outlet></router-outlet></div>'
+        var COMPONENT_TEMPLATE = '<div><!--The content below is only a placeholder and can be replaced.--><div style="text-align:center">  <h1 style="display:none;">    Welcome to {{ title }}!  </h1><router-outlet></router-outlet></div>'
     var COMPONENTS = [{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'HomeComponent', 'selector': 'app-home'},{'name': 'LoginComponent', 'selector': 'app-login'}];
     var DIRECTIVES = [];
     var ACTUAL_COMPONENT = {'name': 'AppComponent'};

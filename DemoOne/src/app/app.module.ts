@@ -11,8 +11,7 @@ import {AngularFireDatabaseModule} from '@angular/fire/database';
 import {AngularFireAuthModule} from "@angular/fire/auth";
 import { ReactiveFormsModule } from '@angular/forms';
 import { FirestoreSettingsToken} from '@angular/fire/firestore';
-
-
+//This is for connecting to firebase and using the authentication and login services
 var config = {
   apiKey: "AIzaSyBZBjbJQEstJ1Qjx9bP8kIejypgXUsN1CM",
   authDomain: "capstoneusers-b474f.firebaseapp.com",
@@ -21,7 +20,7 @@ var config = {
   storageBucket: "capstoneusers-b474f.appspot.com",
   messagingSenderId: "754403435763"
 };
-
+//
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,9 +31,12 @@ var config = {
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(config),
-    AngularFireAuthModule, ReactiveFormsModule,AngularFirestoreModule,AngularFireDatabaseModule
+    AngularFireAuthModule,
+    ReactiveFormsModule,
+    AngularFirestoreModule,
+    AngularFireDatabaseModule
   ],
-  providers: [{ provide: FirestoreSettingsToken, useValue: {} }],
+  providers: [{ provide: FirestoreSettingsToken, useValue: {} },{provide:AngularFireModule}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

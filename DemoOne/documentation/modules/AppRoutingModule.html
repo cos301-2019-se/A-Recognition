@@ -74,11 +74,9 @@
 import { Routes, RouterModule } from &#x27;@angular/router&#x27;;
 import {HomeComponent} from &#x27;./home/home.component&#x27;;
 import  {LoginComponent} from &#x27;./login/login.component&#x27;;
-const routes: Routes &#x3D; [
-  {path:&#x27;&#x27;,component:LoginComponent},
-  {path:&#x27;home&#x27;,component:HomeComponent},
-  {path:&#x27;login&#x27;,component:LoginComponent}
-];
+const routes: Routes &#x3D; [ {path:&#x27;&#x27;,component:LoginComponent},
+{path:&#x27;home&#x27;,component:HomeComponent},
+{path:&#x27;login&#x27;,component:LoginComponent}];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

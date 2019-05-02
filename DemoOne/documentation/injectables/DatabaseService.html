@@ -66,6 +66,23 @@
     <h3 id="index">Index</h3>
     <table class="table table-sm table-bordered index-table">
         <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#list">list</a>
+                            </li>
+                            <li>
+                                <a href="#newObj">newObj</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
 
                 <tr>
                     <td class="col-md-4">
@@ -76,10 +93,16 @@
                     <td class="col-md-4">
                         <ul class="index-list">
                             <li>
+                                <a href="#boardRoomBooking">boardRoomBooking</a>
+                            </li>
+                            <li>
                                 <a href="#BoardRoomRegistration">BoardRoomRegistration</a>
                             </li>
                             <li>
                                 <a href="#getRooms">getRooms</a>
+                            </li>
+                            <li>
+                                <a href="#getRoomsByName">getRoomsByName</a>
                             </li>
                         </ul>
                     </td>
@@ -151,6 +174,81 @@
         <tbody>
             <tr>
                 <td class="col-md-4">
+                    <a name="boardRoomBooking"></a>
+                    <span class="name">
+                        <b>
+                            boardRoomBooking
+                        </b>
+                        <a href="#boardRoomBooking"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>boardRoomBooking(name, d)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="22"
+                            class="link-to-prism">src/app/database.service.ts:22</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>name</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>d</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
                     <a name="BoardRoomRegistration"></a>
                     <span class="name">
                         <b>
@@ -169,8 +267,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="10"
-                            class="link-to-prism">src/app/database.service.ts:10</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="14"
+                            class="link-to-prism">src/app/database.service.ts:14</a></div>
                 </td>
             </tr>
 
@@ -235,8 +333,8 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="18"
-                            class="link-to-prism">src/app/database.service.ts:18</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="38"
+                            class="link-to-prism">src/app/database.service.ts:38</a></div>
                 </td>
             </tr>
 
@@ -252,6 +350,137 @@
             </tr>
         </tbody>
     </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getRoomsByName"></a>
+                    <span class="name">
+                        <b>
+                            getRoomsByName
+                        </b>
+                        <a href="#getRoomsByName"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getRoomsByName(deviceValue)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="42"
+                            class="link-to-prism">src/app/database.service.ts:42</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>deviceValue</td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+            <section>
+    
+        <h3 id="inputs">
+            Properties
+        </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="list"></a>
+                        <span class="name">
+                            <b>
+                            list</b>
+                            <a href="#list"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>    <code>Object[]</code>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Default value : </i><code>[]</code>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="10" class="link-to-prism">src/app/database.service.ts:10</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="newObj"></a>
+                        <span class="name">
+                            <b>
+                            newObj</b>
+                            <a href="#newObj"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" target="_blank" >Object</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">Defined in <a href="" data-line="11" class="link-to-prism">src/app/database.service.ts:11</a></div>
+                            </td>
+                        </tr>
+
+
+            </tbody>
+        </table>
 </section>
 
     </div>
@@ -265,21 +494,44 @@ import { AngularFirestore } from &#x27;@angular/fire/firestore&#x27;;
 })
 export class DatabaseService {
 
-  constructor(private db:AngularFirestore) { }
-  
+  constructor(private db:AngularFirestore){ }
+  //variables
+  list:Object[]&#x3D;[];
+  newObj:Object;
+  //
+  //Functions
   BoardRoomRegistration(name)
   {
     return this.db.collection(&#x27;boardRooms&#x27;).add({
       name: name,
       searchableName: name.toLowerCase(),
-      bookings:{}
+      bookings:[]
+    });
+  }
+  boardRoomBooking(name,d)
+  {    
+    const refe &#x3D; this.db.collection(&#x27;boardRooms&#x27;).doc(name).ref.get().then((o)&#x3D;&gt;
+    {
+      var objD &#x3D; {&quot;date&quot;:d[0],&quot;time&quot;:d[1]};
+      //Check if there are values already. If not do not push to list
+      if(o.data().bookings[0])
+      {
+        this.list.push(o.data().bookings[0]);
+      }      
+      this.list.push(objD);
+      this.newObj &#x3D; this.list.map((obj)&#x3D;&gt; {return Object.assign({}, obj)});
+
+     return this.db.collection(&#x27;boardRooms&#x27;).doc(name).update({&quot;bookings&quot;:this.newObj});
     });
   }
   getRooms()
   {
-    return this.db.collection(&#x27;boardRooms&#x27;).snapshotChanges()
+    return this.db.collection(&#x27;boardRooms&#x27;).snapshotChanges();
   }
-  
+  getRoomsByName(deviceValue)
+  {
+    return this.db.collection(&quot;boardRooms&quot;).get(); 
+  }
 }
 </code></pre>
     </div>
