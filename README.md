@@ -1,4 +1,4 @@
-# Team Singularity 
+# Singularity 
 ## A-Recognition Access Control
 ### Links 
 [Project Repository](https://github.com/cos301-2019-se/A-Recognition)
