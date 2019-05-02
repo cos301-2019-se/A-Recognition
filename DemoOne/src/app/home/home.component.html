@@ -81,7 +81,7 @@
                   </button>
               </div>
               <div class="modal-body">
-                  <form [formGroup]="bookRoom"  novalidate>
+                  <form [formGroup]="bookRoom"   novalidate>
                       <div *ngIf="bookRoom.controls['name'].invalid && (bookRoom.controls['name'].dirty || bookRoom  .controls['name'].touched)" class="alert alert-danger">
                           <div *ngIf="bookRoom.controls['name'].errors.required">Name is required.</div>
                       </div>
@@ -94,7 +94,7 @@
                           <!-- <input type="text" class="form-control" formControlName="name" #name placeholder="Enter the BoardRoom name"> -->
                       </div>
                       <div class="form-group">
-                          <span class="align-left"><strong>The following dates have been booked for the rooms</strong></span>
+                          <span class="align-left"><strong>The following dates have been booked for the room</strong></span>
                           <table class="table">
                                 <thead class="thead-dark">
                                   <tr>
@@ -108,11 +108,32 @@
                                             <td>
                                                 {{s.name}}
                                             </td>
+                                            
                                             <td >
-                                                {{s.bookings[0].date}}
+                                                <ng-template [ngIf]="s.bookings[0]!= undefined">
+                                                {{s.bookings[0].date}}<br>
+                                            </ng-template>
+                                            <ng-template [ngIf]="s.bookings[1]!= undefined">
+                                                    {{s.bookings[1].date}}<br>
+                                                </ng-template>
+                                                <ng-template [ngIf]="s.bookings[2]!= undefined">
+                                                        {{s.bookings[2].date}}<br>
+                                                    </ng-template>
+                                                <!-- {{s.bookings[1].date}}<br>
+                                                {{s.bookings[2].date}} -->
                                             </td>
                                             <td >
-                                                {{s.bookings[0].time}}
+                                                    <ng-template [ngIf]="s.bookings[0]!= undefined">
+                                                {{s.bookings[0].time}}<br>
+                                                </ng-template>
+                                                <ng-template [ngIf]="s.bookings[1]!= undefined">
+                                                        {{s.bookings[1].time}}<br>
+                                                        </ng-template>
+                                                        <ng-template [ngIf]="s.bookings[2]!= undefined">
+                                                                {{s.bookings[2].time}}<br>
+                                                                </ng-template>
+                                                <!-- {{s.bookings[1].time}}<br>
+                                                {{s.bookings[2].time}} -->
                                             </td>
                                         </tr>
                                         

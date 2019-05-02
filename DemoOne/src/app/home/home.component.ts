@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
   expandedArray:any=[];
   dateTime:any=[];
   boardRoom:FormGroup;
+  submitted:boolean = true;
   bookRoom:FormGroup;
   constructor(private authService:AuthService,private formBuilder: FormBuilder,public  router:  Router,private booking:DatabaseService,private renderer:Renderer2) { }
 
@@ -42,7 +43,8 @@ export class HomeComponent implements OnInit {
   }
   onSubmit()
   {
-    
+    this.submitted = true;
+    //this.addBoardRoom(name);
   }
   addBoardRoom(name)
   {
@@ -55,13 +57,14 @@ export class HomeComponent implements OnInit {
   }
   onChange(deviceValue) {
     //console.log(deviceValue);
-    this.booking.getRoomsByName().subscribe((data)=>
+    this.booking.getRoomsByName(deviceValue).subscribe((data)=>
     {
       data.docs.forEach((doc)=>
       {
         if(doc.id==deviceValue)
         {
           this.expandedArray=[];
+          
           this.expandedList=(doc.data());
           this.expandedArray.push(this.expandedList); 
           console.log(this.expandedArray);
@@ -84,6 +87,7 @@ export class HomeComponent implements OnInit {
       this.list = data;
       //console.log(data);
     });
+
     
   }
 
