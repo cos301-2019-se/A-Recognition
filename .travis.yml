@@ -20,4 +20,4 @@ install:
   - npm install
 
 script:
-  - nmp run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+  - ng test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
