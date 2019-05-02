@@ -1,13 +1,13 @@
-# Team Singularity :ion-bonfire:
+# Team Singularity 
 ## A-Recognition Access Control
-### Links :ion-link:
+### Links 
 [Project Repository](https://github.com/cos301-2019-se/A-Recognition)
 
 [Project Management](https://app.zenhub.com/workspaces/a-recognition-5cc3f20307a4ab52d27abc9b/board?repos=182155877)
 
 ---
 
-### Description :ion-document:
+### Description 
 Create a system which uses facial recognition to allow users access to areas that are prohibited. The system should come with an interface which can be easily used to add new faces and their respective access rights.
 
 ---
