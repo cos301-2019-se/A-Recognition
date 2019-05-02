@@ -11,6 +11,7 @@ import {AngularFireDatabaseModule} from '@angular/fire/database';
 import {AngularFireAuthModule} from "@angular/fire/auth";
 import { ReactiveFormsModule } from '@angular/forms';
 import { FirestoreSettingsToken} from '@angular/fire/firestore';
+import { RecogitionComponent } from './recogition/recogition.component';
 
 
 var config = {
@@ -26,7 +27,8 @@ var config = {
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    RecogitionComponent
   ],
   imports: [
     BrowserModule,
