@@ -1,13 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { getUserMedia } from 'getusermedia-js';
 import { log } from 'util';
-//import * as modelURL from 'src/assets/ssd_mobilenetv1_model-weights_manifest.json';
-//Detection
-//import '@tensorflow/tfjs-node';
-import * as faceapi from 'face-api.js';
 import { database } from 'firebase';
 import { DatabaseService } from '../database.service';
-import { url } from 'inspector';
 import { imag } from '@tensorflow/tfjs-core';
 import { FormsModule } from '@angular/forms';
 
@@ -20,16 +15,19 @@ export class RecogitionComponent implements OnInit {
 
   @ViewChild("screen") screen : ElementRef;
   @ViewChild("canvas") canvas : ElementRef;
-  @ViewChild("notifyer") notifyer : ElementRef;
 
   recording = false;
   boardRooms = [];
   selectedRoom :string = "";
   correspondingRoom;
   notificationClass = "";
-  alert = "";
+  alertMessage = "";
   alerting = false;
+  warnMessage = "";
+  warning = false;
+
   authorised = false;
+  emptyView = false;
 
   constructor(private dataService : DatabaseService) {}
 
@@ -55,10 +53,18 @@ export class RecogitionComponent implements OnInit {
       this.screen.nativeElement.srcObject = stream;
       this.screen.nativeElement.play();
 
-    }).catch(function(err){
+    }).catch(err =>{
       console.log(err);
       console.log(err.name);
       console.log(err.message);
+
+      if(err.name == "NotFoundError"){
+        this.warnMessage = "No camera connected!";
+        this.warning = true;
+        setTimeout(()=>{
+          this.warning = false;
+        },5000);
+      }
       
     } 
   );
@@ -90,10 +96,12 @@ getImage(){
 scanImage(base64Image: string) {
    this.dataService.detectFace(base64Image).subscribe( facialDetails =>{
    
-      if(facialDetails[0].faceAttributes.gender == "male"){
+    if(facialDetails[0] == undefined || facialDetails[0] == null && this.authorised != true){
+      this.emptyView = true;
+      this.authorised = false;
+    }else if(facialDetails[0].faceAttributes.gender == "male"){
         this.authorised = true;
         console.log("Authorised");
-        
       }
   
       console.log(facialDetails[0].faceAttributes);
@@ -107,6 +115,7 @@ stop(){
  
 selectRoom(){
   console.log(this.selectedRoom);
+  this.authorised = false;
 
   this.boardRooms.forEach(room => {
     if(room.name == this.selectedRoom)
@@ -122,11 +131,11 @@ selectRoom(){
 authenticate(isAllowed){
 
   if(isAllowed){
-    this.alert = "There are no bookings, you may enter.";
+    this.alertMessage = "There are no bookings, you may enter.";
     this.alerting = true;
     setTimeout(()=> this.alerting = false,3000);
   }else{
-    this.alert = "Room booked, please identify yourself.";
+    this.alertMessage = "Room booked, please identify yourself.";
     this.alerting = true;
     this.recording = true;
     setTimeout(()=> {
@@ -134,11 +143,23 @@ authenticate(isAllowed){
       this.recording = false;
 
       if(this.authorised == true){
-        this.alert = "Welcome Mr Jarrod";
+        this.alertMessage = "Welcome Mr Jarrod";
         this.alerting = true;
 
         setTimeout(()=> {
           this.alerting = false;
+        },5000);
+      }else{
+
+        if(this.emptyView)
+        this.warnMessage = "Please position yourself infront of the camera";
+        else
+        this.warnMessage = "Access denied Ma'am";
+        this.warning = true;
+
+        setTimeout(()=> {
+          this.warning = false;
+          this.emptyView = false;
         },5000);
       }
     },3000);

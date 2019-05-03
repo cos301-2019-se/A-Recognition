@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import {HttpClient,HttpHeaders,HttpParams} from '@angular/common/http';
 
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,31 +14,37 @@ export class DatabaseService {
 
   subscriptionKey = "b120e8a674724c89b4ee3cfa8bbd3b5d";
   apiURL = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect";
-  list;
 
   constructor(private db:AngularFirestore,private http : HttpClient) { }
 
-  
+  //variables
+  list:Object[]=[];
+  newObj:Object;
+  //
+  //Functions
   BoardRoomRegistration(name)
   {
     return this.db.collection('boardRooms').add({
       name: name,
       searchableName: name.toLowerCase(),
-      bookings:[{}]
+      bookings:[]
     });
   }
   boardRoomBooking(name,d)
-  {
-    var obj = [{"date":d[0],"time":d[1]}];
+  {    
     const refe = this.db.collection('boardRooms').doc(name).ref.get().then((o)=>
     {
-      this.list= o.data().bookings;
-      this.list.push(obj);
-      this.list = this.list.map((obj)=> {return Object.assign({}, obj)});
-      console.log(this.list);
+      var objD = {"date":d[0],"time":d[1]};
+      //Check if there are values already. If not do not push to list
+      if(o.data().bookings[0])
+      {
+        this.list.push(o.data().bookings[0]);
+      }      
+      this.list.push(objD);
+      this.newObj = this.list.map((obj)=> {return Object.assign({}, obj)});
+
+     return this.db.collection('boardRooms').doc(name).update({"bookings":this.newObj});
     });
-    return this.db.collection('boardRooms').doc(name).update({"bookings":this.list});//.update({"bookings":[{"date":d[0],"time":d[1]}]});
-    
   }
   getRooms()
   {
@@ -45,11 +52,8 @@ export class DatabaseService {
   }
   getRoomsByName()
   {
-    // return this.db.collection('boardRooms').snapshotChanges();
-    return this.db.collection("boardRooms").get();
-    
+    return this.db.collection("boardRooms").get(); 
   }
-
 
   //It gets hairy down here
    getHeaders() {
@@ -99,4 +103,5 @@ detectFace(base64Image){
     {params,headers}
   ).pipe(map(result => result));
 }
+
 }

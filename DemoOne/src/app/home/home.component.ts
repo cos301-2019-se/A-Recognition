@@ -1,5 +1,4 @@
-
-import { Component, OnInit,Renderer2 } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../auth.service';
 import { Router } from  "@angular/router";
 import { DatabaseService } from '../database.service';
@@ -12,15 +11,19 @@ import { FormGroup ,FormBuilder,Validators} from '@angular/forms';
 })
 export class HomeComponent implements OnInit {
 
+  //Variables
   list:Array<any>;
   expandedList: Object;
   expandedArray:any=[];
   dateTime:any=[];
   boardRoom:FormGroup;
+  submitted:boolean = true;
   bookRoom:FormGroup;
-  constructor(private authService:AuthService,private formBuilder: FormBuilder,public  router:  Router,private booking:DatabaseService,private renderer:Renderer2) { }
+  //
+  constructor(private authService:AuthService,private formBuilder: FormBuilder,public  router:  Router,private booking:DatabaseService){ }
 
-  ngOnInit() {
+  ngOnInit() 
+  {
     if(!this.authService.isLoggedIn())
     {
       this.router.navigate(['login']);
@@ -42,7 +45,7 @@ export class HomeComponent implements OnInit {
   }
   onSubmit()
   {
-    
+    this.submitted = true;
   }
   addBoardRoom(name)
   {
@@ -62,6 +65,7 @@ export class HomeComponent implements OnInit {
         if(doc.id==deviceValue)
         {
           this.expandedArray=[];
+          
           this.expandedList=(doc.data());
           this.expandedArray.push(this.expandedList); 
           console.log(this.expandedArray);
@@ -69,22 +73,12 @@ export class HomeComponent implements OnInit {
       });
     });//,()=>{},()=>{this.getDates();}
   } 
-  // getDates()
-  // {
-  //   this.expandedArray.forEach((x)=>
-  //   {
-  //     this.dateTime.push([x['bookings']['date'],x['bookings']['time']]  );
-  //     console.log(this.dateTime);
-  //   });
-  // }
   populateList()
   {
     this.booking.getRooms().subscribe((data) =>
     {
       this.list = data;
-      //console.log(data);
     });
-    
   }
 
 }

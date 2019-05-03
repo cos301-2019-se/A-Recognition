@@ -23,7 +23,7 @@ var config = {
   storageBucket: "capstoneusers-b474f.appspot.com",
   messagingSenderId: "754403435763"
 };
-
+//
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,7 +39,7 @@ var config = {
     HttpClientModule,
     FormsModule
   ],
-  providers: [{ provide: FirestoreSettingsToken, useValue: {} }],
+  providers: [{ provide: FirestoreSettingsToken, useValue: {} },{provide:AngularFireModule}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
