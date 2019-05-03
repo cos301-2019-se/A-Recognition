@@ -9,9 +9,12 @@ import {AngularFireModule} from "@angular/fire";
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
 import {AngularFireAuthModule} from "@angular/fire/auth";
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FirestoreSettingsToken} from '@angular/fire/firestore';
-//This is for connecting to firebase and using the authentication and login services
+import { RecogitionComponent } from './recogition/recogition.component';
+import {HttpClientModule} from '@angular/common/http';
+
+
 var config = {
   apiKey: "AIzaSyBZBjbJQEstJ1Qjx9bP8kIejypgXUsN1CM",
   authDomain: "capstoneusers-b474f.firebaseapp.com",
@@ -25,16 +28,16 @@ var config = {
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    RecogitionComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(config),
-    AngularFireAuthModule,
-    ReactiveFormsModule,
-    AngularFirestoreModule,
-    AngularFireDatabaseModule
+    AngularFireAuthModule, ReactiveFormsModule,AngularFirestoreModule,AngularFireDatabaseModule,
+    HttpClientModule,
+    FormsModule
   ],
   providers: [{ provide: FirestoreSettingsToken, useValue: {} },{provide:AngularFireModule}],
   bootstrap: [AppComponent]

@@ -1,0 +1,52 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">Advance</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+          <a class="nav-link" routerLink="/recognition">Recognition</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="" (click)="authService.logout()">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<br/>
+<div class="jumbotron">
+  <div class="row">
+      <div class="col">
+          <div class="mx-auto w-50 p-3 bg-dark text-white text-center">
+              <h1>Recognition</h1>
+
+              <!--
+                <video #screen (timeupdate) = "getImage()">
+              -->
+              <video #screen style ="width: 640px;height: 480px;">
+              </video>
+
+              <canvas #canvas style ="overflow: auto"></canvas>
+              <!--<button (click) = "stop()">Play/Stop</button>-->
+
+              <select [(ngModel)]="selectedRoom" (change)="selectRoom($event.target.value)">
+                <option  *ngFor="let item of boardRooms" value='{{ item.name }}' >{{ item.name }}</option>
+              </select>
+
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
+<div *ngIf="alerting" class = "notification">
+  {{alertMessage}}
+</div>
+
+<div *ngIf="warning" class = "warning">
+    {{warnMessage}}
+  </div>
+

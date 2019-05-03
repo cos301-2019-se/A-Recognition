@@ -56,9 +56,9 @@ export class HomeComponent implements OnInit {
     var d = date.split('T');
     this.booking.boardRoomBooking(name,d);
   }
-  onChange(deviceValue) 
-  {
-    this.booking.getRoomsByName(deviceValue).subscribe((data)=>
+  onChange(deviceValue) {
+   //console.log(deviceValue);
+    this.booking.getRoomsByName().subscribe((data)=>
     {
       data.docs.forEach((doc)=>
       {
