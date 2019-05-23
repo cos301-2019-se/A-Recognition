@@ -33,8 +33,8 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 
 ##### Adrian le Grange
 - Experience with Unity
-- Easilty adaptable to programming languages
-- Interested in AI, graphics as well as operating systems
+- Easily adaptable to programming languages
+- Interested in AI, computer graphics as well as operating systems
 
 ---
 
