@@ -5,6 +5,10 @@
 
 [Project Management](https://app.zenhub.com/workspaces/a-recognition-5cc3f20307a4ab52d27abc9b/board?repos=182155877)
 
+<a href=https://github.com/cos301-2019-se/A-Recognition/blob/master/GeneralCodingStandardsAndGuidelines.pdf target="_blank">Coding Standards</a>
+
+<a href="https://github.com/cos301-2019-se/A-Recognition/blob/master/Testing_Policy.pdf" target="_blank">Testing Policy</a>
+
 ---
 
 ### Description 
