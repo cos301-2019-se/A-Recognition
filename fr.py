@@ -136,10 +136,7 @@ def registerTest(name,surname,title,imageName):#registerUser(name,surname,title,
             u'Surname': surname,
             u'Title': title
         }
-        if(name!=""):
-            return user
-        else:
-            False
+        return user
 ##################################################
 # More flask stuff
 api.add_resource(authenticate, '/authenticate/<jsonOBj>') # Route_1

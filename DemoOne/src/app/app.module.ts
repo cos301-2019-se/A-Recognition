@@ -13,7 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FirestoreSettingsToken} from '@angular/fire/firestore';
 import {HttpClientModule} from '@angular/common/http';
 import { FRComponent } from './fr/fr.component';
-
+import {FormsModule} from "@angular/forms";
 var config = {
   apiKey: "AIzaSyBZBjbJQEstJ1Qjx9bP8kIejypgXUsN1CM",
   authDomain: "capstoneusers-b474f.firebaseapp.com",
@@ -34,7 +34,7 @@ var config = {
     BrowserModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(config),
-    AngularFireAuthModule, ReactiveFormsModule,AngularFirestoreModule,AngularFireDatabaseModule,HttpClientModule
+    AngularFireAuthModule, ReactiveFormsModule,AngularFirestoreModule,AngularFireDatabaseModule,HttpClientModule,FormsModule
   ],
   providers: [{ provide: FirestoreSettingsToken, useValue: {} }],
   bootstrap: [AppComponent]

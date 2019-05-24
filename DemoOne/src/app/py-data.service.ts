@@ -13,4 +13,5 @@ export class PyDataService {
   {
     return this.http.get('http://127.0.0.1:5030/authenticate/' +imageName);
   }
+  
 }
