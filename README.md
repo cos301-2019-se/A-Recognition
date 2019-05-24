@@ -9,6 +9,8 @@
 
 <a href="https://github.com/cos301-2019-se/A-Recognition/blob/master/Testing_Policy.pdf" target="_blank">Testing Policy</a>
 
+<a href="https://github.com/cos301-2019-se/A-Recognition/blob/master/A-Recognition%20User%20Manual.pdf" target="_blank">User Manual</a>
+
 ---
 
 ### Description 
