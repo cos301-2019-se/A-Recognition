@@ -41,7 +41,7 @@ The overall requirements of the system should be:
 Alessio - Kyle - Richard - Adrian - Jarrod
 
 ##### Jarrod Goschen
-- Software development centric with experience in C++
+- Software development centered degree with experience in multiple languages and frameworks.
 - AI Student
 - Unity Experience
 
