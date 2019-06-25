@@ -41,20 +41,25 @@ export class Adapter{
             }
     }
 /**
- * retrieves the scheduled events of a specific user
+ * retrieves the scheduled events of a specific user or returns a null object if there are none
  * @param {string | number} identifier the user identifier of choice
  * @param {boolean} filter whether the result should be filtered into a simpler JSON object
  * @param {any} options if left out then standard filtering is applied otherwise options specifies what keys should be passed on to the new object
  */
-    retrieveUserEvents(identifier : string | number, filter : boolean, options: any){
-        this.adaptee.retrieveUserEvents(identifier).then( (bookings)=>{
+    retrieveUserEvents(identifier : string | number, filter : boolean, options: any) : Promise<any>{
+        
+        return new Promise( (resolve,reject)=>{
 
-            //console.log("Filtering result");
+            this.adaptee.retrieveUserEvents(identifier).then( (bookings)=>{
 
-            if(!filter)
-            return bookings;
-            else 
-            return Utils.filter(bookings,options);
+                if(!filter)
+                resolve(bookings);
+                else 
+                resolve(Utils.filter(bookings,options));
+            }).catch( (err)=>{
+                console.log(err);
+                reject({});
+            })
         })
         
        

@@ -4,8 +4,22 @@
 
 export function filter(data : any,options : any){
 
+    let dataArr = [];
+    
     if(options == null || options == undefined){
-        let filteredObject = {};
-        //console.log(data);
+
+        data.forEach(el => {
+            let filteredObject = {
+                id          : el.id,
+                status      : el.status,
+                created     : el.created,
+                organizer   : el.organizer,
+                start       : el.start,
+                end         : el.end
+            }; 
+            dataArr.push(filteredObject);
+        });
     }
+    
+    return dataArr;
 }
