@@ -136,6 +136,8 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
             eyes_detected[name] += eye_status
     # Check if the user has blinked
     # If yes, we display their name
+    #TODO Adrian this is the function you implemented so just import it so it knows
+    #TODO where it is from
     if isBlinking(eyes_detected[name],3):
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
         # Display name
