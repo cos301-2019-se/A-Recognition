@@ -21,7 +21,7 @@ docs = users_ref.stream()
 #
 #@params images,name,surname,title
 #
-def encodeImage(images,name,surname,title):
+def encodeImageForDB(images,name,surname,title):
     if(images is None or name is None or surname is None or title is None):
         raise TypeError("encodingImage expected 4 parameters")
     encoding=[]
@@ -55,8 +55,32 @@ def encodeImage(images,name,surname,title):
             users_ref.document(name).set(user)
             if user:
                 return True
-    except:
+    except TypeError:
         return "An error occured while trying to encode the image or saving to the database"
 
-imageNames = ['./tester.jpg',"./5.jpg"]
-encodeImage(imageNames,"Richard Two","McFadden","Mr")
+def encodingsOfImages(images,name,surname,title):
+    if(images is None or name is None or surname is None or title is None):
+        raise TypeError("encodingImage expected 4 parameters")
+    encoding=[]
+    print("ENCODING the dataset for the facial Recognition ")
+    try:
+        for image_path in (images):
+            # Load image
+            image = cv2.imread(image_path)
+            # Convert it from BGR to RGB
+            #Because opencv uses RGB
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            
+            # detect face in the image and get its location (square boxes coordinates)
+            boxes = face_recognition.face_locations(image, model='hog')
+
+            # Encode the face into a 128-d embeddings vector
+            encoding.append(np.array(face_recognition.face_encodings(image,boxes)[0]).tolist())
+        
+        if len(encoding) > 0 :
+                return {"encodings":encoding,"name":name,"surname":surname,"title":title}
+    except TypeError:
+        return "An error occured while trying to encode the image or saving to the database"
+
+# imageNames = ['./tester.jpg',"./5.jpg"]
+# encodeImageFro(imageNames,"Richard Two","McFadden","Mr")
