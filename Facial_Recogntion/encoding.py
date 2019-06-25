@@ -78,7 +78,8 @@ def encodingsOfImages(images,name,surname,title):
             encoding.append(np.array(face_recognition.face_encodings(image,boxes)[0]).tolist())
         
         if len(encoding) > 0 :
-                return {"encodings":encoding,"name":name,"surname":surname,"title":title}
+                tempObj = title+" "+name+" "+ surname
+                return {"encodings":encoding,"name":tempObj}
     except TypeError:
         return "An error occured while trying to encode the image or saving to the database"
 
