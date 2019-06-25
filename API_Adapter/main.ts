@@ -1,6 +1,19 @@
 import {Adapter} from "./Adapter";
 
 let adapter = new Adapter();
-adapter.retrieveUserEvents(0,true,null)
-.then( (bookings)=>console.log(bookings))
-.catch( ()=>{});
+
+adapter.retrieveUserCalendars().then( (calendarList)=>{
+
+    console.log(calendarList);
+
+    calendarList.forEach(calendar => {
+        adapter.retrieveUserEvents(calendar.calendarId,true,null,2)
+        .then( (bookings)=>console.log(bookings))
+        .catch( ()=>{});
+    });
+    
+    
+}).catch( (err)=>{
+    console.log(err);
+})
+

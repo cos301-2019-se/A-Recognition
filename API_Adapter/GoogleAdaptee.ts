@@ -18,16 +18,16 @@ export class GoogleAdaptee{
 
 /**
  * retrieves the scheduled events of a specific user
- * @param {any} identifier the user identifier of choice
+ * @param {string} identifier the user identifier of choice
  */
-    async retrieveUserEvents(identifier : string | number) : Promise<any>{
+    async getUserEvents(identifier : string,resultSize : number) : Promise<any>{
 
        return new Promise( (resolve,reject)=>{
             this.loadClientSecrets().then( (credentials)=>{
                 return credentials;
             }).then( (credentials) =>{
                 this.authorize(credentials).then( (oAuth2Client)=>{
-                    this.listEvents(oAuth2Client).then( (bookings)=>{
+                    this.listEvents(oAuth2Client,identifier,resultSize).then( (bookings)=>{
                         resolve(bookings);
                     }).catch( (err)=>{
                         reject(err);
@@ -41,6 +41,30 @@ export class GoogleAdaptee{
        })
                 
     }
+
+/**
+ * retrieves the calendars associated with a user
+ */
+    getUserCalendars() : Promise<any>{
+
+        return new Promise( (resolve,reject)=>{
+            this.loadClientSecrets().then( (credentials)=>{
+                return credentials;
+            }).then( (credentials) =>{
+                this.authorize(credentials).then( (oAuth2Client)=>{
+                    this.getUserCalendarList(oAuth2Client).then( (userCalendars)=>{
+                        resolve(userCalendars);
+                        });
+                }).catch( (err)=>{
+                    reject(err);
+                })
+            }).catch( (err)=>{
+                reject(err);
+            } )
+       })
+       
+    }
+
 
 /**
  * Load client secrets from a local file.
@@ -62,9 +86,8 @@ export class GoogleAdaptee{
  * Create an OAuth2 client with the given credentials, and then execute the
  * given callback function.
  * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
  */
-    authorize(credentials : any, callback : Function | void) : Promise<any> {
+    authorize(credentials : any) : Promise<any> {
 
         return new Promise( (resolve,reject)=>{
 
@@ -90,9 +113,8 @@ export class GoogleAdaptee{
  * Get and store new token after prompting for user authorization, and then
  * execute the given callback with the authorized OAuth2 client.
  * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
  */
-    getAccessToken(oAuth2Client : any, callback : Function | void) : Promise<any>{
+    getAccessToken(oAuth2Client : any) : Promise<any>{
 
         return new Promise( (resolve,reject)=>{
 
@@ -133,24 +155,24 @@ export class GoogleAdaptee{
  * Lists the next 10 events on the user's primary calendar.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-    listEvents(auth) : Promise<any> {
+    listEvents(auth,calendarId : string,resultSize : number) : Promise<any> {
 
         return new Promise( (resolve,reject)=>{
 
+            
             const calendar = google.calendar({version: 'v3', auth});
-
+            
             calendar.events.list({
-                calendarId: 'primary',      // This may have to be changed to the companies specified calender used for room bookings
+                calendarId: calendarId,      // This may have to be changed to the companies specified calender used for room bookings
                 timeMin: (new Date()).toISOString(),
-                maxResults: 10,
+                maxResults: resultSize,
                 singleEvents: true,
                 orderBy: 'startTime',
                 }, (err, res) => {
 
                 if (err) 
                     reject('The API returned an error: ' + err);
-            
-                //This is the main point of displaying current events or bookings
+                
                 const bookings = res.data.items;
                 if (bookings.length) {
                     bookings.map((event, i) => {
@@ -165,4 +187,30 @@ export class GoogleAdaptee{
 
   }
 
+  /**
+ * Lists all calendars associated with a user
+ * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+ */
+    getUserCalendarList(auth) : Promise<any> {
+
+    return new Promise( (resolve,reject)=>{
+
+        const calendar = google.calendar({version: 'v3', auth});
+        calendar.calendarList.list({showHidden: true}).then( (list)=>{
+            
+            if(list.data.items.length <= 0)
+            reject([]);
+            
+            let userCalendars = [];
+
+            list.data.items.forEach(calendar => {
+                userCalendars.push({calendarId :calendar.id,calendarTitle : calendar.summary});
+            });
+            
+            resolve(userCalendars);
+        });
+        
+    });
 }
+}
+
