@@ -19,13 +19,18 @@ export class Adapter{
     
 /**
  * changes the target adaptee for the adapter
- * @param {string} target the name of the target platform eg. Microsoft/Google, if undefined then switch to the next available adaptee
+ * @param {string | null} target the name of the target platform eg. Microsoft/Google, if undefined then switch to the next available adaptee
  */
-    changeAdaptee(target : string) : void{
+    changeAdaptee(target : string | null) : void{
+
+        console.log("oi");
+        
 
         if(target == null || target == undefined)   //target undefined, choose next available adaptee
             target = adaptees[this.currentAdapteeIndex = (this.currentAdapteeIndex++ % adaptees.length)];
 
+            console.log("\n\n\nTarget is now "+ target + "\n\n\n");
+            
             switch (target.toLowerCase()) {
                 case "google" :
                     this.adaptee = new GoogleAdaptee();

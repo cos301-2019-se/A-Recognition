@@ -10,13 +10,22 @@ export class MicrosoftAdaptee{
  * @param {any} identifier the user identifier of choice
  */
     async getUserEvents(identifier : string | number): Promise<any>{
-        console.log("I am not implemented yet");
+
+        return new Promise( (resolve,reject)=>{
+            console.log("hey");
+            
+            resolve("I am not implemented yet");
+        })
+        
     }
 
     /**
  * retrieves the calendars associated with a user
  */
     async getUserCalendars() : Promise<any>{
-        console.log("I am not implemented yet");
+        
+        return new Promise( (resolve,reject)=>{
+            resolve("I am not implemented yet");
+        })
     }
 }

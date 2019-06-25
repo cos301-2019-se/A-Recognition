@@ -15,5 +15,4 @@ adapter.retrieveUserCalendars().then( (calendarList)=>{
     
 }).catch( (err)=>{
     console.log(err);
-})
-
+});
