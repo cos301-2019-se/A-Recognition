@@ -58,9 +58,16 @@ def encodeImageForDB(images,name,surname,title):
     except TypeError:
         return "An error occured while trying to encode the image or saving to the database"
 
-def encodingsOfImages(images,name,surname,title):
-    if(images is None or name is None or surname is None or title is None):
+def encodingsOfImages(images,name=None,surname=None,title=None):
+    if(images is None ):
         raise TypeError("encodingImage expected 4 parameters")
+    
+    knownEncoding = []
+    knownNames = []
+    for doc in docs:
+        print(u'{} => {}'.format(doc.id, doc.to_dict().get("image_vector")))
+        knownEncoding.append((np.asarray(doc.to_dict().get("image_vector"))))
+        knownNames.append(doc.to_dict().get("Name"))
     encoding=[]
     print("ENCODING the dataset for the facial Recognition ")
     try:
@@ -79,9 +86,11 @@ def encodingsOfImages(images,name,surname,title):
         
         if len(encoding) > 0 :
                 tempObj = title+" "+name+" "+ surname
-                return {"encodings":encoding,"name":tempObj}
+                knownEncoding.append(encoding[0])
+                knownNames.append(tempObj)
+                return {"encodings":knownEncoding,"name":knownNames}
     except TypeError:
         return "An error occured while trying to encode the image or saving to the database"
 
 # imageNames = ['./tester.jpg',"./5.jpg"]
-# encodeImageFro(imageNames,"Richard Two","McFadden","Mr")
+# encodingsOfImages(imageNames,"Richard Two","McFadden","Mr")
