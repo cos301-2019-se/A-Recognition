@@ -7,6 +7,17 @@ from collections import defaultdict
 from imutils.video import VideoStream
 from eye_status import * 
 from encoding import *
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+db = firestore.client()
+
+#GET the collection Users for Facial Recognition
+users_ref = db.collection(u'Users')
+
+#docs now contain the data in Users
+docs = users_ref.stream()
 
 def init():
     #Load models to detect faces and features of them
@@ -67,11 +78,13 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
         
         #Pass the grayscale image to our face-detection model to strip out all faces
         faces = face_detector.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5, minSize=(50, 50), flags=cv2.CASCADE_SCALE_IMAGE)
-       # matches = []
+    #    matches = []
         #For each detected face
         for (x,y,w,h) in faces:
             #Encode the face into a 128-d embeddings vector
             encoding = face_recognition.face_encodings(rgb, [(y, x+w, y+h, x)])[0]
+            #For now we don't know the person name
+            name = "Unknown"
 
             #Compare the vector with all known faces encodings
             for e in data['encodings']:
@@ -79,21 +92,30 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                     #print("Hello "+str(s['encoding']))
                     temp = s['encoding']
                     matches = face_recognition.compare_faces([temp], encoding)
+                    if True in matches:
+                        # print("Please help")
+                        # name = users_ref.stream()
 
-            #For now we don't know the person name
-            name = "Unknown"
+                        # for s in name:
+                        #     print(u'{} => {}'.format(s.id, s.to_dict().get("Name")))
+                    
 
             #Check if this face mathces a known person
-            if True in matches:
-                print("WE ARE HERE")
-                matchedIdxs = [i for (i, b) in enumerate(matches) if b]
-                counts = {}
-                for i in matchedIdxs:
-                    name = data["name"][i]
-                    counts[name] = counts.get(name, 0) + 1
-
-                #Determine the recognized face with the largest number of votes
-                name = max(counts, key=counts.get)
+            # if True in matches:
+            #     print("WE ARE HERE")
+            #     matchedIdxs = [i for (i, b) in enumerate(matches) if b]
+            #     counts = {}
+            #     for i in matchedIdxs:
+            #         name = data["name"][i]
+                    
+            #         counts[name] = counts.get(name, 0) + 1
+            # #Determine the recognized face with the largest number of votes
+            # name = max(counts, key=counts.get)
+            #########################################
+            ########################################
+            #cities_ref.where(u'state', u'==', u'CA')
+            #########################################
+            ########################################
 
             #Store the cropped face
             face = frame[y:y+h,x:x+w]

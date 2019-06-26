@@ -88,6 +88,10 @@ def encodingsOfImages(images,name=None,surname=None,title=None):
         #         tempObj = title+" "+name+" "+ surname
         #         #knownEncoding.append(encoding[0])
         #         knownNames.append(tempObj)
+        # knownEnc = []
+        # for s in knownEncoding:
+        #     knownEnc.append(s[0]['encoding'])
+
         return {"encodings":knownEncoding,"name":knownNames}
     except TypeError:
         return "An error occured while trying to encode the image or saving to the database"
