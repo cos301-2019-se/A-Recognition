@@ -9,11 +9,9 @@ export class MicrosoftAdaptee{
  * retrieves the scheduled events of a specific user
  * @param {any} identifier the user identifier of choice
  */
-    async getUserEvents(identifier : string | number): Promise<any>{
+    async getUserEvents(identifier : string = "primary",resultSize : number = 2): Promise<any>{
 
-        return new Promise( (resolve,reject)=>{
-            console.log("hey");
-            
+        return new Promise( (resolve,reject)=>{ 
             resolve("I am not implemented yet");
         })
         

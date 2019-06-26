@@ -52,7 +52,26 @@ export function filter(data : any,options : any){
             }
             dataArr.push(filteredObject);
         });
+
+    }else{  // Custom filter options
+
+        
+
+        data.forEach(el => {
+            let filteredObject = {};
+
+            for( var key in options){
+                if(options.hasOwnProperty(key)){
+                    if(el[key] != undefined)
+                    filteredObject[key] = el[key];
+                }
+            }
+
+            dataArr.push(filteredObject);
+        });
+        
     }
+
     
     return dataArr;
 }

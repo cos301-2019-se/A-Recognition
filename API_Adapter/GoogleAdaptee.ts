@@ -20,7 +20,7 @@ export class GoogleAdaptee{
  * retrieves the scheduled events of a specific user
  * @param {string} identifier the user identifier of choice
  */
-    async getUserEvents(identifier : string,resultSize : number) : Promise<any>{
+    async getUserEvents(identifier : string = "primary",resultSize : number = 2) : Promise<any>{
 
        return new Promise( (resolve,reject)=>{
             this.loadClientSecrets().then( (credentials)=>{

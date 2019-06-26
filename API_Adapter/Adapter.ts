@@ -21,29 +21,33 @@ export class Adapter{
  * changes the target adaptee for the adapter
  * @param {string | null} target the name of the target platform eg. Microsoft/Google, if undefined then switch to the next available adaptee
  */
-    changeAdaptee(target : string | null) : void{
+    changeAdaptee(target : string | null = null) : void{
 
-        console.log("oi");
+        if(target == null || target == undefined){   //target undefined, choose next available adaptee
+            target = adaptees[ ++this.currentAdapteeIndex % adaptees.length];
+            this.currentAdapteeIndex = this.currentAdapteeIndex % adaptees.length;
+        }
+                 
+        target = target.toLowerCase();
         
-
-        if(target == null || target == undefined)   //target undefined, choose next available adaptee
-            target = adaptees[this.currentAdapteeIndex = (this.currentAdapteeIndex++ % adaptees.length)];
-
-            console.log("\n\n\nTarget is now "+ target + "\n\n\n");
-            
-            switch (target.toLowerCase()) {
+            switch (target) {
                 case "google" :
                     this.adaptee = new GoogleAdaptee();
+                    this.currentAdapteeIndex = 0;
                     break;
 
                 case "microsoft" :
                         this.adaptee = new MicrosoftAdaptee();
+                        this.currentAdapteeIndex = 1;
                         break;
             
                 default:
                     this.adaptee = new GoogleAdaptee();
+                    this.currentAdapteeIndex = 0;
                     break;
             }
+
+            console.log("\nTarget is now "+ target + "\n");
     }
 /**
  * retrieves the scheduled events of a specific user or returns a null object if there are none
