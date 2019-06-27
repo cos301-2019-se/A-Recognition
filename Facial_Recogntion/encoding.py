@@ -66,8 +66,9 @@ def encodingsOfImages(images,name=None,surname=None,title=None):
     knownNames = []
     for doc in docs:
         #print(u'{} => {}'.format(doc.id, doc.to_dict().get("image_vector")))
-        knownEncoding.append((np.asarray(doc.to_dict().get("image_vector"))))
-        knownNames.append(doc.to_dict().get("Name"))
+        knownEncoding.append(doc.to_dict())
+        
+        # knownNames.append(doc.to_dict().get("Name"))
     encoding=[]
     print("ENCODING the dataset for the facial Recognition ")
     try:
@@ -92,9 +93,9 @@ def encodingsOfImages(images,name=None,surname=None,title=None):
         # for s in knownEncoding:
         #     knownEnc.append(s[0]['encoding'])
 
-        return {"encodings":knownEncoding,"name":knownNames}
+        return {"user":knownEncoding}
     except TypeError:
         return "An error occured while trying to encode the image or saving to the database"
 
-imageNames = ['./adrian.jpeg']
-encodeImageForDB(imageNames,"Adrian","le Grange","Mr")
+imageNames = ['./tester.jpg','./5.jpg']
+encodeImageForDB(imageNames,"Richard","McFadden","Mr")

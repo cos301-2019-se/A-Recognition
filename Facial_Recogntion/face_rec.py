@@ -86,36 +86,15 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
             #For now we don't know the person name
             name = "Unknown"
 
+            temp = data['user']
             #Compare the vector with all known faces encodings
-            for e in data['encodings']:
-                for s in e:
-                    #print("Hello "+str(s['encoding']))
-                    temp = s['encoding']
-                    matches = face_recognition.compare_faces([temp], encoding)
-                    if True in matches:
-                        # print("Please help")
-                        # name = users_ref.stream()
-
-                        # for s in name:
-                        #     print(u'{} => {}'.format(s.id, s.to_dict().get("Name")))
-                    
-
-            #Check if this face mathces a known person
-            # if True in matches:
-            #     print("WE ARE HERE")
-            #     matchedIdxs = [i for (i, b) in enumerate(matches) if b]
-            #     counts = {}
-            #     for i in matchedIdxs:
-            #         name = data["name"][i]
-                    
-            #         counts[name] = counts.get(name, 0) + 1
-            # #Determine the recognized face with the largest number of votes
-            # name = max(counts, key=counts.get)
-            #########################################
-            ########################################
-            #cities_ref.where(u'state', u'==', u'CA')
-            #########################################
-            ########################################
+            for e in temp:
+                secondTemp = e['image_vector'][0]['encoding']
+                matches = face_recognition.compare_faces([secondTemp], encoding)
+                if True in matches:
+                    first_match_index = matches.index(True)
+                    name = e["Name"]
+                    print(name)                    
 
             #Store the cropped face
             face = frame[y:y+h,x:x+w]
