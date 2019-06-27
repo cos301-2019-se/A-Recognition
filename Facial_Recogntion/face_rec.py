@@ -45,14 +45,6 @@ def init():
     #Load our model that classifies open or closed eyes ('model.h5')
     model = load_model()
 
-    # #TODO This should load from our database, not classify a collection of images
-    # print("[LOG] Collecting images ...")
-    # images = []
-    # for direc, _, files in tqdm(os.walk(dataset)):
-    #     for file in files:
-    #         if file.endswith("jpg"):
-    #             images.append(os.path.join(direc,file))
-    #             print("Found image" + file)
     return (model,face_detector, open_eyes_detector, left_eye_detector,right_eye_detector, video_capture) 
 
 def isBlinking(history, maxFrames):
@@ -78,14 +70,13 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
         
         #Pass the grayscale image to our face-detection model to strip out all faces
         faces = face_detector.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5, minSize=(50, 50), flags=cv2.CASCADE_SCALE_IMAGE)
-    #    matches = []
+
         #For each detected face
         for (x,y,w,h) in faces:
             #Encode the face into a 128-d embeddings vector
             encoding = face_recognition.face_encodings(rgb, [(y, x+w, y+h, x)])[0]
-            #For now we don't know the person name
+            #For now we don't know the user's name
             name = "Unknown"
-
             temp = data['user']
             #Compare the vector with all known faces encodings
             for e in temp:
@@ -102,8 +93,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 
             eyes = []
             
-            #We now detect the eyes of the face
-            #Check if the eyes are open (Considering glasses)
+            #We now detect the user's eyes
             open_eyes_glasses = open_eyes_detector.detectMultiScale(gray_face, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags = cv2.CASCADE_SCALE_IMAGE)
             
             #If open_eyes_detector detects eyes, they are open
@@ -112,7 +102,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 for (ex,ey,ew,eh) in open_eyes_glasses:
                     cv2.rectangle(face,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
             
-            #Else we try to detect individual eyes (Detects both open and closed eyes)              
+            # #Else we try to detect individual eyes (Detects both open and closed eyes)              
             else:
                 #Slpit the face into a left and right side
                 left_face = frame[y:y+h, x+int(w/2):x+w]
@@ -135,20 +125,20 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                     color = (0,255,0)
                     pred = predict(right_face[ey:ey+eh,ex:ex+ew],model)
                     if pred == 'closed':
-                        eye_status='1'
+                        
                         color = (0,0,255)
                     cv2.rectangle(right_face,(ex,ey),(ex+ew,ey+eh),color,2)
                 for (ex,ey,ew,eh) in left_eye:
                     color = (0,255,0)
                     pred = predict(left_face[ey:ey+eh,ex:ex+ew],model)
                     if pred == 'closed':
-                        eye_status='1'
+                        
                         color = (0,0,255)
                     cv2.rectangle(left_face,(ex,ey),(ex+ew,ey+eh),color,2)
                 eyes_detected[name] += eye_status
 
-            #Each time, we check if the person has blinked
-            #If yes, we display its name
+            #Check whether the person has blinked
+            #If yes, we display their name
             if isBlinking(eyes_detected[name],3):
                 cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
                 # Display name
