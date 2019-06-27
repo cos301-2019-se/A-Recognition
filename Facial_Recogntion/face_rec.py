@@ -45,15 +45,15 @@ def init():
     #Load our model that classifies open or closed eyes ('model.h5')
     model = load_model()
 
-    #TODO This should load from our database, not classify a collection of images
-    print("[LOG] Collecting images ...")
-    images = []
-    for direc, _, files in tqdm(os.walk(dataset)):
-        for file in files:
-            if file.endswith("jpg"):
-                images.append(os.path.join(direc,file))
-                print("Found image" + file)
-    return (model,face_detector, open_eyes_detector, left_eye_detector,right_eye_detector, video_capture, images) 
+    # #TODO This should load from our database, not classify a collection of images
+    # print("[LOG] Collecting images ...")
+    # images = []
+    # for direc, _, files in tqdm(os.walk(dataset)):
+    #     for file in files:
+    #         if file.endswith("jpg"):
+    #             images.append(os.path.join(direc,file))
+    #             print("Found image" + file)
+    return (model,face_detector, open_eyes_detector, left_eye_detector,right_eye_detector, video_capture) 
 
 def isBlinking(history, maxFrames):
     """ @history: A string containing the history of eyes status 
@@ -162,10 +162,10 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 
 if __name__ == "__main__":
     #Initialize
-    (model, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, video_capture, images) = init()
+    (model, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, video_capture) = init()
     
     
-    data = encodingsOfImages(images)
+    data = encodingsOfImages()
 
     eyes_detected = defaultdict(str)
     while True:
