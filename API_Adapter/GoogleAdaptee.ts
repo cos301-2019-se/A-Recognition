@@ -166,7 +166,7 @@ export class GoogleAdaptee{
             const calendar = google.calendar({version: 'v3', auth});
 
             let endTime =  new Date();    //Create a date object
-            endTime.setHours(25,59,59,999); //And set its time to be the end of today
+            endTime.setHours(23,59,59,999); //And set its time to be the end of today * SA is UTC + 2
             console.log(endTime.toISOString());
             
             
