@@ -54,6 +54,7 @@ export class Adapter{
  * @param {string | number} identifier the user identifier of choice
  * @param {boolean} filter whether the result should be filtered into a simpler JSON object
  * @param {any} options if left out then standard filtering is applied otherwise options specifies what keys should be passed on to the new object
+ * @returns {Object[] | Error }
  */
     retrieveUserEvents(identifier : string, filter : boolean, options: any,resultSize : number) : Promise<any>{
         
@@ -66,8 +67,8 @@ export class Adapter{
                 else 
                 resolve(Utils.filter(bookings,options));
             }).catch( (err)=>{
-                console.log(err);
-                reject({});
+                //Most probably no events, but possibly something else
+                reject(err);
             })
         })
        

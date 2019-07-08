@@ -157,6 +157,9 @@ export class GoogleAdaptee{
  */
     listEvents(auth,calendarId : string,resultSize : number) : Promise<any> {
 
+        if(resultSize == -1)
+        resultSize = 250;
+        
         return new Promise( (resolve,reject)=>{
 
             

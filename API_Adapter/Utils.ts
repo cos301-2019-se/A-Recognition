@@ -2,6 +2,12 @@
  * Utility functions that dont belong to a specific class.
  */
 
+ /**
+ * Filters an array/single object, if no options are passed through then deafault event filtering takes place and this will throw an error on non event objects
+ * @param {any} data The array or single object to filter
+ * @param {any} options Specifies what keys should be passed on to the new object
+ * @returns {Object[] | Object }
+ */
 export function filter(data : any,options : any){
 
     let dataArr = [];
@@ -55,23 +61,73 @@ export function filter(data : any,options : any){
 
     }else{  // Custom filter options
 
-        
+        if( Array.isArray(data)){   // Passed an array of objects
+            data.forEach(el => {
+                let filteredObject = {};
+    
+                for( var key in options){
 
-        data.forEach(el => {
-            let filteredObject = {};
+                    if(el.hasOwnProperty(key)){
 
-            for( var key in options){
-                if(options.hasOwnProperty(key)){
-                    if(el[key] != undefined)
-                    filteredObject[key] = el[key];
+                        if(key == "attendees"){
+                            filteredObject["attendees"] = [];
+
+                            el.attendees.forEach(attendee => {
+                                filteredObject["attendees"].push(attendee.email);                   
+                            });
+                        }else
+                            filteredObject[key] = el[key];
+                    }
+                        
+                    else 
+                        filteredObject[key] = undefined;
+                    
                 }
+    
+                dataArr.push(filteredObject);
+            });
+        }else{
+            let filteredObject = {};
+    
+                for( var key in options){
+                    if(data.hasOwnProperty(key))
+                        filteredObject[key] = data[key];
+                    else 
+                        filteredObject[key] = undefined;
+                }
+    
+                return filteredObject;
             }
 
-            dataArr.push(filteredObject);
-        });
-        
-    }
-
-    
+        }
+         
     return dataArr;
+}
+
+/**
+ * Checks if an object is present in an array based on some key, if a non/empty array is passed in then false is returned.
+ * @param {string} value The value of the key to compare against
+ * @param {any} array The array of objects to search through
+ * @param {string} key The key field of each object that is compared against 'value'
+ * @returns {true | false}
+ */
+export function inArray(value : string,array : any,key : string = "id") : boolean{
+
+     
+    if( !Array.isArray(array) ||  array.length == 0)
+    return false;
+
+    for (let i = 0; i < array.length; i++) {
+      
+        let obj = array[i];
+
+        if (obj.hasOwnProperty(key)) {
+         
+            if(obj[key] == value)
+                return true;
+            
+        }
+    }
+    
+    return false;
 }
