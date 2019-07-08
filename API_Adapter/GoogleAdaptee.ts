@@ -159,15 +159,21 @@ export class GoogleAdaptee{
 
         if(resultSize == -1)
         resultSize = 250;
-        
+
         return new Promise( (resolve,reject)=>{
 
             
             const calendar = google.calendar({version: 'v3', auth});
+
+            let endTime =  new Date();    //Create a date object
+            endTime.setHours(25,59,59,999); //And set its time to be the end of today
+            console.log(endTime.toISOString());
+            
             
             calendar.events.list({
                 calendarId: calendarId,      // This may have to be changed to the companies specified calender used for room bookings
                 timeMin: (new Date()).toISOString(),
+                timeMax: endTime.toISOString(),
                 maxResults: resultSize,
                 singleEvents: true,
                 orderBy: 'startTime',
