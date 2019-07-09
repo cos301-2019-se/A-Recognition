@@ -1,12 +1,5 @@
 import * as Main from "./main";
 
-// getAllEvents().then( (bookings)=>{
-//     console.log(bookings);
-    
-//     console.log("Got all events");
-    
-// });
-
 if(process.argv.length != 0 && process.argv[2].toLowerCase() == "standard"){
     Main.getCalendars().then( (calendars)=>{
         console.log("**********************************************");
