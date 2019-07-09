@@ -1,5 +1,5 @@
 import {Adapter} from "./Adapter";
-import * as Utils from "./Utils";
+import * as Utils from "../Utils/Utils";
 
 var adapter = new Adapter();
 
@@ -48,7 +48,7 @@ export function run(){
 
             events.forEach(event => {
 
-                if( !Utils.inArray(event.id,currentEvents) )  
+                if( !Utils.inArray(event.id,currentEvents,"id") )  
                     currentEvents.push( Utils.filter(event,{id : true,summary:true,location:true,description:true}) );
                 else 
                 console.log( currentEvents.indexOf(event));

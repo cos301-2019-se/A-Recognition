@@ -1,7 +1,7 @@
 const adaptees = ["google","microsoft"];
 import {GoogleAdaptee} from "./GoogleAdaptee";
 import {MicrosoftAdaptee} from "./MicrosoftAdaptee";
-import * as Utils from "./Utils";
+import * as Utils from "../Utils/Utils";
 
 /**
  * Adapter responsible for passing on requests from client to respective adaptee

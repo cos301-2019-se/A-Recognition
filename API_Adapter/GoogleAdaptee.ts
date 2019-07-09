@@ -14,7 +14,19 @@ const TOKEN_PATH = 'token.json';
 */
 export class GoogleAdaptee{
 
-    constructor(){}
+    CREDENTIAL_PATH : string;
+    TOKEN_PATH : string;
+
+
+    constructor(){
+        var path = require("path");
+        
+        var absolutePath = path.resolve("..");
+        absolutePath += "/API_Adapter/";
+
+        this.CREDENTIAL_PATH = absolutePath + "credentials.json";
+        this.TOKEN_PATH = absolutePath + "token.json";
+    }
 
 /**
  * retrieves the scheduled events of a specific user
@@ -71,7 +83,7 @@ export class GoogleAdaptee{
     loadClientSecrets() : Promise<any>{
         
         return new Promise((resolve, reject) => {
-            fs.readFile('credentials.json', (err, content) => {
+            fs.readFile(this.CREDENTIAL_PATH, (err, content) => {
 
                 if (err)
                     reject('Error loading client secret file:'+ err); 
@@ -94,7 +106,7 @@ export class GoogleAdaptee{
             const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
            
             // Check if we have previously stored a token.
-            fs.readFile(TOKEN_PATH, (err, token) => {
+            fs.readFile(this.TOKEN_PATH, (err, token) => {
             if (err)
                 this.getAccessToken(oAuth2Client).then( (oAuth2Client)=>{
                     resolve(oAuth2Client);
