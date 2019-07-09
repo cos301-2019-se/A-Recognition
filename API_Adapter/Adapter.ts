@@ -54,7 +54,7 @@ export class Adapter{
  * @param {string | number} identifier the user identifier of choice
  * @param {boolean} filter whether the result should be filtered into a simpler JSON object
  * @param {any} options if left out then standard filtering is applied otherwise options specifies what keys should be passed on to the new object
- * @returns {Object[] | Error }
+ * @returns {Object[] | string }
  */
     retrieveUserEvents(identifier : string, filter : boolean, options: any,resultSize : number) : Promise<any>{
         

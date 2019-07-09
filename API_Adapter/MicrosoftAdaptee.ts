@@ -49,7 +49,7 @@ export class MicrosoftAdaptee{
         
     }
 
-    /**
+/**
  * retrieves the calendars associated with a user
  */
     async getUserCalendars() : Promise<any>{
