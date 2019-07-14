@@ -69,6 +69,8 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
         
         Adapter.getEvents("primary",true,{attendees : true,location : true,start : true},3,endTime.toISOString()).then( (closestEvents)=>{
 
+            console.log(closestEvents);
+            
 
             for (let i = 0; i < closestEvents.length; i++) {
                 let event = closestEvents[i];
@@ -95,6 +97,8 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
             }
             resolve("There is no booking for that room now");
             
+        }).catch( err =>{
+            console.log(err);
         });
    }); 
 }
