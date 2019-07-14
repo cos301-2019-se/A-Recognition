@@ -111,22 +111,29 @@ export function filter(data : any,options : any){
  * @param {string} key The key field of each object that is compared against 'value'
  * @returns {true | false}
  */
-export function inArray(value : string,array : any,key : string = "id") : boolean{
+export function inArray(value : string,array : any,key : string = "normalArray") : boolean{
 
-     
+ 
     if( !Array.isArray(array) ||  array.length == 0)
     return false;
 
     for (let i = 0; i < array.length; i++) {
       
         let obj = array[i];
-
-        if (obj.hasOwnProperty(key)) {
-         
-            if(obj[key] == value)
-                return true;
+        
+        if(key === "normalArray"){  //Dealing with a normal array, not an array of objects
             
+            if(obj == value)
+            return true;
+        }else{
+            if (obj.hasOwnProperty(key)) {
+                
+                   if(obj[key] == value)
+                       return true;
+                   
+               }
         }
+ 
     }
     
     return false;
