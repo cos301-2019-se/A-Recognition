@@ -1,5 +1,5 @@
 import {Adapter} from "./Adapter";
-import * as Utils from "./Utils";
+import * as Utils from "../Utils/Utils";
 
 var adapter = new Adapter();
 
@@ -10,7 +10,7 @@ export function getAllEvents() : Promise<any>{
         let eventBookings = [];
     
         calendarList.forEach(calendar => {
-            eventBookings.push( adapter.retrieveUserEvents(calendar.calendarId,true,null,2) );
+            eventBookings.push( adapter.retrieveUserEvents(calendar.calendarId,true,null,2,"") );
         });
         return Promise.all(eventBookings);
         
@@ -19,8 +19,8 @@ export function getAllEvents() : Promise<any>{
     });
 }
 
-export function getCalendarEvents(calendarId : string = "primary",filter : boolean = false, options : any = null,size : number = 4) : Promise<any>{
-    return adapter.retrieveUserEvents(calendarId,filter,options,size);
+export function getCalendarEvents(calendarId : string = "primary",filter : boolean = false, options : any = null,size : number = 4,endTime : string = "") : Promise<any>{
+    return adapter.retrieveUserEvents(calendarId,filter,options,size,endTime);
 }
 
 export function getCalendars() : Promise<any>{
@@ -48,7 +48,7 @@ export function run(){
 
             events.forEach(event => {
 
-                if( !Utils.inArray(event.id,currentEvents) )  
+                if( !Utils.inArray(event.id,currentEvents,"id") )  
                     currentEvents.push( Utils.filter(event,{id : true,summary:true,location:true,description:true}) );
                 else 
                 console.log( currentEvents.indexOf(event));
@@ -63,21 +63,22 @@ export function run(){
     },10000)
 }
 
-export  function getEvents(calendarId : string = "primary",filter : boolean = false, options : any = null,size : number = 4) : Promise<any>{
+export  function getEvents(calendarId : string = "primary",filter : boolean = false, options : any = null,size : number = 4,endTime : string = "") : Promise<any>{
     let currentEvents = [];
 
-    return getCalendarEvents(calendarId,filter, options,size).then( events =>{
-        events.forEach(event => {
-            currentEvents.push(event);
-        });
-
-        return currentEvents;
-    }).catch( err => {
+    return new Promise( (resolve,reject) =>{
+        getCalendarEvents(calendarId,filter, options,size,endTime).then( events =>{
+            events.forEach(event => {
+                currentEvents.push(event);
+            });
     
-        return err
+            resolve(currentEvents);
+        }).catch( err => {
+        
+            reject(err);
+        });
+        
     });
-
-  
 }
 
 

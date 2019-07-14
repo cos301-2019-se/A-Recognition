@@ -14,20 +14,32 @@ const TOKEN_PATH = 'token.json';
 */
 export class GoogleAdaptee{
 
-    constructor(){}
+    CREDENTIAL_PATH : string;
+    TOKEN_PATH : string;
+
+
+    constructor(){
+        var path = require("path");
+        
+        var absolutePath = path.resolve("..");
+        absolutePath += "/API_Adapter/";
+
+        this.CREDENTIAL_PATH = absolutePath + "credentials.json";
+        this.TOKEN_PATH = absolutePath + "token.json";
+    }
 
 /**
  * retrieves the scheduled events of a specific user
  * @param {string} identifier the user identifier of choice
  */
-    async getUserEvents(identifier : string = "primary",resultSize : number = 2) : Promise<any>{
+    async getUserEvents(identifier : string = "primary",resultSize : number = 2,endTime : string) : Promise<any>{
 
        return new Promise( (resolve,reject)=>{
             this.loadClientSecrets().then( (credentials)=>{
                 return credentials;
             }).then( (credentials) =>{
                 this.authorize(credentials).then( (oAuth2Client)=>{
-                    this.listEvents(oAuth2Client,identifier,resultSize).then( (bookings)=>{
+                    this.listEvents(oAuth2Client,identifier,resultSize,endTime).then( (bookings)=>{
                         resolve(bookings);
                     }).catch( (err)=>{
                         reject(err);
@@ -71,7 +83,7 @@ export class GoogleAdaptee{
     loadClientSecrets() : Promise<any>{
         
         return new Promise((resolve, reject) => {
-            fs.readFile('credentials.json', (err, content) => {
+            fs.readFile(this.CREDENTIAL_PATH, (err, content) => {
 
                 if (err)
                     reject('Error loading client secret file:'+ err); 
@@ -94,7 +106,7 @@ export class GoogleAdaptee{
             const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
            
             // Check if we have previously stored a token.
-            fs.readFile(TOKEN_PATH, (err, token) => {
+            fs.readFile(this.TOKEN_PATH, (err, token) => {
             if (err)
                 this.getAccessToken(oAuth2Client).then( (oAuth2Client)=>{
                     resolve(oAuth2Client);
@@ -154,7 +166,7 @@ export class GoogleAdaptee{
  * Lists the next 10 events on the user's primary calendar.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-    listEvents(auth,calendarId : string,resultSize : number) : Promise<any> {
+    listEvents(auth,calendarId : string,resultSize : number,endTimeISOString : string = "") : Promise<any> {
 
         if(resultSize == -1)
         resultSize = 250;
@@ -164,15 +176,19 @@ export class GoogleAdaptee{
             
             const calendar = google.calendar({version: 'v3', auth});
 
-            let endTime =  new Date();    //Create a date object
-            endTime.setHours(23,59,59,999); //And set its time to be the end of today * SA is UTC + 2
-            console.log(endTime.toISOString());
+            if(endTimeISOString === ""){
+                let endTime =  new Date();    //Create a date object
+                endTime.setHours(23,59,59,999); //And set its time to be the end of today * SA is UTC + 2
+                //console.log(endTime.toISOString());
+                endTimeISOString = endTime.toISOString();
+            }
+            
             
             
             calendar.events.list({
                 calendarId: calendarId,      // This may have to be changed to the companies specified calender used for room bookings
                 timeMin: (new Date()).toISOString(),
-                timeMax: endTime.toISOString(),
+                timeMax: endTimeISOString,
                 maxResults: resultSize,
                 singleEvents: true,
                 orderBy: 'startTime',
