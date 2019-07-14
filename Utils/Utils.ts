@@ -113,7 +113,7 @@ export function filter(data : any,options : any){
  */
 export function inArray(value : string,array : any,key : string = "normalArray") : boolean{
 
-     
+ 
     if( !Array.isArray(array) ||  array.length == 0)
     return false;
 
@@ -122,7 +122,7 @@ export function inArray(value : string,array : any,key : string = "normalArray")
         let obj = array[i];
         
         if(key === "normalArray"){  //Dealing with a normal array, not an array of objects
-
+            
             if(obj == value)
             return true;
         }else{

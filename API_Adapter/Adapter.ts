@@ -56,11 +56,11 @@ export class Adapter{
  * @param {any} options if left out then standard filtering is applied otherwise options specifies what keys should be passed on to the new object
  * @returns {Object[] | string }
  */
-    retrieveUserEvents(identifier : string, filter : boolean, options: any,resultSize : number) : Promise<any>{
+    retrieveUserEvents(identifier : string, filter : boolean, options: any,resultSize : number,endTime : string) : Promise<any>{
         
         return new Promise( (resolve,reject)=>{
 
-            this.adaptee.getUserEvents(identifier,resultSize).then( (bookings)=>{
+            this.adaptee.getUserEvents(identifier,resultSize,endTime).then( (bookings)=>{
 
                 if(!filter)
                 resolve(bookings);
