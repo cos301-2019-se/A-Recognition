@@ -42,10 +42,10 @@ export function getUsersFromDaysEvents() :Promise<Array<string> | null>{
 //     console.log(users); 
 // });
 
-validateUserHasBooking("jarrodgoschen1@gmail.com","Room 6").then( (msg)=>{
+validateUserHasBooking("jarrodgoschen1@gmail.com","Room 7").then( (msg)=>{
     console.log(msg);
 
-    validateUserHasBooking("jarrodgoschen@gmail.com","Room 6").then( (msg)=>{
+    validateUserHasBooking("jarrodgoschen@gmail.com","Room 7").then( (msg)=>{
         console.log(msg);
     
         validateUserHasBooking("mcfaddenr.ebb@gmail.com","Room 99 @ Khaosan, 99 Samsen 4 Alley, Khwaeng Ban Phan Thom, Khet Phra Nakhon, Krung Thep Maha Nakhon 10200, Thailand").then( (msg)=>{
@@ -69,9 +69,6 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
         
         Adapter.getEvents("primary",true,{attendees : true,location : true,start : true},3,endTime.toISOString()).then( (closestEvents)=>{
 
-            console.log(closestEvents);
-            
-
             for (let i = 0; i < closestEvents.length; i++) {
                 let event = closestEvents[i];
 
@@ -81,16 +78,19 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                 
                 if(room == event.location){
                     
+                    let message = "";
+
                     if( Utils.inArray(email,event.attendees))
-                    resolve("User has a booking in that room");
+                    message += "User has a booking in that room";
                     else
-                    resolve("User does not have a booking for that room");
+                    message += "User does not have a booking for that room";
 
                     if(timeNow.getTime() > entranceAllowedToEvent.getTime())
-                    console.log("User is allowed access now");
+                    message += ",user is allowed access now";
                     else
-                    console.log("User is not allowed access yet");
+                    message += ",user is not allowed access yet";
                     
+                    resolve(message);
                     
                 }
                 
