@@ -5,11 +5,11 @@ class TestEncoding(unittest.TestCase):
 
     def testWithSingleImage(self):
         imageNames = ['./tester.jpg']
-        self.assertEqual(encodeImageForDB(imageNames,"Test","test","test"),True)
+        self.assertEqual(encodeImageForDB(imageNames,"Test","test","test","test"),True)
 
     def testWithMultipleImages(self):
         imageNames=['./tester.jpg','./5.jpg']
-        self.assertTrue(encodeImageForDB(imageNames,'test','test','test'),True)
+        self.assertTrue(encodeImageForDB(imageNames,'test','test','test',"test"),True)
 
     def testWithNoParameters(self):
         self.assertRaises(TypeError,encodeImageForDB,msg="encodingImage expected 4 parameters")
@@ -20,7 +20,7 @@ class TestEncoding(unittest.TestCase):
 
     def testWithBrokenImage(self):
         imageNames = ['./tester,jpg']
-        self.assertRaises(TypeError,encodeImageForDB,imageNames,msg="An error occured while trying to encode the image or saving to the database")
+        self.assertRaises(TypeError,encodeImageForDB,imageNames,"Test","test","Test","test",msg="An error occured while trying to encode the image or saving to the database")
 
     # #Next part
     # def testWithNoParametersForEncodingOfImages(self):

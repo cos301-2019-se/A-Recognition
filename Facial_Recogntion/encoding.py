@@ -22,7 +22,7 @@ docs = users_ref.stream()
 #@params images,name,surname,title
 #
 def encodeImageForDB(images,name,surname,title,email):
-    if(images is None or name is None or surname is None or title is None):
+    if(images is None or name is None or surname is None or title is None or email is None):
         raise TypeError("encodingImage expected 4 parameters")
     encoding=[]
     print("ENCODING the dataset")
