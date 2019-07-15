@@ -77,5 +77,5 @@ def encodingsOfImages():
     except TypeError:
         return "An error occured while trying to encode the image or saving to the database"
 
-imageNames = ['./adrian.jpeg']
-encodeImageForDB(imageNames,"Adrian","le Grange","Mr","u17056782@tuks.co.za")
+imageNames = ['./alessio.jpg']
+encodeImageForDB(imageNames,"Alessio","Rossi","Mr","u14137934@tuks.co.za")
