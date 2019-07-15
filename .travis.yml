@@ -1,0 +1,10 @@
+language: python
+python:
+  - "3.7.3"
+cache: pip
+before_install: cd Facial_Recognition
+install:
+  - pip install -r requirements.txt
+script:
+  - python3 encUnitTests.py
+  - python3 faceUnitTests.py
