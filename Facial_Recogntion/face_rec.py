@@ -125,14 +125,12 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                     color = (0,255,0)
                     pred = predict(right_face[ey:ey+eh,ex:ex+ew],model)
                     if pred == 'closed':
-                        
                         color = (0,0,255)
                     cv2.rectangle(right_face,(ex,ey),(ex+ew,ey+eh),color,2)
                 for (ex,ey,ew,eh) in left_eye:
                     color = (0,255,0)
                     pred = predict(left_face[ey:ey+eh,ex:ex+ew],model)
                     if pred == 'closed':
-                        
                         color = (0,0,255)
                     cv2.rectangle(left_face,(ex,ey),(ex+ew,ey+eh),color,2)
                 eyes_detected[name] += eye_status

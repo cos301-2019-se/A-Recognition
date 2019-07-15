@@ -7,7 +7,7 @@ import cv2
 
 
 # Fetch the service account key JSON file contents
-cred = credentials.Certificate('capstoneusers-b474f-firebase-adminsdk-rtpcf-4a8a042a1d.json')
+cred = credentials.Certificate('credentials.json')
 firebase_admin.initialize_app(cred)
 
 #Create the DB object
@@ -21,7 +21,7 @@ docs = users_ref.stream()
 #
 #@params images,name,surname,title
 #
-def encodeImageForDB(images,name,surname,title):
+def encodeImageForDB(images,name,surname,title,email):
     if(images is None or name is None or surname is None or title is None):
         raise TypeError("encodingImage expected 4 parameters")
     encoding=[]
@@ -49,7 +49,8 @@ def encodeImageForDB(images,name,surname,title):
                 u'Name': name,
                 u'Surname': surname,
                 u'Title': title,
-                u'image_vector':arr
+                u'image_vector':arr,
+                u'Email':email
             }
             # Add the new user to the database
             users_ref.document(name).set(user)
@@ -76,5 +77,5 @@ def encodingsOfImages():
     except TypeError:
         return "An error occured while trying to encode the image or saving to the database"
 
-imageNames = ['./tester.jpg','./5.jpg']
-encodeImageForDB(imageNames,"Richard","McFadden","Mr")
+imageNames = ['./adrian.jpeg']
+encodeImageForDB(imageNames,"Adrian","le Grange","Mr","u17056782@tuks.co.za")
