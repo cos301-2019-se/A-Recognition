@@ -11,6 +11,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import requests
+import json
 
 db = firestore.client()
 
@@ -78,6 +79,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
             encoding = face_recognition.face_encodings(rgb, [(y, x+w, y+h, x)])[0]
             #For now we don't know the user's name
             name = "Unknown"
+            global email
             emails = []
             temp = data['user']
 
@@ -146,9 +148,13 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 # Display name
                 y = y - 15 if y - 15 > 15 else y + 15
                 cv2.putText(frame, name, (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
-                print(max(set(emails), key = emails.count)) 
+
+                global email
+                email = max(set(emails), key = emails.count)
+ 
                 global pleaseStopTheScanning
                 pleaseStopTheScanning = True
+
             else:
                 cv2.putText(frame, "Lizard", (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
 
@@ -161,9 +167,9 @@ if __name__ == "__main__":
     
     
     data = encodingsOfImages()
-
+    email ="UNKOWN"
     pleaseStopTheScanning = False
-    # counter =0
+    isAllowed = False
 
     eyes_detected = defaultdict(str)
     while True:
@@ -181,9 +187,26 @@ if __name__ == "__main__":
 
         if pleaseStopTheScanning == True: #and counter <= 60:
             # Send output back to the api
-            # counter = 0
-            print("***********************************")
-            pleaseStopTheScanning = False
+            ulr = "http://localhost:3000/getUsersFromDaysEvents"
+            r = requests.get(url = ulr)#.json()#, params = PARAMS) 
+            try:
+                responds= r.json()
+                print(str(responds))
+                #we now need to compare and see if the email that appears the most is in this json object
+                for temp in responds:
+                    if email == temp:
+                        isAllowed = True
+                        
+                if isAllowed:
+                    requests.post(url="http://localhost:3000/richardsResponse", data = {"answer":True})
+                else:
+                    requests.post(url="http://localhost:3000/richardsResponse", data = {"answer":False}) 
+
+                pleaseStopTheScanning = False 
+                isAllowed = False  
+
+            except json.decoder.JSONDecodeError:
+                print("Non json object returned")
             
         #Quit on 'q' button    
         if cv2.waitKey(1) & 0xFF == ord('q'):

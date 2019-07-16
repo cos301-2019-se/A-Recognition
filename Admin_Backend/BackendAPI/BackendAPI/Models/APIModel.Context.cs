@@ -26,6 +26,5 @@ namespace BackendAPI.Models
         }
     
         public virtual DbSet<Employee> Employees { get; set; }
-        public virtual DbSet<Position> Positions { get; set; }
     }
 }
