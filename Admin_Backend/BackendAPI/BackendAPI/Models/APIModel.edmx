@@ -10,38 +10,14 @@
             <PropertyRef Name="EmployeeID" />
           </Key>
           <Property Name="EmployeeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="varchar" MaxLength="40" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="Surname" Type="varchar" MaxLength="50" />
           <Property Name="Email" Type="varchar" MaxLength="50" />
-          <Property Name="IDNumber" Type="varchar" MaxLength="50" />
-          <Property Name="Position" Type="varchar" MaxLength="50" />
+          <Property Name="Pass" Type="varchar" MaxLength="50" />
+          <Property Name="EmpPosition" Type="varchar" MaxLength="50" />
         </EntityType>
-        <EntityType Name="Positions">
-          <Key>
-            <PropertyRef Name="Name" />
-          </Key>
-          <Property Name="Name" Type="varchar" MaxLength="40" Nullable="false" />
-          <Property Name="PositionDescription" Type="varchar" MaxLength="100" />
-        </EntityType>
-        <Association Name="FK__Employee__Name__15502E78">
-          <End Role="Positions" Type="Self.Positions" Multiplicity="0..1" />
-          <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Positions">
-              <PropertyRef Name="Name" />
-            </Principal>
-            <Dependent Role="Employee">
-              <PropertyRef Name="Name" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="ARecognitionModelStoreContainer">
           <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Positions" EntityType="Self.Positions" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Employee__Name__15502E78" Association="Self.FK__Employee__Name__15502E78">
-            <End Role="Positions" EntitySet="Positions" />
-            <End Role="Employee" EntitySet="Employee" />
-          </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
@@ -53,40 +29,14 @@
             <PropertyRef Name="EmployeeID" />
           </Key>
           <Property Name="EmployeeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Surname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IDNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Position" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Position1" Relationship="Self.FK__Employee__Name__15502E78" FromRole="Employee" ToRole="Positions" />
+          <Property Name="Pass" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmpPosition" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Position">
-          <Key>
-            <PropertyRef Name="Name" />
-          </Key>
-          <Property Name="Name" Type="String" MaxLength="40" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="PositionDescription" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Employees" Relationship="Self.FK__Employee__Name__15502E78" FromRole="Positions" ToRole="Employee" />
-        </EntityType>
-        <Association Name="FK__Employee__Name__15502E78">
-          <End Role="Positions" Type="Self.Position" Multiplicity="0..1" />
-          <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Positions">
-              <PropertyRef Name="Name" />
-            </Principal>
-            <Dependent Role="Employee">
-              <PropertyRef Name="Name" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="ARecognitionEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Employees" EntityType="Self.Employee" />
-          <EntitySet Name="Positions" EntityType="Self.Position" />
-          <AssociationSet Name="FK__Employee__Name__15502E78" Association="Self.FK__Employee__Name__15502E78">
-            <End Role="Positions" EntitySet="Positions" />
-            <End Role="Employee" EntitySet="Employees" />
-          </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
@@ -101,16 +51,8 @@
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Surname" ColumnName="Surname" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="IDNumber" ColumnName="IDNumber" />
-                <ScalarProperty Name="Position" ColumnName="Position" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Positions">
-            <EntityTypeMapping TypeName="ARecognitionModel.Position">
-              <MappingFragment StoreEntitySet="Positions">
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="PositionDescription" ColumnName="PositionDescription" />
+                <ScalarProperty Name="Pass" ColumnName="Pass" />
+                <ScalarProperty Name="EmpPosition" ColumnName="EmpPosition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

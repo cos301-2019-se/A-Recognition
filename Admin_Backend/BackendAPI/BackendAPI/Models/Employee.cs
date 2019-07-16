@@ -18,9 +18,7 @@ namespace BackendAPI.Models
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Email { get; set; }
-        public string IDNumber { get; set; }
-        public string Position { get; set; }
-    
-        public virtual Position Position1 { get; set; }
+        public string Pass { get; set; }
+        public string EmpPosition { get; set; }
     }
 }
