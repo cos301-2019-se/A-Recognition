@@ -42,22 +42,22 @@ export function getUsersFromDaysEvents() :Promise<Array<string> | null>{
 //     console.log(users); 
 // });
 
-validateUserHasBooking("jarrodgoschen1@gmail.com","Room 7").then( (msg)=>{
-    console.log(msg);
+// validateUserHasBooking("jarrodgoschen1@gmail.com","Room 7").then( (msg)=>{
+//     console.log(msg);
 
-    validateUserHasBooking("jarrodgoschen@gmail.com","Room 7").then( (msg)=>{
-        console.log(msg);
+//     validateUserHasBooking("jarrodgoschen@gmail.com","Room 7").then( (msg)=>{
+//         console.log(msg);
     
-        validateUserHasBooking("mcfaddenr.ebb@gmail.com","Room 99 @ Khaosan, 99 Samsen 4 Alley, Khwaeng Ban Phan Thom, Khet Phra Nakhon, Krung Thep Maha Nakhon 10200, Thailand").then( (msg)=>{
-            console.log(msg);
+//         validateUserHasBooking("mcfaddenr.ebb@gmail.com","Room 99 @ Khaosan, 99 Samsen 4 Alley, Khwaeng Ban Phan Thom, Khet Phra Nakhon, Krung Thep Maha Nakhon 10200, Thailand").then( (msg)=>{
+//             console.log(msg);
         
-            validateUserHasBooking("mcfaddenr.ebb@gmail.com","room 7").then( (msg)=>{
-                console.log(msg);
+//             validateUserHasBooking("mcfaddenr.ebb@gmail.com","room 7").then( (msg)=>{
+//                 console.log(msg);
             
-            }); 
-        }); 
-    });
-});
+//             }); 
+//         }); 
+//     });
+// });
 
 
 export function validateUserHasBooking(email : string,room : string) : Promise<any>{
@@ -68,7 +68,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
         endTime.setHours(endTime.getHours() + CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME);
         
         Adapter.getEvents("primary",true,{attendees : true,location : true,start : true},3,endTime.toISOString()).then( (closestEvents)=>{
-
+            
             for (let i = 0; i < closestEvents.length; i++) {
                 let event = closestEvents[i];
 
@@ -77,6 +77,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                 entranceAllowedToEvent.setMinutes(entranceAllowedToEvent.getMinutes() - MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED);
                 
                 if(room == event.location){
+                    
                     
                     let message = "";
 
@@ -98,7 +99,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
             resolve("There is no booking for that room now");
             
         }).catch( err =>{
-            console.log(err);
+            reject(err);
         });
    }); 
 }
