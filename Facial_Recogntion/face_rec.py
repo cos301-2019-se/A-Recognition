@@ -10,6 +10,7 @@ from encoding import *
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+import requests
 
 db = firestore.client()
 
@@ -77,7 +78,9 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
             encoding = face_recognition.face_encodings(rgb, [(y, x+w, y+h, x)])[0]
             #For now we don't know the user's name
             name = "Unknown"
+            emails = []
             temp = data['user']
+
             #Compare the vector with all known faces encodings
             for e in temp:
                 secondTemp = e['image_vector'][0]['encoding']
@@ -85,7 +88,8 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 if True in matches:
                     first_match_index = matches.index(True)
                     name = e["Name"]
-                    print(name)                    
+                    emails.append(e['Email'])
+                    #print(name)                    
 
             #Store the cropped face
             face = frame[y:y+h,x:x+w]
@@ -142,6 +146,9 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 # Display name
                 y = y - 15 if y - 15 > 15 else y + 15
                 cv2.putText(frame, name, (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
+                print(max(set(emails), key = emails.count)) 
+                global pleaseStopTheScanning
+                pleaseStopTheScanning = True
             else:
                 cv2.putText(frame, "Lizard", (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
 
@@ -155,18 +162,29 @@ if __name__ == "__main__":
     
     data = encodingsOfImages()
 
+    pleaseStopTheScanning = False
+    # counter =0
+
     eyes_detected = defaultdict(str)
     while True:
         #Clear the history after 30 frames - Go back to non-human mode and wait for blink
         if len(eyes_detected["Unknown"]) > 30:
             eyes_detected.clear()
-        
+
+        # counter = counter + 1 
+        # print("Counter "+str(counter))
         #Run our facial detection
         frame = detect_and_display(model, video_capture, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, data, eyes_detected)
         
         #Show a nice video feed of what is happening
         cv2.imshow("Face Liveness Detector", frame)
 
+        if pleaseStopTheScanning == True: #and counter <= 60:
+            # Send output back to the api
+            # counter = 0
+            print("***********************************")
+            pleaseStopTheScanning = False
+            
         #Quit on 'q' button    
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

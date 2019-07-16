@@ -49,26 +49,60 @@ var TOKEN_PATH = 'token.json';
 */
 var GoogleAdaptee = /** @class */ (function () {
     function GoogleAdaptee() {
+        var path = require("path");
+        var absolutePath = path.resolve("..");
+        absolutePath += "/API_Adapter/";
+        this.CREDENTIAL_PATH = absolutePath + "credentials.json";
+        this.TOKEN_PATH = absolutePath + "token.json";
     }
     /**
      * retrieves the scheduled events of a specific user
-     * @param {any} identifier the user identifier of choice
+     * @param {string} identifier the user identifier of choice
      */
-    GoogleAdaptee.prototype.retrieveUserEvents = function (identifier) {
+    GoogleAdaptee.prototype.getUserEvents = function (identifier, resultSize, endTime) {
+        if (identifier === void 0) { identifier = "primary"; }
+        if (resultSize === void 0) { resultSize = 2; }
         return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
             return __generator(this, function (_a) {
-                // const promise = new Promise(async (resolve, reject) => {
-                console.log("Getting credentials");
-                try {
-                    this.loadClientSecrets().then(function (credentials) {
-                        console.log("Got credentials,calling auth", credentials);
-                        // resolve(credentials);
+                return [2 /*return*/, new Promise(function (resolve, reject) {
+                        _this.loadClientSecrets().then(function (credentials) {
+                            return credentials;
+                        }).then(function (credentials) {
+                            _this.authorize(credentials).then(function (oAuth2Client) {
+                                _this.listEvents(oAuth2Client, identifier, resultSize, endTime).then(function (bookings) {
+                                    resolve(bookings);
+                                })["catch"](function (err) {
+                                    reject(err);
+                                });
+                            })["catch"](function (err) {
+                                reject(err);
+                            });
+                        })["catch"](function (err) {
+                            reject(err);
+                        });
+                    })];
+            });
+        });
+    };
+    /**
+     * retrieves the calendars associated with a user
+     */
+    GoogleAdaptee.prototype.getUserCalendars = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.loadClientSecrets().then(function (credentials) {
+                return credentials;
+            }).then(function (credentials) {
+                _this.authorize(credentials).then(function (oAuth2Client) {
+                    _this.getUserCalendarList(oAuth2Client).then(function (userCalendars) {
+                        resolve(userCalendars);
                     });
-                }
-                catch (error) {
-                    // reject(error);
-                }
-                return [2 /*return*/];
+                })["catch"](function (err) {
+                    reject(err);
+                });
+            })["catch"](function (err) {
+                reject(err);
             });
         });
     };
@@ -76,36 +110,13 @@ var GoogleAdaptee = /** @class */ (function () {
      * Load client secrets from a local file.
      */
     GoogleAdaptee.prototype.loadClientSecrets = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var promise;
-            var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                try {
-                                    fs.readFile('credentials.json', function (err, content) {
-                                        console.log("In readfile");
-                                        if (err) {
-                                            throw new Error('Error loading client secret file:' + err);
-                                        }
-                                        resolve(JSON.parse(content.toString()));
-                                    });
-                                }
-                                catch (error) {
-                                    reject(error);
-                                }
-                                return [2 /*return*/];
-                            });
-                        }); }).then(function (res) {
-                            console.log("returning res", res);
-                            return res;
-                        })["catch"](function (err) {
-                        })];
-                    case 1:
-                        promise = _a.sent();
-                        return [2 /*return*/];
-                }
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            fs.readFile(_this.CREDENTIAL_PATH, function (err, content) {
+                if (err)
+                    reject('Error loading client secret file:' + err);
+                else
+                    resolve(JSON.parse(content.toString()));
             });
         });
     };
@@ -113,53 +124,59 @@ var GoogleAdaptee = /** @class */ (function () {
      * Create an OAuth2 client with the given credentials, and then execute the
      * given callback function.
      * @param {Object} credentials The authorization client credentials.
-     * @param {function} callback The callback to call with the authorized client.
      */
-    GoogleAdaptee.prototype.authorize = function (credentials, callback) {
+    GoogleAdaptee.prototype.authorize = function (credentials) {
         var _this = this;
-        console.log("In auth");
-        var _a = credentials.installed, client_secret = _a.client_secret, client_id = _a.client_id, redirect_uris = _a.redirect_uris;
-        var oAuth2Client = new googleapis_1.google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-        // Check if we have previously stored a token.
-        fs.readFile(TOKEN_PATH, function (err, token) {
-            if (err)
-                return _this.getAccessToken(oAuth2Client, callback);
-            oAuth2Client.setCredentials(JSON.parse(token.toString()));
-            callback(oAuth2Client);
+        return new Promise(function (resolve, reject) {
+            var _a = credentials.installed, client_secret = _a.client_secret, client_id = _a.client_id, redirect_uris = _a.redirect_uris;
+            var oAuth2Client = new googleapis_1.google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+            // Check if we have previously stored a token.
+            fs.readFile(_this.TOKEN_PATH, function (err, token) {
+                if (err)
+                    _this.getAccessToken(oAuth2Client).then(function (oAuth2Client) {
+                        resolve(oAuth2Client);
+                    })["catch"](function (err) {
+                        reject(err);
+                    });
+                else
+                    oAuth2Client.setCredentials(JSON.parse(token.toString()));
+                resolve(oAuth2Client);
+            });
         });
     };
     /**
      * Get and store new token after prompting for user authorization, and then
      * execute the given callback with the authorized OAuth2 client.
      * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
-     * @param {getEventsCallback} callback The callback for the authorized client.
      */
-    GoogleAdaptee.prototype.getAccessToken = function (oAuth2Client, callback) {
-        var authUrl = oAuth2Client.generateAuthUrl({
-            access_type: 'offline',
-            scope: SCOPES
-        });
-        //Prompt user to authorise the app
-        console.log('Authorize this app by visiting this url:', authUrl);
-        var rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
-        });
-        //Prompt user to enter their code from google
-        rl.question('Enter the code from that page here: ', function (code) {
-            rl.close();
-            //Get token
-            oAuth2Client.getToken(code, function (err, token) {
-                if (err)
-                    return console.error('Error retrieving access token', err);
-                oAuth2Client.setCredentials(token);
-                // Store the token to disk for later program executions
-                fs.writeFile(TOKEN_PATH, JSON.stringify(token), function (err) {
+    GoogleAdaptee.prototype.getAccessToken = function (oAuth2Client) {
+        return new Promise(function (resolve, reject) {
+            var authUrl = oAuth2Client.generateAuthUrl({
+                access_type: 'offline',
+                scope: SCOPES
+            });
+            //Prompt user to authorise the app
+            console.log('Authorize this app by visiting this url:', authUrl);
+            var rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+            //Prompt user to enter their code from google
+            rl.question('Enter the code from that page here: ', function (code) {
+                rl.close();
+                //Get token
+                oAuth2Client.getToken(code, function (err, token) {
                     if (err)
-                        return console.error(err);
-                    console.log('Token stored to', TOKEN_PATH);
+                        reject('Error retrieving access token' + err);
+                    oAuth2Client.setCredentials(token);
+                    // Store the token to disk for later program executions
+                    fs.writeFile(TOKEN_PATH, JSON.stringify(token), function (err) {
+                        if (err)
+                            reject(err);
+                        console.log('Token stored to', TOKEN_PATH);
+                    });
+                    return resolve(oAuth2Client);
                 });
-                return callback(oAuth2Client);
             });
         });
     };
@@ -167,30 +184,56 @@ var GoogleAdaptee = /** @class */ (function () {
      * Lists the next 10 events on the user's primary calendar.
      * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
      */
-    GoogleAdaptee.prototype.listEvents = function (auth) {
-        var calendar = googleapis_1.google.calendar({ version: 'v3', auth: auth });
-        calendar.events.list({
-            calendarId: 'primary',
-            timeMin: (new Date()).toISOString(),
-            maxResults: 10,
-            singleEvents: true,
-            orderBy: 'startTime'
-        }, function (err, res) {
-            if (err)
-                return console.log('The API returned an error: ' + err);
-            //This is the main point of displaying current events or bookings
-            var bookings = res.data.items;
-            if (bookings.length) {
-                bookings.map(function (event, i) {
-                });
-                console.log(bookings);
-                return bookings;
+    GoogleAdaptee.prototype.listEvents = function (auth, calendarId, resultSize, endTimeISOString) {
+        if (endTimeISOString === void 0) { endTimeISOString = ""; }
+        if (resultSize == -1)
+            resultSize = 250;
+        return new Promise(function (resolve, reject) {
+            var calendar = googleapis_1.google.calendar({ version: 'v3', auth: auth });
+            if (endTimeISOString === "") {
+                var endTime = new Date(); //Create a date object
+                endTime.setHours(23, 59, 59, 999); //And set its time to be the end of today * SA is UTC + 2
+                //console.log(endTime.toISOString());
+                endTimeISOString = endTime.toISOString();
             }
-            else {
-                console.log('No upcoming events found.');
-            }
+            calendar.events.list({
+                calendarId: calendarId,
+                timeMin: (new Date()).toISOString(),
+                timeMax: endTimeISOString,
+                maxResults: resultSize,
+                singleEvents: true,
+                orderBy: 'startTime'
+            }, function (err, res) {
+                if (err)
+                    reject('The API returned an error: ' + err);
+                var bookings = res.data.items;
+                if (bookings.length) {
+                    bookings.map(function (event, i) {
+                    });
+                    resolve(bookings);
+                }
+                else
+                    reject('No upcoming events found.');
+            });
         });
-        return [];
+    };
+    /**
+   * Lists all calendars associated with a user
+   * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+   */
+    GoogleAdaptee.prototype.getUserCalendarList = function (auth) {
+        return new Promise(function (resolve, reject) {
+            var calendar = googleapis_1.google.calendar({ version: 'v3', auth: auth });
+            calendar.calendarList.list({ showHidden: true }).then(function (list) {
+                if (list.data.items.length <= 0)
+                    reject([]);
+                var userCalendars = [];
+                list.data.items.forEach(function (calendar) {
+                    userCalendars.push({ calendarId: calendar.id, calendarTitle: calendar.summary });
+                });
+                resolve(userCalendars);
+            });
+        });
     };
     return GoogleAdaptee;
 }());
