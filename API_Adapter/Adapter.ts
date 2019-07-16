@@ -21,7 +21,7 @@ export class Adapter{
  * changes the target adaptee for the adapter
  * @param {string | null} target the name of the target platform eg. Microsoft/Google, if undefined then switch to the next available adaptee
  */
-    changeAdaptee(target : string | null = null) : void{
+    changeAdaptee(target : string | null = null) : string{
 
         if(target == null || target == undefined){   //target undefined, choose next available adaptee
             target = adaptees[ ++this.currentAdapteeIndex % adaptees.length];
@@ -47,7 +47,7 @@ export class Adapter{
                     break;
             }
 
-            console.log("\nTarget is now "+ target + "\n");
+        return target;
     }
 /**
  * retrieves the scheduled events of a specific user or returns a null object if there are none

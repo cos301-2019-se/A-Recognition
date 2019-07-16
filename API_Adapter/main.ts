@@ -27,16 +27,16 @@ export function getCalendars() : Promise<any>{
     return adapter.retrieveUserCalendars();
 }
 
-export function getEventAttendees(event : any,options : any = null){
-
+export function getEventAttendees(event : any,options : any = null) : Array<Object | string> | Object{
+    
     if(options != null)
     return Utils.filter(event.attendees,options);
     else
     return event.attendees;
 }
 
-export function changeAdaptee(target = null){
-    adapter.changeAdaptee(target);
+export function changeAdaptee(target = null) : string{
+    return adapter.changeAdaptee(target);
 }
 
 export function run(){
