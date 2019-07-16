@@ -7,6 +7,17 @@ from collections import defaultdict
 from imutils.video import VideoStream
 from eye_status import * 
 from encoding import *
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+db = firestore.client()
+
+#GET the collection Users for Facial Recognition
+users_ref = db.collection(u'Users')
+
+#docs now contain the data in Users
+docs = users_ref.stream()
 
 def init():
     #Load models to detect faces and features of them
@@ -34,15 +45,7 @@ def init():
     #Load our model that classifies open or closed eyes ('model.h5')
     model = load_model()
 
-    #TODO This should load from our database, not classify a collection of images
-    print("[LOG] Collecting images ...")
-    images = []
-    for direc, _, files in tqdm(os.walk(dataset)):
-        for file in files:
-            if file.endswith("jpg"):
-                images.append(os.path.join(direc,file))
-                print("Found image" + file)
-    return (model,face_detector, open_eyes_detector, left_eye_detector,right_eye_detector, video_capture, images) 
+    return (model,face_detector, open_eyes_detector, left_eye_detector,right_eye_detector, video_capture) 
 
 def isBlinking(history, maxFrames):
     """ @history: A string containing the history of eyes status 
@@ -72,23 +75,17 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
         for (x,y,w,h) in faces:
             #Encode the face into a 128-d embeddings vector
             encoding = face_recognition.face_encodings(rgb, [(y, x+w, y+h, x)])[0]
-
-            #Compare the vector with all known faces encodings
-            matches = face_recognition.compare_faces(data["encodings"], encoding)
-
-            #For now we don't know the person name
+            #For now we don't know the user's name
             name = "Unknown"
-
-            #Check if this face mathces a known person
-            if True in matches:
-                matchedIdxs = [i for (i, b) in enumerate(matches) if b]
-                counts = {}
-                for i in matchedIdxs:
-                    name = data["names"][i]
-                    counts[name] = counts.get(name, 0) + 1
-
-                #Determine the recognized face with the largest number of votes
-                name = max(counts, key=counts.get)
+            temp = data['user']
+            #Compare the vector with all known faces encodings
+            for e in temp:
+                secondTemp = e['image_vector'][0]['encoding']
+                matches = face_recognition.compare_faces([secondTemp], encoding)
+                if True in matches:
+                    first_match_index = matches.index(True)
+                    name = e["Name"]
+                    print(name)                    
 
             #Store the cropped face
             face = frame[y:y+h,x:x+w]
@@ -96,8 +93,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 
             eyes = []
             
-            #We now detect the eyes of the face
-            #Check if the eyes are open (Considering glasses)
+            #We now detect the user's eyes
             open_eyes_glasses = open_eyes_detector.detectMultiScale(gray_face, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags = cv2.CASCADE_SCALE_IMAGE)
             
             #If open_eyes_detector detects eyes, they are open
@@ -106,7 +102,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 for (ex,ey,ew,eh) in open_eyes_glasses:
                     cv2.rectangle(face,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
             
-            #Else we try to detect individual eyes (Detects both open and closed eyes)              
+            # #Else we try to detect individual eyes (Detects both open and closed eyes)              
             else:
                 #Slpit the face into a left and right side
                 left_face = frame[y:y+h, x+int(w/2):x+w]
@@ -129,25 +125,23 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                     color = (0,255,0)
                     pred = predict(right_face[ey:ey+eh,ex:ex+ew],model)
                     if pred == 'closed':
-                        eye_status='1'
                         color = (0,0,255)
                     cv2.rectangle(right_face,(ex,ey),(ex+ew,ey+eh),color,2)
                 for (ex,ey,ew,eh) in left_eye:
                     color = (0,255,0)
                     pred = predict(left_face[ey:ey+eh,ex:ex+ew],model)
                     if pred == 'closed':
-                        eye_status='1'
                         color = (0,0,255)
                     cv2.rectangle(left_face,(ex,ey),(ex+ew,ey+eh),color,2)
                 eyes_detected[name] += eye_status
 
-            #Each time, we check if the person has blinked
-            #If yes, we display its name
+            #Check whether the person has blinked
+            #If yes, we display their name
             if isBlinking(eyes_detected[name],3):
                 cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
                 # Display name
                 y = y - 15 if y - 15 > 15 else y + 15
-                cv2.putText(frame, "Human", (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
+                cv2.putText(frame, name, (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
             else:
                 cv2.putText(frame, "Lizard", (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
 
@@ -156,10 +150,10 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 
 if __name__ == "__main__":
     #Initialize
-    (model, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, video_capture, images) = init()
+    (model, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, video_capture) = init()
     
     
-    data = encodingOfImages(images)
+    data = encodingsOfImages()
 
     eyes_detected = defaultdict(str)
     while True:
