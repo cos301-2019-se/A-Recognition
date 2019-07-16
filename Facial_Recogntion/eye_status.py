@@ -129,4 +129,8 @@ def evaluate(X_test, y_test):
 
 if __name__ == '__main__':	
 	train_generator , val_generator = collect()
+<<<<<<< HEAD
 	train(train_generator,val_generator)
+=======
+	train(train_generator,val_generator)
+>>>>>>> encoding

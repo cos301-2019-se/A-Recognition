@@ -8,4 +8,4 @@
 ---
 
 ### Description 
-This component is responsible for comparing images to that of users in the database and identifying them.
+This component is responsible for capturing images of a users face and then cropping them for easier use later in the pipeline.
