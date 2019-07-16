@@ -6,9 +6,9 @@
  * Filters an array/single object, if no options are passed through then deafault event filtering takes place and this will throw an error on non event objects
  * @param {any} data The array or single object to filter
  * @param {any} options Specifies what keys should be passed on to the new object
- * @returns {Object[] | Object }
+ * @returns {Array<Object> | Object }
  */
-export function filter(data : any,options : any){
+export function filter(data : any,options : any) : Array<Object> | Object{
 
     let dataArr = [];
     
@@ -80,7 +80,7 @@ export function filter(data : any,options : any){
                     }
                         
                     else 
-                        filteredObject[key] = undefined;
+                        filteredObject[key] = null;
                     
                 }
     
@@ -93,7 +93,7 @@ export function filter(data : any,options : any){
                     if(data.hasOwnProperty(key))
                         filteredObject[key] = data[key];
                     else 
-                        filteredObject[key] = undefined;
+                        filteredObject[key] = null;
                 }
     
                 return filteredObject;
@@ -130,7 +130,6 @@ export function inArray(value : string,array : any,key : string = "normalArray")
                 
                    if(obj[key] == value)
                        return true;
-                   
                }
         }
  
