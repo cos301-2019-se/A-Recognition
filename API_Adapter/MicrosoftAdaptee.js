@@ -1,12 +1,4 @@
 "use strict";
-/**
-* Adaptee responsible for exchanging data with Microsoft Office 365
-* npm install simple-oauth2 --save
-*/
-// const credentials = {
-//     userName : "8a223ec8-d71f-4",
-//     password : "ImOOkg/A+Rz4dN+3NO"
-// }
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -43,27 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-// import { ExchangeService, ExchangeVersion, WebCredentials, Uri, DateTime, CalendarView, WellKnownFolderName, EwsLogging } from "ews-javascript-api";
-// EwsLogging.DebugLogEnabled = false;
-// var service = new ExchangeService(ExchangeVersion.Exchange2010);
-// service.Credentials = new WebCredentials(credentials.userName, credentials.password);
-// service.Url = new Uri("https://outlook.office365.com/Ews/Exchange.asmx");
-// var view = new CalendarView(DateTime.Now,DateTime.Now.Add(1, "week")); 
-// console.log(service);
-// service.FindAppointments(WellKnownFolderName.Calendar, view).then((response) => {
-//     let appointments = response.Items;
-//     let appointment = appointments[0];
-//     console.log("Subject: " + appointment.Subject);
-//     console.log("Start Time: " + appointment.Start);
-//     console.log("End Time: " + appointment.End);
-//     console.log("Recipients: ");
-//     // appointment.RequiredAttendees.Items.forEach((a) => {
-//     //     console.log(a.Address);
-//     // });
-//     console.log("unique id: " + appointment.Id.UniqueId, true, true);
-// }, function (error) {
-//     console.log(error);
-// })
+/**
+* Adaptee responsible for exchanging data with Microsoft Office 365
+*/
 var MicrosoftAdaptee = /** @class */ (function () {
     function MicrosoftAdaptee() {
     }
@@ -71,26 +45,11 @@ var MicrosoftAdaptee = /** @class */ (function () {
      * retrieves the scheduled events of a specific user
      * @param {any} identifier the user identifier of choice
      */
-    MicrosoftAdaptee.prototype.getUserEvents = function (identifier, resultSize) {
-        if (identifier === void 0) { identifier = "primary"; }
-        if (resultSize === void 0) { resultSize = 2; }
+    MicrosoftAdaptee.prototype.retrieveUserEvents = function (identifier) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
-                        resolve("I am not implemented yet");
-                    })];
-            });
-        });
-    };
-    /**
-     * retrieves the calendars associated with a user
-     */
-    MicrosoftAdaptee.prototype.getUserCalendars = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
-                        resolve("I am not implemented yet");
-                    })];
+                console.log("I am not implemented yet");
+                return [2 /*return*/];
             });
         });
     };
