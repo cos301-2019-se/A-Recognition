@@ -130,7 +130,6 @@ export function inArray(value : string,array : any,key : string = "normalArray")
                 
                    if(obj[key] == value)
                        return true;
-                   
                }
         }
  
