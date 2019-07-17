@@ -2,50 +2,47 @@ import os
 import cv2
 import face_recognition
 import numpy as np
-
+from tqdm import tqdm
+from collections import defaultdict
+from imutils.video import VideoStream
+from eye_status import * 
+from encoding import *
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import requests
 import json
 
-from tqdm import tqdm
-from collections import defaultdict
-from imutils.video import VideoStream
-from eye_status import *
+db = firestore.client()
 
-def getVideoStream(index=None):
-    if index is None:
-        for x in range(-10, 10):
-            video_capture = VideoStream(src=x).start()
-            if not (video_capture is None or not video_capture.stream.isOpened()):
-                print("[LOG] Webcam opened. (Index ",x, ")")
-                break
-    else:
-        video_capture = VideoStream(src=index).start()
-        if not (video_capture is None or not video_capture.stream.isOpened()):
-                print("[LOG] Webcam opened. (Index ",index, ")")
-    
-    #Quit if no webcam could be opened
-    if video_capture is None or not video_capture.stream.isOpened():
-        print("[ERR] Webcam could not be opened. Exiting...")
-        quit()
-    
-    return video_capture
+#GET the collection Users for Facial Recognition
+users_ref = db.collection(u'Users')
+
+#docs now contain the data in Users
+docs = users_ref.stream()
 
 def init():
     #Load models to detect faces and features of them
     dataset = 'faces'
 
-    face_detector = cv2.CascadeClassifier('lbpcascade_frontalface.xml')
-    #face_detector = cv2.CascadeClassifier('haarcascade_frontalface_alt.xml')
+    #face_detector = cv2.CascadeClassifier('lbpcascade_frontalface.xml')
+    face_detector = cv2.CascadeClassifier('haarcascade_frontalface_alt.xml')
     open_eyes_detector = cv2.CascadeClassifier('haarcascade_eye_tree_eyeglasses.xml')
     left_eye_detector = cv2.CascadeClassifier('haarcascade_lefteye_2splits.xml')
     right_eye_detector = cv2.CascadeClassifier('haarcascade_righteye_2splits.xml')
 
     #Open the first available webcam index
     print("[LOG] Opening webcam ...")
-    video_capture = getVideoStream()
+    for x in range(-10, 10):
+        video_capture = VideoStream(src=x).start()
+        if not (video_capture is None or not video_capture.stream.isOpened()):
+            print("[LOG] Webcam opened. (Index ",x, ")")
+            break
+    
+    #Quit if no webcam could be opened
+    if video_capture is None or not video_capture.stream.isOpened():
+        print("[ERR] Webcam could not be opened. Exiting...")
+        quit()
 
     #Load our model that classifies open or closed eyes ('model.h5')
     model = load_model()
@@ -62,73 +59,16 @@ def isBlinking(history, maxFrames):
             return True
     return False
 
-def getKnownEncodings():
-    #Fetch the service account key JSON file contents
-    cred = credentials.Certificate('credentials.json')
-    firebase_admin.initialize_app(cred)
-
-    #Create the DB object
-    db = firestore.client()
-
-    #GET the collection Users for Facial Recognition
-    users_ref = db.collection(u'Users')
-
-    #docs now contain the data in Users
-    docs = users_ref.stream()
-
-    known_encodings = []
-    known_names = []
-
-    for doc in docs:
-        known_encodings.append((np.asarray(doc.to_dict().get("image_vector")[0].get("encoding"))))
-        known_names.append(doc.to_dict().get("Name"))
-    
-    return {"encodings": known_encodings, "names": known_names}
-
 def detect_and_display(model, video_capture, face_detector, open_eyes_detector, left_eye_detector, right_eye_detector, data, eyes_detected):
-    #Grab a single frame from the video stream
-    frame = video_capture.read()
+        #Grab a single frame from the video stream
+        frame = video_capture.read()
 
-    #Resize the frame to something reasonable
-    frame = cv2.resize(frame, (0, 0), fx=0.6, fy=0.6)
+        #Resize the frame to something reasonable
+        frame = cv2.resize(frame, (0, 0), fx=0.6, fy=0.6)
 
-    #Save a RGB and grayscale copy of the frame
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    
-    #Pass the grayscale image to our face-detection model to strip out all faces
-    faces = face_detector.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5, minSize=(50, 50), flags=cv2.CASCADE_SCALE_IMAGE)
-  
-    #For each detected face
-    for (x,y,w,h) in faces:
-        #Encode the face into a 128-d embeddings vector
-        encoding = face_recognition.face_encodings(rgb, [(y, x+w, y+h, x)])[0]
-
-        matches = face_recognition.compare_faces(data["encodings"], encoding)
-
-        #For now we don't know the person name
-        name = "Unknown"
-
-        #Check if this face mathces a known person
-        if True in matches:
-            matchedIdxs = [i for (i, b) in enumerate(matches) if b]
-            counts = {}
-            for i in matchedIdxs:
-                name = data["names"][i]
-                counts[name] = counts.get(name, 0) + 1
-
-            #Determine the recognized face with the largest number of votes
-            name = max(counts, key=counts.get)
-
-        #Store the cropped face
-        face = frame[y:y+h,x:x+w]
-        gray_face = gray[y:y+h,x:x+w]
-
-        eyes = []
-        
-        #We now detect the eyes of the face
-        #Check if the eyes are open (Considering glasses)
-        open_eyes_glasses = open_eyes_detector.detectMultiScale(gray_face, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags = cv2.CASCADE_SCALE_IMAGE)
+        #Save a RGB and grayscale copy of the frame
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         
         #Pass the grayscale image to our face-detection model to strip out all faces
         faces = face_detector.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5, minSize=(50, 50), flags=cv2.CASCADE_SCALE_IMAGE)
@@ -240,12 +180,11 @@ if __name__ == "__main__":
     eyes_detected = defaultdict(str)
     while True:
         #Clear the history after 30 frames - Go back to non-human mode and wait for blink
-        for x in eyes_detected:
-            if len(eyes_detected[x]) > 30:
-                eyes_detected = defaultdict(str)
-        
+        if len(eyes_detected["Unknown"]) > 30:
+            eyes_detected.clear()
+
         #Run our facial detection
-        frame = detect_and_display(model, video_capture, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, namesEncodingsPairs, eyes_detected)
+        frame = detect_and_display(model, video_capture, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, data, eyes_detected)
         
         #Show a nice video feed of what is happening
         cv2.imshow("Face Liveness Detector", frame)
@@ -278,4 +217,3 @@ if __name__ == "__main__":
             break
     
     cv2.destroyAllWindows()
-    video_capture.stop()
