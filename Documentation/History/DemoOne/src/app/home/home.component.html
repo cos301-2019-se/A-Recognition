@@ -1,0 +1,212 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Advance</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="" (click)="authService.logout()">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="jumbotron">
+      <div class="row">
+          <div class="col">
+              <div class="mx-auto w-50 p-3 bg-dark text-white text-center">
+                  <h1>Booking System</h1>
+              </div>
+          </div>
+      </div>
+    </div>
+   <div class="container">
+    <div class="mx-auto w-50 text-center">
+        <div class="row">
+            <div class="card-colums">
+                <div class="card">
+                    <div class="card-header">Boardroom</div>
+                    <div class="card-body">
+                        <p class="card-text">Add a new BoardRoom.</p>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Room">Add Boardroom</button> &nbsp;
+                    </div>
+                </div>
+            </div>&nbsp;
+            <div class="card-colums">
+                <div class="card">
+                    <div class="card-header">Bookings</div>
+                    <div class="card-body">
+                        <p class="card-text">Make a booking at a specific date and time.</p>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Booking">Book</button>
+                    </div>
+                </div>
+              
+            </div>&nbsp;
+            <div class="card-colums">
+                <div class="card">
+                    <div class="card-header">Employee</div>
+                    <div class="card-body">
+                        <p class="card-text">Add a new Employee.</p>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#Employee">Add Employee</button> &nbsp;
+                    </div>
+                </div>
+            </div>&nbsp;
+            <div class="card-colums">
+                <div class="card">
+                    <div class="card-header">Facial Recognition</div>
+                    <div class="card-body">
+                        <p class="card-text">Authenticate with facial recognition</p>
+                        <button type="button" (click)="btnClick();" class="btn btn-primary" >Authenticate</button>
+                    </div>
+                </div>
+              
+            </div>&nbsp;
+    </div>
+    </div>
+</div>
+  
+<div class="modal fade" id="Employee" tabindex="-1" role="dialog" aria-labelledby="Employee" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Register</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="employee"  novalidate>
+                    <!-- <div *ngIf="employee.controls['name'].invalid && (employee.controls['name'].dirty || employee.controls['name'].touched)" class="alert alert-danger">
+                        <div *ngIf="employee.controls['name'].errors.required">Name is required.</div>
+                    </div> -->
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" formControlName="nameEmployee" #nameEmployee placeholder="Enter employee name">
+                    </div>
+                    <div class="form-group">
+                      <label for="name">Surname</label>
+                      <input type="text" class="form-control" formControlName="surname" #surname placeholder="Enter employee surname">
+                  </div>
+                <div class="form-group">
+                  <label for="name">Title</label>
+                  <select name="titles" formControlName="title" #title>
+                  <option  value='Mr'  >Mr</option>
+                  <option  value='Mrs'  >Mrs</option>
+                  <option  value='Ms'  >Ms</option>
+              </select>                
+              </div>
+              <div class="form-group">
+                <label for="name">Image</label>
+                <input type="file" (change)="fileEvent($event)" class="form-control" id="file" formControlName="image" #image />
+            </div>
+                    <button type="submit" (click)="addEmployee(nameEmployee.value,surname.value,title.value)" data-dismiss="modal"class="btn btn-primary" id="addButton ">Add</button>
+                </form>
+                <br>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="Room" tabindex="-1" role="dialog" aria-labelledby="Room" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">BoardRoom</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form [formGroup]="boardRoom"  novalidate>
+                      <div *ngIf="boardRoom.controls['name'].invalid && (boardRoom.controls['name'].dirty || boardRoom  .controls['name'].touched)" class="alert alert-danger">
+                          <div *ngIf="boardRoom.controls['name'].errors.required">Name is required.</div>
+                      </div>
+                      <div class="form-group">
+                          <label for="name">Name</label>
+                          <input type="text" class="form-control" formControlName="name" #nameRoom placeholder="Enter the BoardRoom name">
+                      </div>
+                      <button type="submit" (click)="addBoardRoom(nameRoom.value)" data-dismiss="modal"class="btn btn-primary" id="addButton ">Add</button>
+                  </form>
+                  <br>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="modal fade" id="Booking" tabindex="-1" role="dialog" aria-labelledby="Booking" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">Make a booking</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form [formGroup]="bookRoom"   novalidate>
+                      <div *ngIf="bookRoom.controls['name'].invalid && (bookRoom.controls['name'].dirty || bookRoom  .controls['name'].touched)" class="alert alert-danger">
+                          <div *ngIf="bookRoom.controls['name'].errors.required">Name is required.</div>
+                      </div>
+                      <div class="form-group">
+                          <label for="name">Name</label>
+                          <select name="rooms" formControlName="name" #name (change)="onChange($event.target.value)">
+                                <!-- <option  value='emptybox'  >Choose from below</option>   -->
+                              <option *ngFor="let item of list" value='{{ item.payload.doc.id }}'  >{{ item.payload.doc.data().name }}</option>
+                          </select>
+                          <!-- <input type="text" class="form-control" formControlName="name" #name placeholder="Enter the BoardRoom name"> -->
+                      </div>
+                      <div class="form-group">
+                          <span class="align-left"><strong>The following dates have been booked for the room</strong></span>
+                          <table class="table">
+                                <thead class="thead-dark">
+                                  <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Time</th>
+                                  </tr>
+                                </thead>
+                                <tbody >
+                                        <tr *ngFor="let s of expandedArray">
+                                            <td>
+                                                {{s.name}}
+                                            </td>
+                                            
+                                            <td >
+                                                <ng-template [ngIf]="s.bookings[0]!= undefined">
+                                                {{s.bookings[0].date}}<br>
+                                            </ng-template>
+                                            <ng-template [ngIf]="s.bookings[1]!= undefined">
+                                                    {{s.bookings[1].date}}<br>
+                                                </ng-template>
+                                                <ng-template [ngIf]="s.bookings[2]!= undefined">
+                                                        {{s.bookings[2].date}}<br>
+                                                    </ng-template>
+                                                <!-- {{s.bookings[1].date}}<br>
+                                                {{s.bookings[2].date}} -->
+                                            </td>
+                                            <td >
+                                                    <ng-template [ngIf]="s.bookings[0]!= undefined">
+                                                {{s.bookings[0].time}}<br>
+                                                </ng-template>
+                                                <ng-template [ngIf]="s.bookings[1]!= undefined">
+                                                        {{s.bookings[1].time}}<br>
+                                                        </ng-template>
+                                                        <ng-template [ngIf]="s.bookings[2]!= undefined">
+                                                                {{s.bookings[2].time}}<br>
+                                                                </ng-template>
+                                                <!-- {{s.bookings[1].time}}<br>
+                                                {{s.bookings[2].time}} -->
+                                            </td>
+                                        </tr>
+                                        
+                                </tbody>
+                         </table>
+                         <input type="datetime-local" class="form-control" formControlName="date" #date>
+                          <!-- <input type="text" class="form-control" formControlName="name" #name placeholder="Enter the BoardRoom name"> -->
+                      </div>
+                      <button type="submit" (click)="makeBooking(name.value,date.value)" data-dismiss="modal" class="btn btn-primary" id="bookButton ">Make booking</button>
+                  </form>
+                  <br>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
