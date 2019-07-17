@@ -149,8 +149,14 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 y = y - 15 if y - 15 > 15 else y + 15
                 cv2.putText(frame, name, (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
 
+                #Get the email that appears the most and add it to the global variable
+                #Specify that is should respond to the api
                 global email
-                email = max(set(emails), key = emails.count)
+                
+                if not emails:
+                    email = "UNKOWN"
+                else:
+                    email = max(set(emails), key = emails.count)
  
                 global pleaseStopTheScanning
                 pleaseStopTheScanning = True
@@ -177,8 +183,6 @@ if __name__ == "__main__":
         if len(eyes_detected["Unknown"]) > 30:
             eyes_detected.clear()
 
-        # counter = counter + 1 
-        # print("Counter "+str(counter))
         #Run our facial detection
         frame = detect_and_display(model, video_capture, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, data, eyes_detected)
         
