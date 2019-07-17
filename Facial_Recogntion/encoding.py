@@ -68,6 +68,7 @@ def encodingsOfImages():
         knownEncoding = []
         encoding=[]
 
+
         for doc in docs:
             knownEncoding.append(doc.to_dict())
 
