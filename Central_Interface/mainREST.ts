@@ -1,5 +1,6 @@
 //npm install express --save
 import * as Main from "./main";
+import {PythonShell} from 'python-shell'
 
 var express = require("express");
 var app = express();
@@ -63,4 +64,25 @@ app.post("/richardsResponse", (req, res, next) => {
     console.log(answer);
     
     res.send(answer);
+});
+
+app.get('/getEmails', (req, res) => {
+
+    var pyshell = new PythonShell("test.py");
+
+    pyshell.on('data', function (data) {
+        // received a message sent from the Python script (a simple "print" statement)
+        console.log(data);
+        //DATA CONTAINS THE EMAILS
+        //{email1,email2,email3}
+    });
+    
+    // end the input stream and allow the process to exit
+    pyshell.end(function (err) {
+        if (err){
+            throw err;
+        };
+    
+        console.log('finished');
+    });
 });
