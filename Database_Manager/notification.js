@@ -115,25 +115,17 @@ async function sendEmail(emailToken) {
         else if(emailToken == "otp") 
         {
             mailOptions = messages.otpClient;
-            //mailOptions.to = emailClients[count];
-            console.log("Count variable: " + count + " Email Clients: " + emailClients[count]);
-            count++;
-            console.log("Count variable: " + count + " Email Clients: " + emailClients[count]);
-            //mailOptions.text += generateOTP().otp;
-            console.log(mailOptions.text);
+            mailOptions.html += generateOTP().otp;
             mailOptions = '';
             console.log(mailOptions.text);
             mailOptions = messages.otpClient;
+            console.log(mailOptions.text);
         }
 
     smtpTransport.sendMail(mailOptions, (error, response) => {
         error ? console.log(error) : console.log(response);
         smtpTransport.close();
    });}
-
-   function otpEndpoint() {
-       
-   }
 
    otpValue = {
        "otp": "",
@@ -142,7 +134,7 @@ async function sendEmail(emailToken) {
    /**
     *   A Function used to create and generate a OTP that will be used for guest clients.
     *   The function itself does not take in any parameters but will return an OTP of current length
-    *   of 5 digits and append it to the OTPValue JSON variable under the OTP key : value pair.
+    *   of 6 digits and append it to the OTPValue JSON variable under the OTP key : value pair.
     *
     *   The function clears the otp value after each generation to allow for different pins to be generated
     *   after every call.
@@ -184,6 +176,11 @@ async function sendEmail(emailToken) {
         res.send(generateOTP());
     })
 
+    /**
+     * The unauthorized endpoint will be used in cases where the facial recognition detects
+     * a person attempting to gain entrance to a room they were not added to or any unauthorized
+     * access being attempted. In this case, an admin will be notified to the behaviour.
+     */
     app.get('/unauthorized', (req, res) => {
         res.send(messages.unauthMessage);
         sendEmail('unauth');
