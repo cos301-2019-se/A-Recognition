@@ -176,6 +176,7 @@ if __name__ == "__main__":
     email ="UNKOWN"
     pleaseStopTheScanning = False
     isAllowed = False
+    allowedResponse = "NO"
 
     eyes_detected = defaultdict(str)
     while True:
@@ -199,12 +200,13 @@ if __name__ == "__main__":
                 #we now need to compare and see if the email that appears the most is in this json object
                 for temp in responds:
                     if email == temp:
-                        isAllowed = True
-                        
-                if isAllowed:
-                    requests.post(url="http://localhost:3000/richardsResponse", data = {"answer":True})
-                else:
-                    requests.post(url="http://localhost:3000/richardsResponse", data = {"answer":False}) 
+                        urlToSend = 'http://localhost:3000/validateUserHasBooking?email="'+email+'"'+'&room="Room 9"'
+                        allowedResponse = requests.get(url=urlToSend)
+               
+                # if isAllowed:
+                #     requests.post(url="http://localhost:3000/richardsResponse", data = {"answer":True})
+                # else:
+                #     requests.post(url="http://localhost:3000/richardsResponse", data = {"answer":False}) 
 
                 pleaseStopTheScanning = False 
                 isAllowed = False  

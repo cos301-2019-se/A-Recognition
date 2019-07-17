@@ -31,7 +31,7 @@ app.get("/validateUserHasBooking", (req, res, next) => {
         email = JSON.parse(req.query.email);
         room = JSON.parse(req.query.room);
 
-        Main.validateUserHasBooking(email,room).then( msg => res.send(msg)).catch( err => res.send(err));
+        Main.validateUserHasBooking(email,room).then(msg=> {res.send(msg);console.log(msg)}).catch( err => res.send(err));
     }else{
         res.send("Please send email and room name");
     }    
@@ -49,7 +49,7 @@ app.post("/validateUserHasBooking", (req, res, next) => {
         email = req.query.email;
         room = req.query.room;
 
-        Main.validateUserHasBooking(email,room).then( msg => res.send(msg)).catch( err => res.send(err));
+        Main.validateUserHasBooking(email,room).then( msg => {res.send(msg);console.log(msg)}).catch( err => res.send(err));
     }else{
         res.send("Please send email and room name");
     }    
