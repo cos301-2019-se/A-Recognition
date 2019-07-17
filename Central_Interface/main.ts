@@ -87,9 +87,9 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                     message += "User does not have a booking for that room";
 
                     if(timeNow.getTime() > entranceAllowedToEvent.getTime())
-                    message += ",user is allowed access now";
+                    message += ",Room is allowed access now";
                     else
-                    message += ",user is not allowed access yet";
+                    message += ",Room is not allowed access yet";
                     
                     resolve(message);
                     
