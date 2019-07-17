@@ -70,9 +70,9 @@ app.get('/getEmails', (req, res) => {
 
     var pyshell = new PythonShell("test.py");
 
-    pyshell.on('data', function (data) {
+    pyshell.on('message', function (message) {
         // received a message sent from the Python script (a simple "print" statement)
-        console.log(data);
+        console.log(message);
         //DATA CONTAINS THE EMAILS
         //{email1,email2,email3}
     });
