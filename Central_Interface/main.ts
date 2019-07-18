@@ -47,27 +47,6 @@ export function getUsersFromDaysEvents() :Promise<Array<string> | null>{
     } );
 }
 
-// getUsersFromDaysEvents().then( users =>{
-//     console.log(users); 
-// });
-
-// validateUserHasBooking("jarrodgoschen1@gmail.com","Room 7").then( (msg)=>{
-//     console.log(msg);
-
-//     validateUserHasBooking("jarrodgoschen@gmail.com","Room 7").then( (msg)=>{
-//         console.log(msg);
-    
-//         validateUserHasBooking("mcfaddenr.ebb@gmail.com","Room 99 @ Khaosan, 99 Samsen 4 Alley, Khwaeng Ban Phan Thom, Khet Phra Nakhon, Krung Thep Maha Nakhon 10200, Thailand").then( (msg)=>{
-//             console.log(msg);
-        
-//             validateUserHasBooking("mcfaddenr.ebb@gmail.com","room 7").then( (msg)=>{
-//                 console.log(msg);
-            
-//             }); 
-//         }); 
-//     });
-// });
-
  /**
  * Validates that the given email at the given room has a booking at the current time
  * @param {string} email The array or single object to filter
@@ -207,5 +186,3 @@ export function checkBookingsForGuests(){
     },25000);
     
 }
-
-checkBookingsForGuests();
