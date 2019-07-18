@@ -1,3 +1,120 @@
-<p>
-  admin works!
-</p>
+<div class="container">  
+  
+  <mat-card>  
+    <mat-toolbar color="accent">  
+      <div align="center" style="color:white;text-align: right;">  
+        Employee administration page
+      </div>    
+    </mat-toolbar>  
+  <br><br>  
+    <mat-card-content> 
+      <mat-card>
+          <mat-toolbar>  
+              <div align="center" style="color:black;text-align: right;">  
+                  Add an employee
+              </div>    
+            </mat-toolbar>
+            <mat-card-content>
+      <form [formGroup]="adminForm"(ngSubmit)="onFormSubmit(adminForm.value)">  
+              <table class="table">  
+                <tr>  
+                  <td class="tbl1">  
+                    <mat-form-field class="demo-full-width">  
+                      <input formControlName="Name" matTooltip="Add your first name" matInput placeholder="Name">  
+                    </mat-form-field>  
+                    <mat-error>  
+                      <span *ngIf="!adminForm.get('Name').value && adminForm.get('Name').touched"></span>  
+                    </mat-error>  
+                  </td>  
+                  <td class="tbl1">  
+                    <mat-form-field class="demo-full-width">  
+                      <input formControlName="Surname" matTooltip="Add your surname" matInput placeholder="Surname">  
+                    </mat-form-field>  
+                    <mat-error>  
+                      <span *ngIf="!adminForm.get('Surname').value && adminForm.get('Surname').touched"></span>  
+                    </mat-error>  
+                  </td>  
+                  <td class="tbl1">  
+                    <mat-form-field class="demo-full-width">  
+                      <input formControlName="Email" matTooltip="Add your Email used to log in" matInput placeholder="Email">  
+                    </mat-form-field>  
+                    <mat-error>  
+                      <span *ngIf="!adminForm.get('Email').value && adminForm.get('Email').touched"></span>  
+                    </mat-error>  
+                  </td>  
+                </tr>  
+                <tr>  
+                  <td class="tbl1">  
+                    <mat-form-field class="demo-full-width">  
+                      <input formControlName="EmpPosition" matTooltip="Add the position of the employee" matInput placeholder="Employee Position">  
+                    </mat-form-field>  
+                    <mat-error>  
+                      <span *ngIf="!adminForm.get('EmpPosition').value && adminForm.get('EmpPosition').touched"></span>  
+                    </mat-error>  
+                  </td>  
+                  <td class="tbl1">  
+                    <mat-form-field class="demo-full-width">  
+                      <input type="password" formControlName="Password" matTooltip="Add a password" matInput placeholder="Password">  
+                    </mat-form-field>  
+                    <mat-error>  
+                      <span *ngIf="!adminForm.get('Password').value && adminForm.get('Password').touched"></span>  
+                    </mat-error>  
+                  </td> 
+                    
+                </tr>   
+                <tr><td colspan="3">
+                    <span style="color:red;" *ngIf="message2">{{message2}}</span>
+                    <input #file type="file" accept='image/*' (change)="preview(file.files)" />
+                    <img [src]="imgURL" height="200" *ngIf="imgURL">
+                </td></tr> 
+                <tr>  
+                  <td></td>  
+                  <td  class="content-center">  
+                    <button type="submit" mat-raised-button color="accent"matTooltip="Click Submit Button">Submit</button>      <!--[disabled]="!adminForm.valid"-->
+                    &nbsp; <button type="reset" mat-raised-button color="accent"matTooltip="Click Reset Button" (click)="resetForm()">Reset</button>  
+                  </td>  
+                  <td>  
+                    <p *ngIf="dataSaved" style="color:rgb(0, 128, 0);font-size:20px;font-weight:bold" Class="success" align="left">  
+                      {{message}}  
+                    </p>  
+                  </td>  
+                </tr>  
+              </table>
+            </form>
+            </mat-card-content>
+            </mat-card>  
+  <br><br>
+  <mat-card>
+      <mat-toolbar>  
+          <div align="center" style="color:black;text-align: right;">  
+              List of employees
+          </div>    
+        </mat-toolbar>
+        <mat-card-content>
+        <table class="table" >  
+            <tr ngclass="btn-primary">  
+              <th class="tbl2">Email</th> 
+              <th class="tbl2">Name</th> 
+              <th class="tbl2">Surname</th>  
+              <th class="tbl2">Position</th>  
+            </tr>  
+            <tr *ngFor="let emp of allEmployees | async">  
+              <td class="tbl2">{{emp.Email}}</td>  
+              <td class="tbl2">{{emp.Name}}</td>  
+              <td class="tbl2">{{emp.Surname}}</td>
+              <td class="tbl2">{{emp.EmpPosition}}</td>
+              <td class="tbl2">  
+                <button type="button" class="btn btn-info"matTooltip="Click Edit Button"(click)="loadEmployeeToEdit(emp)">Edit</button>  
+              </td>  
+              <td class="tbl2">  
+                <button type="button" class="btn btn-danger"matTooltip="Click Delete Button"(click)="deleteEmployee(emp.Email)">Delete</button>  
+              </td>  
+            </tr>  
+    
+          </table>  
+        </mat-card-content>
+      </mat-card>
+      
+    </mat-card-content>  
+  </mat-card>  
+  </div>
