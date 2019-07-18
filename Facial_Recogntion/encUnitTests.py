@@ -1,3 +1,11 @@
+## 
+# Filename: encUnitTests.py
+# Version: V1.0
+# Author: Richard McFadden
+# Project name: A-Recognition (Advance)
+# Organization: Singularity
+# Funtional description: Unit tests for encoding of facecial data
+
 import unittest
 from encoding import encodeImageForDB
 from encoding import encodingsOfImages
