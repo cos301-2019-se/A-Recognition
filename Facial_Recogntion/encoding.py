@@ -18,9 +18,16 @@ users_ref = db.collection(u'Users')
 
 #docs now contain the data in Users
 docs = users_ref.stream()
+
+##
+#Function that stores encodings of given images in DB
 #
-#@params images,name,surname,title
-#
+#@param images: Images to be encoded
+#@param name: The names of the corresponding images
+#@param surname: The surnames of the corresonding images
+#@param title: The titles of the corresponding images
+#@param email: The emails of the corresponding images
+#@return: Return status of function
 def encodeImageForDB(images,name,surname,title,email):
     if(images is None or name is None or surname is None or title is None or email is None):
         raise TypeError("encodingImage expected 4 parameters")
@@ -59,10 +66,10 @@ def encodeImageForDB(images,name,surname,title,email):
     except TypeError:
         return "An error occured while trying to encode the image or saving to the database"
 
+##
+#Function that retrieves the known face encodings and names from the DB
 #
-#Used to retrieve the encodings from the db. loose coupling
-#@params none
-#
+#@return: Object containing all emails and corresponding facial data
 def encodingsOfImages():    
     try:
         knownEncoding = []
@@ -77,6 +84,3 @@ def encodingsOfImages():
         return {"user":knownEncoding}
     except TypeError:
         return "An error occured while trying to encode the image or saving to the database"
-
-# imageNames = ['./6.jpg']
-# encodeImageForDB(imageNames,"Zoe","Schnetler","Ms","u18146326@tuks.co.za")
