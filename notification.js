@@ -18,9 +18,17 @@ const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
 const messages = require('./messages');
+const http = require('http');
+
 
 // defining the Express app
 const app = express();
+
+// let's use it
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
+
+
 
 // adding Helmet to enhance your API's security
 app.use(helmet());
@@ -55,7 +63,7 @@ app.listen(3000, () => {
  * @param {A string token that is passed to determine the action of the notification to be sent, 
  * determined by the relevant endpoint used} emailToken 
  */
-async function sendEmail(emailToken) {
+async function sendEmail(emailToken, emailDetails, generatedOtp) {
     /**
      * A simple variable array that will hold the relevant details per message that will determine the type
      * of notification to send and whom to send it to.
@@ -111,15 +119,26 @@ async function sendEmail(emailToken) {
         }
         else if(emailToken == "unauth") {
             mailOptions = messages.unauthMessage;
+            
         }
         else if(emailToken == "otp") 
         {
+            /**
+             * Will tidy up and sort out files etc to make code look cleaner.
+             */
+            try {
             mailOptions = messages.otpClient;
-            mailOptions.html += generateOTP().otp;
-            mailOptions = '';
-            console.log(mailOptions.text);
-            mailOptions = messages.otpClient;
-            console.log(mailOptions.text);
+            mailOptions.to = emailDetails.guest;
+            mailOptions.subject = "OTP delivery for meeting room " + emailDetails.location;
+            mailOptions.html =  "   Goodday fellow Advancer! <br>" 
+                                +   "This is to notify you that your meeting on the "
+                                +   emailDetails.startDate
+                                +   " will start at: " + emailDetails.startTime
+                                +   " in room " + emailDetails.location 
+                                +   ".<br> It will require the following OTP to gain access: " + generatedOtp;
+            } catch(e) {
+                console.log(e);
+            }
         }
 
     smtpTransport.sendMail(mailOptions, (error, response) => {
@@ -171,9 +190,17 @@ async function sendEmail(emailToken) {
     *
     */
     app.get('/otp', (req, res) => {
+        const notificationData = req.body;
 
-        sendEmail("otp");
+        console.log("Guest name: " + notificationData.guest 
+                    + " Location: " + notificationData.location 
+                    + " Start Date: " + notificationData.startDate 
+                    + "Start Time: " + notificationData.startTime);
+        
+        const genOtp = generateOTP().otp;
+        console.log("Generated OTP: " + genOtp);
         res.send(generateOTP());
+        sendEmail("otp", notificationData, genOtp);
     })
 
     /**
@@ -185,33 +212,3 @@ async function sendEmail(emailToken) {
         res.send(messages.unauthMessage);
         sendEmail('unauth');
     })
-
-    /*
-    *
-    *   
-    *
-    *
-    *
-    */
-    app.get('/tesing', (req, res) => {
-        res.send("testing cases");
-        sendEmail('test');
-    })
-
-    function formatDate() {
-        var dateCurrent = {
-            "day": "",
-            "date": "",
-            "hours": "",
-            "minutes": "",
-        };
-        var dateTemp = new Date();
-
-        dateCurrent.day += dateTemp.getDay() + " ";
-        dateCurrent.date += dateTemp.getDate() + " ";
-        dateCurrent.hours += dateTemp.getHours() + " ";
-        dateCurrent.minutes += dateTemp.getMinutes() + " ";
-
-        return dateCurrent;
-
-    }
