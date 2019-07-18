@@ -1,3 +1,11 @@
+## 
+# Filename: face_rec.py
+# Version: V1.0
+# Author: Adrian le Grange, Richard McFadden
+# Project name: A-Recognition (Advance)
+# Organization: Singularity
+# Funtional description: A subsystem used to provide facial detection and recognition to other subsystems
+
 import os
 import cv2
 import face_recognition
@@ -21,6 +29,10 @@ users_ref = db.collection(u'Users')
 #docs now contain the data in Users
 docs = users_ref.stream()
 
+##
+#Function that returns a tuple containing all needed models and data that is used for the facial recognition
+#
+#@return: Tuple containing: The open/closed eye model, the face-detection model, the model to detect open eyes, left-eye detection model, right-eye detection model, the video stream
 def init():
     #Load models to detect faces and features of them
     dataset = 'faces'
@@ -49,6 +61,12 @@ def init():
 
     return (model,face_detector, open_eyes_detector, left_eye_detector,right_eye_detector, video_capture) 
 
+##
+#Function that determines if a person has blinked recently
+#
+#@param history: A string containing a sequence of past eye statuses
+#@param maxFrames: The maximum number of successive frames where an eye is closed
+#@return: Return a boolean indicating if person has blinked
 def isBlinking(history, maxFrames):
     """ @history: A string containing the history of eyes status 
          where a '1' means that the eyes were closed and '0' open.
@@ -59,6 +77,18 @@ def isBlinking(history, maxFrames):
             return True
     return False
 
+##
+#Function that detects faces and features and displays the result as video feed
+#
+#@param model: The model to be used for determining eye status
+#@param video_capture: The video stream to process
+#@param face_detector: The model used to detect a person's face
+#@param open_eyes_detector: The model used to determine if a persons eyes is open
+#@param left_eye_detector: The model used to locate a person's left eye
+#@param right_eye_detector: The model used to locate a person's right eye
+#@param data: The array storing all the facial data and emails of registered people (Actually a subset of the people)
+#@param eyes_detected: Array that holds the history of a person's eye status
+#@return: A manipulated frame
 def detect_and_display(model, video_capture, face_detector, open_eyes_detector, left_eye_detector, right_eye_detector, data, eyes_detected):
         #Grab a single frame from the video stream
         frame = video_capture.read()
@@ -108,7 +138,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 for (ex,ey,ew,eh) in open_eyes_glasses:
                     cv2.rectangle(face,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
             
-            # #Else we try to detect individual eyes (Detects both open and closed eyes)              
+            #Else we try to detect individual eyes (Detects both open and closed eyes)              
             else:
                 #Slpit the face into a left and right side
                 left_face = frame[y:y+h, x+int(w/2):x+w]
@@ -166,7 +196,9 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 
         return frame
 
-
+##
+#Main function; Continuosly processes stream and recognises people
+#Press 'q' button to stop
 if __name__ == "__main__":
     #Initialize
     (model, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, video_capture) = init()

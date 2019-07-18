@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as readline from 'readline';
-import {google} from 'googleapis';
+import {google} from 'googleapis'; //npm install googleapis@39 --save
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
