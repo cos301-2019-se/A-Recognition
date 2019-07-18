@@ -8,7 +8,7 @@
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Surname" ColumnName="Surname" />
           <ScalarProperty Name="Email" ColumnName="Email" />
-          <ScalarProperty Name="Pass" ColumnName="Pass" />
+          <ScalarProperty Name="Password" ColumnName="Pass" />
           <ScalarProperty Name="EmpPosition" ColumnName="EmpPosition" />
         </MappingFragment>
       </EntityTypeMapping>
