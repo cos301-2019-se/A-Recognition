@@ -1,3 +1,11 @@
+## 
+# Filename: face_rec.py
+# Version: V1.0
+# Author: Adrian le Grange, Richard McFadden
+# Project name: A-Recognition (Advance)
+# Organization: Singularity
+# Funtional description: A subsystem used to provide facial detection and recognition to other subsystems
+
 import os
 import cv2
 import face_recognition
