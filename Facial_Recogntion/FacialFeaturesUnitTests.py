@@ -1,3 +1,11 @@
+## 
+# Filename: FacialFeaturesUnitTests.py
+# Version: V1.0
+# Author: Adrian le Grange
+# Project name: A-Recognition (Advance)
+# Organization: Singularity
+# Funtional description: Unit tests for all facial feature detection
+
 import unittest
 import os
 import cv2

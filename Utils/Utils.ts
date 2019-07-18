@@ -1,6 +1,11 @@
-/**
- * Utility functions that dont belong to a specific class.
- */
+/** 
+ * Filename: Utils.ts
+ * Version: V1.0
+ * Author: JJ Goschen
+ * Project name: A-Recognition (Advance)
+ * Organization: Singularity
+ * Funtional description: Provides functionality that does not belong to a specific component
+*/
 
  /**
  * Filters an array/single object, if no options are passed through then deafault event filtering takes place and this will throw an error on non event objects
@@ -75,6 +80,20 @@ export function filter(data : any,options : any) : Array<Object> | Object{
                             el.attendees.forEach(attendee => {
                                 filteredObject["attendees"].push(attendee.email);                   
                             });
+                        }else if(key == "start"){
+                            if(el.start.dateTime != null && el.start.dateTime != undefined){ //DateTime format provided
+                                filteredObject["startDate"]   = el.start.dateTime.substring(0, el.start.dateTime.indexOf("T"));
+                                filteredObject["startTime"]   = el.start.dateTime.substring(el.start.dateTime.indexOf("T")+1,el.start.dateTime.length);
+                            }else{ // No Time provided, whole day event?
+                                filteredObject["startDate"]   = el.start.date;
+                            }
+                        }else if(key == "end"){
+                            if(el.end.dateTime != null && el.end.dateTime != undefined){ //DateTime format provided
+                                filteredObject["endDate"]   = el.end.dateTime.substring(0, el.end.dateTime.indexOf("T"));
+                                filteredObject["endTime"]   = el.end.dateTime.substring(el.end.dateTime.indexOf("T")+1,el.end.dateTime.length);
+                            }else{ // No Time provided, whole day event?
+                                filteredObject["endDate"]   = el.end.date;
+                            }
                         }else
                             filteredObject[key] = el[key];
                     }
