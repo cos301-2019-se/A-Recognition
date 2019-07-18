@@ -3,7 +3,6 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 import numpy as np
 
-
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate('credentials.json')
 firebase_admin.initialize_app(cred)
@@ -25,5 +24,4 @@ for doc in docs:
 for a in knownEncoding:
     encoding.append(a["Email"])
 
-print((encoding))
-#sys.stdout.flush()
+print(encoding)
