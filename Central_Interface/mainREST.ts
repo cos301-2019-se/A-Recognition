@@ -1,6 +1,8 @@
 //npm install express --save
+//pip3 install firebase-admin
+//pip3 install firebase
 import * as Main from "./main";
-import {PythonShell} from 'python-shell'
+import {PythonShell} from 'python-shell' //npm install python-shell
 
 var express = require("express");
 var app = express();
@@ -74,7 +76,7 @@ app.get('/getEmails', (req, res) => {
         // received a message sent from the Python script (a simple "print" statement)
         console.log(message);
         //DATA CONTAINS THE EMAILS
-        //{email1,email2,email3}
+        res.json(message);
     });
     
     // end the input stream and allow the process to exit
@@ -82,7 +84,5 @@ app.get('/getEmails', (req, res) => {
         if (err){
             throw err;
         };
-    
-        console.log('finished');
     });
 });
