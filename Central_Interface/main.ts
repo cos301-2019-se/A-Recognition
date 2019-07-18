@@ -1,5 +1,6 @@
 import * as Adapter from "../API_Adapter/main";
 import * as Utils from "../Utils/Utils";
+import {PythonShell} from 'python-shell' //npm install python-shell
 
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
@@ -102,4 +103,46 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
             reject(err);
         });
    }); 
+}
+
+export function getEmployeeEmails() : Promise<any>{
+
+    return new Promise( (resolve,reject) =>{
+        var pyshell = new PythonShell("test.py");
+
+        pyshell.on('message', function (message) {
+            // received a message sent from the Python script (a simple "print" statement)
+            //Why does python return a string instead of an array
+            let array = message.split(",");
+            array = array.map( el => el.replace(/'|,/g,""));
+            array = array.map( el => el.replace("[",""));
+            array = array.map( el => el.replace("]",""));
+            array = array.map( el => el.trim());
+            resolve(array);
+
+            //DATA CONTAINS THE EMAILS
+        });
+        
+        // end the input stream and allow the process to exit
+        pyshell.end(function (err) {
+            if (err){
+                reject(err);
+            };
+  
+        });
+    });
+}
+
+export function isEmployee(email : string) : Promise<boolean>{
+    
+    return new Promise( (resolve,reject)=>{
+        getEmployeeEmails().then( employees =>{
+            //console.log(JSON.parse(employees));
+            resolve(Utils.inArray(email,employees)) ;
+        }).catch( (err)=>{
+            console.log(err);
+            
+            reject(false);
+        });
+    });
 }
