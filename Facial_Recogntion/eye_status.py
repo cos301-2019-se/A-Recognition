@@ -1,3 +1,11 @@
+## 
+# Filename: eye_status.py
+# Version: V1.0
+# Author: Adrian le Grange
+# Project name: A-Recognition (Advance)
+# Organization: Singularity
+# Funtional description: Used to build a model to detect open and closed eyes. Provides functions for the loading and saving of the model.
+
 import os
 from PIL import Image
 import numpy as np
