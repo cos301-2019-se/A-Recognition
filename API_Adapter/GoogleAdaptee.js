@@ -35,9 +35,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+/**
+ * Filename: GoogleAdaptee.ts
+ * Version: V1.1
+ * Author: JJ Goschen
+ * Project name: A-Recognition (Advance)
+ * Organization: Singularity
+ * Funtional description: Provides functionality for communication with Google Calendar
+*/
 var fs = require("fs");
 var readline = require("readline");
-var googleapis_1 = require("googleapis");
+var googleapis_1 = require("googleapis"); //npm install googleapis@39 --save
 // If modifying these scopes, delete token.json.
 var SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
 // The file token.json stores the user's access and refresh tokens, and is

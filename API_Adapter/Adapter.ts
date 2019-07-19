@@ -1,3 +1,11 @@
+/** 
+ * Filename: Adapter.ts
+ * Version: V1.2
+ * Author: JJ Goschen
+ * Project name: A-Recognition (Advance)
+ * Organization: Singularity
+ * Funtional description: Provides an adapter that allows communication with various calendar API's
+*/
 const adaptees = ["google","microsoft"];
 import {GoogleAdaptee} from "./GoogleAdaptee";
 import {MicrosoftAdaptee} from "./MicrosoftAdaptee";

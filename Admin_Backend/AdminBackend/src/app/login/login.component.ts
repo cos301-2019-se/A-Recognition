@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { LoginService} from '../login/login.service';
+import { Employee } from '../employee'; 
 
 @Component({templateUrl: 'login.component.html'})
 export class LoginComponent implements OnInit {
@@ -12,6 +13,7 @@ export class LoginComponent implements OnInit {
     loading = false;
     submitted = false;
     returnUrl: string;
+    message: string;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -25,8 +27,11 @@ export class LoginComponent implements OnInit {
 
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
-            username: ['', Validators.required],
-            password: ['', Validators.required]
+            Email: ['', Validators.required],
+            Password: ['', Validators.required],
+            Name: ['', [Validators.required]],  
+            Surname: ['', [Validators.required]],  
+      EmpPosition: ['', [Validators.required]],  
         });
 
         // get return url from route parameters or default to '/'
@@ -39,8 +44,10 @@ export class LoginComponent implements OnInit {
     onSubmit() {
         this.submitted = true;
         this.allEmployees = this.loginService.getEmployees();
+        const emp = this.loginForm.value;
+        this.sendEmployee(emp);
         //this.f.username.setValue(this.emp[0]);
-        console.log(this.f.username.value);
+        console.log(this.f.Email.value);
         //console.log(this.loginService.searchEmployee(this.f.username.value, this.f.password.value));
         // stop here if form is invalid
         if (this.loginForm.invalid) {
@@ -48,7 +55,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.loginService.searchEmployee(this.f.username.value)//, this.f.password.value)
+        /*this.loginService.searchEmployee(this.f.username.value)//, this.f.password.value)
             .pipe(first())
             .subscribe(
                 data => {
@@ -59,6 +66,24 @@ export class LoginComponent implements OnInit {
                     console.log("Fail");
                     //this.alertService.error(error);
                     this.loading = false;
-                });
+                });*/
     }
+    sendEmployee(emp: Employee) {   
+          this.loginService.searchEmployee(emp).subscribe(  
+            data => {  
+                console.log(data);
+                if(data!=null)
+                {   
+                    this.router.navigate(['admin']);
+                }
+                else
+                {
+                    this.message = "Incorrect details entered";
+                }
+            },
+            error => {
+                console.log("Failed");
+            }  
+          ); 
+        }
 }

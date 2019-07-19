@@ -1,6 +1,11 @@
-/**
- * Utility functions that dont belong to a specific class.
- */
+/** 
+ * Filename: Utils.ts
+ * Version: V1.0
+ * Author: JJ Goschen
+ * Project name: A-Recognition (Advance)
+ * Organization: Singularity
+ * Funtional description: Provides functionality that does not belong to a specific component
+*/
 
  /**
  * Filters an array/single object, if no options are passed through then deafault event filtering takes place and this will throw an error on non event objects
@@ -113,7 +118,6 @@ export function filter(data : any,options : any) : Array<Object> | Object{
  */
 export function inArray(value : string,array : any,key : string = "normalArray") : boolean{
 
- 
     if( !Array.isArray(array) ||  array.length == 0)
     return false;
 
@@ -123,7 +127,7 @@ export function inArray(value : string,array : any,key : string = "normalArray")
         
         if(key === "normalArray"){  //Dealing with a normal array, not an array of objects
             
-            if(obj == value)
+            if(obj=== value)
             return true;
         }else{
             if (obj.hasOwnProperty(key)) {

@@ -1,13 +1,18 @@
 "use strict";
 /**
- * Utility functions that dont belong to a specific class.
- */
+ * Filename: Utils.ts
+ * Version: V1.0
+ * Author: JJ Goschen
+ * Project name: A-Recognition (Advance)
+ * Organization: Singularity
+ * Funtional description: Provides functionality that does not belong to a specific component
+*/
 exports.__esModule = true;
 /**
 * Filters an array/single object, if no options are passed through then deafault event filtering takes place and this will throw an error on non event objects
 * @param {any} data The array or single object to filter
 * @param {any} options Specifies what keys should be passed on to the new object
-* @returns {Object[] | Object }
+* @returns {Array<Object> | Object }
 */
 function filter(data, options) {
     var dataArr = [];
@@ -64,11 +69,29 @@ function filter(data, options) {
                                 filteredObject["attendees"].push(attendee.email);
                             });
                         }
+                        else if (key == "start") {
+                            if (el.start.dateTime != null && el.start.dateTime != undefined) { //DateTime format provided
+                                filteredObject["startDate"] = el.start.dateTime.substring(0, el.start.dateTime.indexOf("T"));
+                                filteredObject["startTime"] = el.start.dateTime.substring(el.start.dateTime.indexOf("T") + 1, el.start.dateTime.length);
+                            }
+                            else { // No Time provided, whole day event?
+                                filteredObject["startDate"] = el.start.date;
+                            }
+                        }
+                        else if (key == "end") {
+                            if (el.end.dateTime != null && el.end.dateTime != undefined) { //DateTime format provided
+                                filteredObject["endDate"] = el.end.dateTime.substring(0, el.end.dateTime.indexOf("T"));
+                                filteredObject["endTime"] = el.end.dateTime.substring(el.end.dateTime.indexOf("T") + 1, el.end.dateTime.length);
+                            }
+                            else { // No Time provided, whole day event?
+                                filteredObject["endDate"] = el.end.date;
+                            }
+                        }
                         else
                             filteredObject[key] = el[key];
                     }
                     else
-                        filteredObject[key] = undefined;
+                        filteredObject[key] = null;
                 }
                 dataArr.push(filteredObject);
             });
@@ -79,7 +102,7 @@ function filter(data, options) {
                 if (data.hasOwnProperty(key))
                     filteredObject[key] = data[key];
                 else
-                    filteredObject[key] = undefined;
+                    filteredObject[key] = null;
             }
             return filteredObject;
         }
@@ -101,7 +124,7 @@ function inArray(value, array, key) {
     for (var i = 0; i < array.length; i++) {
         var obj = array[i];
         if (key === "normalArray") { //Dealing with a normal array, not an array of objects
-            if (obj == value)
+            if (obj === value)
                 return true;
         }
         else {

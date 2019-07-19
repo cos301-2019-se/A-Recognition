@@ -8,3 +8,6 @@ scipy==1.2.1
 Keras==2.2.4
 face_recognition==1.2.3
 Pillow==6.1.0
+requests==2.22.0
+Flask_RESTful==0.3.7
+Flask==1.0.3

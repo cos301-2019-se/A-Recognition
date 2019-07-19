@@ -1,5 +1,13 @@
 "use strict";
 exports.__esModule = true;
+/**
+ * Filename: Adapter.ts
+ * Version: V1.2
+ * Author: JJ Goschen
+ * Project name: A-Recognition (Advance)
+ * Organization: Singularity
+ * Funtional description: Provides an adapter that allows communication with various calendar API's
+*/
 var adaptees = ["google", "microsoft"];
 var GoogleAdaptee_1 = require("./GoogleAdaptee");
 var MicrosoftAdaptee_1 = require("./MicrosoftAdaptee");
@@ -38,7 +46,7 @@ var Adapter = /** @class */ (function () {
                 this.currentAdapteeIndex = 0;
                 break;
         }
-        console.log("\nTarget is now " + target + "\n");
+        return target;
     };
     /**
      * retrieves the scheduled events of a specific user or returns a null object if there are none
