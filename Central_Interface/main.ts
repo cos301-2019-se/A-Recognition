@@ -155,7 +155,7 @@ export function isEmployee(email : string) : Promise<boolean>{
  * Polls events and checks if a user assinged to an event is a guest, sending them an OTP
  * @returns {void}
  */
-export function checkBookingsForGuests(){
+export function checkBookingsForGuests(){ //TODO : MAke it work for the same user across multiple events
 
     let markedAsGuest = [];
 
@@ -175,6 +175,7 @@ export function checkBookingsForGuests(){
                                 startTime : event.start.dateTime.substring(event.start.dateTime.indexOf("T") + 1,event.start.dateTime.length)
                             }
                             console.log("Sending OTP",notifyViaOTP);
+                            NotificationSystem.sendEmail("otp",notifyViaOTP,NotificationSystem.generateOTP().otp);
                             
                             
                         }
@@ -188,7 +189,7 @@ export function checkBookingsForGuests(){
         }).catch(err =>{
             console.log(err);
         })
-    },10000);
+    },5000);
     
 }
 
