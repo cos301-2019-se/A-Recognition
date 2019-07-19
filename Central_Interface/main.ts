@@ -8,7 +8,8 @@
 */
 import * as Adapter from "../API_Adapter/main";
 import * as Utils from "../Utils/Utils";
-import {PythonShell} from 'python-shell' //npm install python-shell
+import {PythonShell} from 'python-shell'; //npm install python-shell
+import * as NotificationSystem from "../notification";
 
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
@@ -60,7 +61,9 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
         let endTime = new Date();
         endTime.setHours(endTime.getHours() + CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME);
         
+        
         Adapter.getEvents("primary",true,{attendees : true,location : true,start : true},3,endTime.toISOString()).then( (closestEvents)=>{
+            
             
             for (let i = 0; i < closestEvents.length; i++) {
                 let event = closestEvents[i];
@@ -164,13 +167,15 @@ export function checkBookingsForGuests(){
                     event.attendees.forEach(attendee => {
                         if(!Utils.inArray(attendee,markedAsGuest) && !Utils.inArray(attendee,emails)){
                             markedAsGuest.push(attendee);
+                            
                             let notifyViaOTP ={
                                 guest : attendee,
                                 location : event.location,
-                                startDate : event.startDate,
-                                startTime : event.startTime
+                                startDate : event.start.dateTime.substring(0,event.start.dateTime.indexOf("T")),
+                                startTime : event.start.dateTime.substring(event.start.dateTime.indexOf("T") + 1,event.start.dateTime.length)
                             }
                             console.log("Sending OTP",notifyViaOTP);
+                            
                             
                         }
                     });
@@ -183,6 +188,8 @@ export function checkBookingsForGuests(){
         }).catch(err =>{
             console.log(err);
         })
-    },25000);
+    },10000);
     
 }
+
+checkBookingsForGuests();
