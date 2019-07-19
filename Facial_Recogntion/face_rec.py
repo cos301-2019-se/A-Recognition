@@ -222,16 +222,17 @@ if __name__ == "__main__":
     lastSendTime = 0
     while True:
         #Clear the history after 30 frames - Go back to non-human mode and wait for blink
-        if len(eyes_detected["Unknown"]) > 30:
-            eyes_detected.clear()
+        for x in eyes_detected:
+            if len(eyes_detected[x]) > 30:
+                eyes_detected=defaultdict(str)
 
         #Run our facial detection
         frame = detect_and_display(model, video_capture, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, data, eyes_detected)
         
         #Show a nice video feed of what is happening
-        cv2.imshow("Face Liveness Detector", frame)
+        #cv2.imshow("Face Liveness Detector", frame)
 
-        if pleaseStopTheScanning == True and ((time.time() - lastSendTime) > 5): #and counter <= 60:
+        if pleaseStopTheScanning == True and ((time.time() - lastSendTime) > 2): #and counter <= 60:
             # Send output back to the api
             ulr = "http://localhost:3000/getUsersFromDaysEvents"
             r = requests.get(url = ulr)#.json()#, params = PARAMS) 
