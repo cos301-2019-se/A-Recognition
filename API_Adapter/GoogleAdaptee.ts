@@ -1,6 +1,14 @@
+/** 
+ * Filename: GoogleAdaptee.ts
+ * Version: V1.1
+ * Author: JJ Goschen
+ * Project name: A-Recognition (Advance)
+ * Organization: Singularity
+ * Funtional description: Provides functionality for communication with Google Calendar
+*/
 import * as fs from 'fs';
 import * as readline from 'readline';
-import {google} from 'googleapis';
+import {google} from 'googleapis'; //npm install googleapis@39 --save
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];

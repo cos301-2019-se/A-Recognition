@@ -1,10 +1,18 @@
+/** 
+ * Filename: mainREST.ts
+ * Version: V1.0
+ * Author: JJ Goschen
+ * Project name: A-Recognition (Advance)
+ * Organization: Singularity
+ * Funtional description: Provides an api to access main.ts functions
+*/
 //npm install express --save
+//pip3 install firebase-admin
+//pip3 install firebase
 import * as Main from "./main";
-import {PythonShell} from 'python-shell'
 
 var express = require("express");
 var app = express();
-
 
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
@@ -68,21 +76,22 @@ app.post("/richardsResponse", (req, res, next) => {
 
 app.get('/getEmails', (req, res) => {
 
-    var pyshell = new PythonShell("test.py");
+    Main.getEmployeeEmails().then( employees =>{
+        res.json(employees);
+    }).catch( err => res.send(err));
+});
 
-    pyshell.on('message', function (message) {
-        // received a message sent from the Python script (a simple "print" statement)
-        console.log(message);
-        //DATA CONTAINS THE EMAILS
-        //{email1,email2,email3}
-    });
+app.get('/isEmployee', (req, res) => {
+
+    let email = req.query.email;
+
+    if(email == undefined)
+        res.send("Please send a valid email");
+    else
+        Main.isEmployee(JSON.parse(email) ).then( result =>{
+            res.send(result);
+        }).catch( result=>{
+            res.send(result);
+        });
     
-    // end the input stream and allow the process to exit
-    pyshell.end(function (err) {
-        if (err){
-            throw err;
-        };
-    
-        console.log('finished');
-    });
 });

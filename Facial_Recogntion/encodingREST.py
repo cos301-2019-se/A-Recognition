@@ -1,3 +1,11 @@
+## 
+# Filename: encodingREST.py
+# Version: V1.0
+# Author: Richard McFadden
+# Project name: A-Recognition (Advance)
+# Organization: Singularity
+# Funtional description: Provides same functionality as encoding.py but as a RESTful api
+
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
