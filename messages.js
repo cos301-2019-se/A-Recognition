@@ -14,7 +14,7 @@ const roomName = "Rome";
 exports.unauthMessage = {
     from: "arecognition.bot@gmail.com",
     to: "rossimichele04@gmail.com",
-    subject: "Unauthorized access attempted at room *insert room name*",
+    subject: "Unauthorized access attempted",
     generateTextFromHTML: true,
     html: 
     "Unauthorized access was attempted at room " + roomName + " at " + Date.now()
@@ -22,8 +22,8 @@ exports.unauthMessage = {
 
 exports.otpClient = {
     from: "arecognition.bot@gmail.com",
-    to: "rossimichele04@gmail.com, alessio@fasmco.com",  
+    to: "rossimichele04@gmail.com",  
     subject: "OTP for meeting room " + roomName,
     generateTextFromHTML: true,
-    text: "Your OTP to gain entrance to the Advance HQ as well as the specified meeting room is: " 
+    html: "Your OTP to gain entrance to the Advance HQ as well as the specified meeting room is: " 
 }
