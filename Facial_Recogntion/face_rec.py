@@ -12,6 +12,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 import requests
 import json
+import time
 
 db = firestore.client()
 
@@ -48,6 +49,10 @@ def init():
     model = load_model()
 
     return (model,face_detector, open_eyes_detector, left_eye_detector,right_eye_detector, video_capture) 
+
+def validate(email,room = "Room 9"):
+    urlToSend = 'http://localhost:3000/validateUserHasBooking?email="'+email+'"'+'&room="Room 9"'
+    allowedResponse = requests.get(url=urlToSend) 
 
 def isBlinking(history, maxFrames):
     """ @history: A string containing the history of eyes status 
@@ -179,6 +184,7 @@ if __name__ == "__main__":
     allowedResponse = "NO"
 
     eyes_detected = defaultdict(str)
+    lastSendTime = 0
     while True:
         #Clear the history after 30 frames - Go back to non-human mode and wait for blink
         if len(eyes_detected["Unknown"]) > 30:
@@ -190,7 +196,7 @@ if __name__ == "__main__":
         #Show a nice video feed of what is happening
         cv2.imshow("Face Liveness Detector", frame)
 
-        if pleaseStopTheScanning == True: #and counter <= 60:
+        if pleaseStopTheScanning == True and ((time.time() - lastSendTime) > 5): #and counter <= 60:
             # Send output back to the api
             ulr = "http://localhost:3000/getUsersFromDaysEvents"
             r = requests.get(url = ulr)#.json()#, params = PARAMS) 
@@ -199,15 +205,10 @@ if __name__ == "__main__":
                 print(str(responds))
                 #we now need to compare and see if the email that appears the most is in this json object
                 for temp in responds:
-                    if email == temp:
-                        urlToSend = 'http://localhost:3000/validateUserHasBooking?email="'+email+'"'+'&room="Room 9"'
-                        allowedResponse = requests.get(url=urlToSend)
-               
-                # if isAllowed:
-                #     requests.post(url="http://localhost:3000/richardsResponse", data = {"answer":True})
-                # else:
-                #     requests.post(url="http://localhost:3000/richardsResponse", data = {"answer":False}) 
-
+                    if email == temp:                         
+                        validate(email,"Room 9")
+                        lastSendTime = time.time()
+        
                 pleaseStopTheScanning = False 
                 isAllowed = False  
 
@@ -219,3 +220,5 @@ if __name__ == "__main__":
             break
     
     cv2.destroyAllWindows()
+
+
