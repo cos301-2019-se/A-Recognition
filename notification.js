@@ -63,12 +63,14 @@ app.listen(3000, () => {
  * @param {A string token that is passed to determine the action of the notification to be sent, 
  * determined by the relevant endpoint used} emailToken 
  */
-async function sendEmail(emailToken, emailDetails, generatedOtp) {
+exports.sendEmail =  async function sendEmail(emailToken, emailDetails, generatedOtp) {
     /**
      * A simple variable array that will hold the relevant details per message that will determine the type
      * of notification to send and whom to send it to.
      * Limited currently to Unauthorized Access and OTP generation
      */
+
+    
     var mailOptions = {};
 
     /**
@@ -87,9 +89,14 @@ async function sendEmail(emailToken, emailDetails, generatedOtp) {
     )
 
     oauth2client.setCredentials({
-        refresh_token: "1/-b6FCrGDiFQ2nGvGCOpGOCf3nzxMjen7jfR_8J8XH1w"
+        refresh_token: "1/zghb1ONcSV5Pg742IoWUQBkzduMCYQoRMl8RH06hWCE"
     });
+
+
+    //const tokens = await oauth2client.refreshAccessToken();
+
     const tokens = await oauth2client.refreshAccessToken();
+    
     const accessToken = tokens.credentials.access_token;
 
     const smtpTransport = nodemailer.createTransport({
@@ -99,7 +106,7 @@ async function sendEmail(emailToken, emailDetails, generatedOtp) {
             user: "arecognition.bot@gmail.com",
             clientId: "680276265540-jr5q5k0kfvp7elsav0jfdf9621c3etai.apps.googleusercontent.com",
             clientSecret: "S-Ka9zoEMPRvDk8ROsyvgYdn",
-            refreshToken: "1/-b6FCrGDiFQ2nGvGCOpGOCf3nzxMjen7jfR_8J8XH1w",
+            refreshToken: "1/zghb1ONcSV5Pg742IoWUQBkzduMCYQoRMl8RH06hWCE",
             accessToken: accessToken
         }
     });
@@ -159,7 +166,7 @@ async function sendEmail(emailToken, emailDetails, generatedOtp) {
     *   after every call.
     */
 
-    function generateOTP() {
+    exports.generateOTP = function generateOTP() {
         let otpTemp = {
             "otp": "",
             "timeCreated": ""
