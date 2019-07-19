@@ -243,7 +243,7 @@ if __name__ == "__main__":
         frame = detect_and_display(model, video_capture, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, data, eyes_detected)
         
         #Show a nice video feed of what is happening
-        #cv2.imshow("Face Liveness Detector", frame)
+        cv2.imshow("Face Liveness Detector", frame)
 
         if (time.time() - oldRefreshTime > 1800):
             oldRefreshTime = time.time()
@@ -251,12 +251,12 @@ if __name__ == "__main__":
 
         if pleaseStopTheScanning == True and (time.time() - lastSendTime > 1): #and counter <= 60:
             try:
-                print(str(emailList))
                 #we now need to compare and see if the email that appears the most is in this json object
                 for emailItem in emailList:
                     if email == emailItem:                         
                         validate(email,"Room 9")
                         lastSendTime = time.time()
+                        print(str(emailItem))
         
                 pleaseStopTheScanning = False 
                 isAllowed = False  
