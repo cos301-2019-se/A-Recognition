@@ -18,7 +18,7 @@ export class AuthService {
   
   public generateToken()
   {
-    this.user$ = this.http.get()
+    // this.user$ = this.http.get()
   }
 
   // Functionality for logging in
@@ -30,7 +30,7 @@ export class AuthService {
         {
           console.log('SUCCESS', value);
           this.generateToken();
-          localStorage.setItem('token', JSON.stringify(this.user$));
+          // localStorage.setItem('token', JSON.stringify(this.user$));
           this.router.navigate(['home']);
         }).catch(err =>
           {
@@ -48,9 +48,9 @@ export class AuthService {
   // Check whether there exists a token
   public isAuthenticated() : boolean
   {
-    const token = localStorage.getItem('token');
-    console.log(token);
+    // const token = localStorage.getItem('token');
+    // console.log(token);
     // Check whether the token is expired and return true or false
-    return !this.jwtHelper.isTokenExpired(token);
+    return true; // !this.jwtHelper.isTokenExpired(token);
   }
 }
