@@ -5,15 +5,15 @@ import { AuthService } from './auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuardService {
+export class AuthGuardService implements CanActivate {
 
   constructor(public auth: AuthService, public router: Router) 
   {
   
   }
 
-  //Check whether a user is authenticated to go to the specific link
-  //If not then reroute to login
+  // Check whether a user is authenticated to go to the specific link
+  // If not then reroute to login
   canActivate(): boolean 
   {
     if (!this.auth.isAuthenticated()) {
