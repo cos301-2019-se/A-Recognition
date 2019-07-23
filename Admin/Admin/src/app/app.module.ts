@@ -15,6 +15,7 @@ import { FirestoreSettingsToken} from '@angular/fire/firestore';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule, JwtHelperService} from '@auth0/angular-jwt';
+import { NavComponent } from './nav/nav.component';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBpazWx_m3UGkQAh6zgEMujQ2JtU3OJzEc',
@@ -32,7 +33,8 @@ const firebaseConfig = {
     ReportsComponent,
     AddingComponent,
     OTPComponent,
-    HomeComponent
+    HomeComponent,
+    NavComponent
   ],
   imports: [
     BrowserModule,
