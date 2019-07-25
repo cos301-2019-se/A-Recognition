@@ -168,12 +168,18 @@ export function checkBookingsForGuests(){ //TODO : MAke it work for the same use
                         if(!Utils.inArray(attendee,markedAsGuest) && !Utils.inArray(attendee,emails)){
                             markedAsGuest.push(attendee);
                             
+                            console.log(event);
+                            
                             let notifyViaOTP ={
                                 guest : attendee,
                                 location : event.location,
-                                startDate : event.start.dateTime.substring(0,event.start.dateTime.indexOf("T")),
-                                startTime : event.start.dateTime.substring(event.start.dateTime.indexOf("T") + 1,event.start.dateTime.length)
+                                startDate : event.startDate
                             }
+
+                            if(event.startTime != null){
+                                notifyViaOTP["startTime"] = event.startTime;
+                            }
+                            
                             console.log("Sending OTP",notifyViaOTP);
                             NotificationSystem.sendEmail("otp",notifyViaOTP,NotificationSystem.generateOTP().otp);
                             
@@ -194,3 +200,5 @@ export function checkBookingsForGuests(){ //TODO : MAke it work for the same use
 }
 
 checkBookingsForGuests();
+
+//getEmployeeEmails().then( emails => console.log(emails) );
