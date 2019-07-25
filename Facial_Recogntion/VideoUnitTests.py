@@ -1,3 +1,11 @@
+## 
+# Filename: VideoUnitTests.py
+# Version: V1.0
+# Author: Adrian le Grange
+# Project name: A-Recognition (Advance)
+# Organization: Singularity
+# Funtional description: Unit tests for video streams and cameras
+
 import unittest
 import time
 from face_rec import getVideoStream

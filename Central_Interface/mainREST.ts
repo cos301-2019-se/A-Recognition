@@ -1,3 +1,11 @@
+/** 
+ * Filename: mainREST.ts
+ * Version: V1.0
+ * Author: JJ Goschen
+ * Project name: A-Recognition (Advance)
+ * Organization: Singularity
+ * Funtional description: Provides an api to access main.ts functions
+*/
 //npm install express --save
 //pip3 install firebase-admin
 //pip3 install firebase

@@ -8,6 +8,45 @@
 ---
 
 ### Description 
-This component is responsible for all database CRUD requests used throughout the system.
+Create a system which uses facial recognition to allow users access to areas that are prohibited. The system should come with an interface which can be easily used to add new faces and their respective access rights.
 
-This includes locally stored database tables as well as real time Firebase integration.
+---
+
+### The Team
+<img src="https://i.imgur.com/y2iKVw1m.jpg" title="source: imgur.com" />
+
+Alessio - Kyle - Richard - Adrian - Jarrod
+
+##### Jarrod Goschen
+- Software development centric with experience in C++
+- AI Student
+- Unity Experience
+
+---
+
+##### Richard Mcfadden
+- Experience in multiple languages
+- Facial Recognition experience
+- Interest in AI and Computer Networks
+
+---
+
+##### Adrian le Grange
+- Experience with Unity
+- Easilty adaptable to programming languages
+- Interested in AI, graphics as well as operating systems
+
+---
+
+##### Kyle Olivier
+- Experience in C# and Java
+- User experience focused
+
+---
+
+##### Alessio Rossi
+- Determined learner
+- Motivational member
+- Experienced in a number of programming languages
+
+---

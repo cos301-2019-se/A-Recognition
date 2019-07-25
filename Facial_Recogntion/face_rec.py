@@ -1,3 +1,11 @@
+## 
+# Filename: face_rec.py
+# Version: V1.0
+# Author: Adrian le Grange, Richard McFadden
+# Project name: A-Recognition (Advance)
+# Organization: Singularity
+# Funtional description: A subsystem used to provide facial detection and recognition to other subsystems
+
 import os
 import cv2
 import face_recognition
@@ -12,6 +20,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 import requests
 import json
+import time
 
 db = firestore.client()
 
@@ -21,6 +30,10 @@ users_ref = db.collection(u'Users')
 #docs now contain the data in Users
 docs = users_ref.stream()
 
+##
+#Function that returns a tuple containing all needed models and data that is used for the facial recognition
+#
+#@return: Tuple containing: The open/closed eye model, the face-detection model, the model to detect open eyes, left-eye detection model, right-eye detection model, the video stream
 def init():
     #Load models to detect faces and features of them
     dataset = 'faces'
@@ -48,7 +61,20 @@ def init():
     model = load_model()
 
     return (model,face_detector, open_eyes_detector, left_eye_detector,right_eye_detector, video_capture) 
-
+##
+#Function that validate whether a user may proceed
+#
+#@param email: A string containing an email
+#@param room:The room that was booked
+def validate(email,room = "Room 9"):
+    urlToSend = 'http://localhost:3000/validateUserHasBooking?email="'+email+'"'+'&room="Room 9"'
+    allowedResponse = requests.get(url=urlToSend) 
+##
+#Function that determines if a person has blinked recently
+#
+#@param history: A string containing a sequence of past eye statuses
+#@param maxFrames: The maximum number of successive frames where an eye is closed
+#@return: Return a boolean indicating if person has blinked
 def isBlinking(history, maxFrames):
     """ @history: A string containing the history of eyes status 
          where a '1' means that the eyes were closed and '0' open.
@@ -59,6 +85,18 @@ def isBlinking(history, maxFrames):
             return True
     return False
 
+##
+#Function that detects faces and features and displays the result as video feed
+#
+#@param model: The model to be used for determining eye status
+#@param video_capture: The video stream to process
+#@param face_detector: The model used to detect a person's face
+#@param open_eyes_detector: The model used to determine if a persons eyes is open
+#@param left_eye_detector: The model used to locate a person's left eye
+#@param right_eye_detector: The model used to locate a person's right eye
+#@param data: The array storing all the facial data and emails of registered people (Actually a subset of the people)
+#@param eyes_detected: Array that holds the history of a person's eye status
+#@return: A manipulated frame
 def detect_and_display(model, video_capture, face_detector, open_eyes_detector, left_eye_detector, right_eye_detector, data, eyes_detected):
         #Grab a single frame from the video stream
         frame = video_capture.read()
@@ -108,7 +146,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 for (ex,ey,ew,eh) in open_eyes_glasses:
                     cv2.rectangle(face,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
             
-            # #Else we try to detect individual eyes (Detects both open and closed eyes)              
+            #Else we try to detect individual eyes (Detects both open and closed eyes)              
             else:
                 #Slpit the face into a left and right side
                 left_face = frame[y:y+h, x+int(w/2):x+w]
@@ -166,7 +204,18 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 
         return frame
 
+##
+#Function to get an updated list of people's emails that are part of a booking in the current day
+#
+#@return: A list of emails expected during current day
+def updateExpectedUsers():
+    endpointURL = "http://localhost:3000/getUsersFromDaysEvents"
+    response = requests.get(url = endpointURL).json()
+    return response
 
+##
+#Main function; Continuosly processes stream and recognises people
+#Press 'q' button to stop
 if __name__ == "__main__":
     #Initialize
     (model, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, video_capture) = init()
@@ -179,10 +228,16 @@ if __name__ == "__main__":
     allowedResponse = "NO"
 
     eyes_detected = defaultdict(str)
+
+    oldRefreshTime = 0
+    lastSendTime = 0
+
+    emailList = updateExpectedUsers()
     while True:
         #Clear the history after 30 frames - Go back to non-human mode and wait for blink
-        if len(eyes_detected["Unknown"]) > 30:
-            eyes_detected.clear()
+        for x in eyes_detected:
+            if len(eyes_detected[x]) > 30:
+                eyes_detected = defaultdict(str)
 
         #Run our facial detection
         frame = detect_and_display(model, video_capture, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, data, eyes_detected)
@@ -190,24 +245,19 @@ if __name__ == "__main__":
         #Show a nice video feed of what is happening
         cv2.imshow("Face Liveness Detector", frame)
 
-        if pleaseStopTheScanning == True: #and counter <= 60:
-            # Send output back to the api
-            ulr = "http://localhost:3000/getUsersFromDaysEvents"
-            r = requests.get(url = ulr)#.json()#, params = PARAMS) 
-            try:
-                responds= r.json()
-                print(str(responds))
-                #we now need to compare and see if the email that appears the most is in this json object
-                for temp in responds:
-                    if email == temp:
-                        urlToSend = 'http://localhost:3000/validateUserHasBooking?email="'+email+'"'+'&room="Room 9"'
-                        allowedResponse = requests.get(url=urlToSend)
-               
-                # if isAllowed:
-                #     requests.post(url="http://localhost:3000/richardsResponse", data = {"answer":True})
-                # else:
-                #     requests.post(url="http://localhost:3000/richardsResponse", data = {"answer":False}) 
+        if (time.time() - oldRefreshTime > 1800):
+            oldRefreshTime = time.time()
+            emailList = updateExpectedUsers()
 
+        if pleaseStopTheScanning == True and (time.time() - lastSendTime > 1): #and counter <= 60:
+            try:
+                #we now need to compare and see if the email that appears the most is in this json object
+                for emailItem in emailList:
+                    if email == emailItem:                         
+                        validate(email,"Room 9")
+                        lastSendTime = time.time()
+                        print(str(emailItem))
+        
                 pleaseStopTheScanning = False 
                 isAllowed = False  
 
@@ -219,3 +269,5 @@ if __name__ == "__main__":
             break
     
     cv2.destroyAllWindows()
+
+
