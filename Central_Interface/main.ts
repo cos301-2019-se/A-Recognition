@@ -179,8 +179,7 @@ export function checkBookingsForGuests(){ //TODO : MAke it work for the same use
                             if(event.startTime != null){
                                 notifyViaOTP["startTime"] = event.startTime;
                             }
-                            
-                            console.log("Sending OTP",notifyViaOTP);
+                        
                             NotificationSystem.sendEmail("otp",notifyViaOTP,NotificationSystem.generateOTP().otp);
                             
                             
