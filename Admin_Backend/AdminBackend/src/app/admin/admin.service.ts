@@ -33,6 +33,12 @@ export class AdminService {
 
   deleteEmployeeById(Employee:string)
   {
-    return this.http.delete('http://localhost:52892/api/Employee/deleteEmployee/'+Employee);
+    return this.http.delete('http://localhost:52892/api/Employee/deleteEmployee/'+Employee,);
+  }
+
+  searchEmployee(user: object)//, pass)
+  { 
+    //let body = new HttpParams().set('name', user);
+    return this.http.post<any>('http://localhost:52892/api/Employee/searchEmployees', user);//, pass});
   }
 }

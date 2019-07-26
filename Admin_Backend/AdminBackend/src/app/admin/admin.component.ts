@@ -43,7 +43,7 @@ export class AdminComponent implements OnInit {
       this.adminForm.reset();  
     }  
     loadEmployeeToEdit(emp: Employee) {  
-      this.adminService.updateEmployee(emp).subscribe(()=> {  
+      this.adminService.searchEmployee(emp).subscribe(()=> {  
         this.message = null;  
         this.dataSaved = false;    
         this.adminForm.controls['Name'].setValue(emp.Name);  

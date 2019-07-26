@@ -17,13 +17,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AdminComponent } from './admin/admin.component';
 import { AdminService } from './admin/admin.service';
 import { RegisterComponent } from './register/register.component';
+import { OtpComponent } from './otp/otp.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     AdminComponent,
-    RegisterComponent
+    RegisterComponent,
+    OtpComponent
   ],
   imports: [
     BrowserModule,

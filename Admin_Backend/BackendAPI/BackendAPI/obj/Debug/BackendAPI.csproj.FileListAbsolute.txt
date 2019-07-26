@@ -84,6 +84,4 @@ D:\BSc IT\2019\COS 301\Main Project\Git Repo\A-Recognition\Admin_Backend\Backend
 D:\BSc IT\2019\COS 301\Main Project\Git Repo\A-Recognition\Admin_Backend\BackendAPI\BackendAPI\bin\System.Web.Cors.dll
 D:\BSc IT\2019\COS 301\Main Project\Git Repo\A-Recognition\Admin_Backend\BackendAPI\BackendAPI\bin\System.Web.Http.Cors.dll
 D:\BSc IT\2019\COS 301\Main Project\Git Repo\A-Recognition\Admin_Backend\BackendAPI\BackendAPI\bin\System.Web.Http.Cors.xml
-D:\BSc IT\2019\COS 301\Main Project\Git Repo\A-Recognition\Admin_Backend\BackendAPI\BackendAPI\obj\Debug\BackendAPI.csprojAssemblyReference.cache
-D:\BSc IT\2019\COS 301\Main Project\Git Repo\A-Recognition\Admin_Backend\BackendAPI\BackendAPI\obj\Debug\BackendAPI.csproj.CoreCompileInputs.cache
-D:\BSc IT\2019\COS 301\Main Project\Git Repo\A-Recognition\Admin_Backend\BackendAPI\BackendAPI\obj\Debug\BackendAPI.csproj.CopyComplete
+D:\BSc IT\2019\COS 301\Main Project\Git Repo\A-Recognition\Admin_Backend\BackendAPI\BackendAPI\obj\Debug\BackendAPI.csprojResolveAssemblyReference.cache
