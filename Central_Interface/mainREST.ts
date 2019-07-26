@@ -104,5 +104,5 @@ app.get('/addEmployee', (req, res) => {
 
 app.get('/generateToken', (req, res) => {
 
-    // how ?
+    res.json(Main.generateToken());
 });
