@@ -1,6 +1,6 @@
 /** 
  * Filename: GoogleAdaptee.ts
- * Version: V1.1
+ * Version: V1.1 - Scoped as final version
  * Author: JJ Goschen
  * Project name: A-Recognition (Advance)
  * Organization: Singularity
@@ -38,27 +38,22 @@ export class GoogleAdaptee{
 
 /**
  * retrieves the scheduled events of a specific user
- * @param {string} identifier the user identifier of choice
+ * @param {string} identifier The calendar identifier
+ * @param {number} resultSize Amount of events returned
+ * @param {string} endTimeISOString ISO string of end of search time, defaults to end of the day
  */
-    async getUserEvents(identifier : string = "primary",resultSize : number = 2,endTime : string) : Promise<any>{
+    async getUserEvents(identifier : string = "primary",resultSize : number = -1,endTimeISOString : string) : Promise<any>{
 
-       return new Promise( (resolve,reject)=>{
-            this.loadClientSecrets().then( (credentials)=>{
-                return credentials;
-            }).then( (credentials) =>{
-                this.authorize(credentials).then( (oAuth2Client)=>{
-                    this.listEvents(oAuth2Client,identifier,resultSize,endTime).then( (bookings)=>{
-                        resolve(bookings);
-                    }).catch( (err)=>{
-                        reject(err);
-                    } )
-                }).catch( (err)=>{
-                    reject(err);
-                })
-            }).catch( (err)=>{
-                reject(err);
-            } )
-       })
+       return new Promise( (resolve,reject)=>{ 
+            this.loadClientSecrets()
+            .then( (credentials)=>{ return credentials;})
+            .catch( err => reject(err))
+        .then( (credentials) =>{ this.authorize(credentials)
+        .then( (oAuth2Client)=>{ this.listEvents(oAuth2Client,identifier,resultSize,endTimeISOString)
+        .then( (bookings)=>{ resolve(bookings);})
+        .catch( (err)=>{ reject(err);})})
+        .catch( (err)=>{ reject(err);})})
+        .catch( (err)=>{ reject(err);})})
     }
 
 /**
@@ -173,6 +168,10 @@ export class GoogleAdaptee{
 /**
  * Lists the next 10 events on the user's primary calendar.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+ * @param {string} calendarId The calendar identifier
+ * @param {number} resultSize Amount of events returned
+ * @param {string} endTimeISOString ISO string of end of search time, defaults to end of the day
+ * 
  */
     listEvents(auth,calendarId : string,resultSize : number,endTimeISOString : string = "") : Promise<any> {
 
@@ -190,7 +189,6 @@ export class GoogleAdaptee{
                 //console.log(endTime.toISOString());
                 endTimeISOString = endTime.toISOString();
             }
-            
             
             
             calendar.events.list({
