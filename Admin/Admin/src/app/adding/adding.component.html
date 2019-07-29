@@ -35,10 +35,16 @@
               <div class="mx-auto w-50 text-center">
                 <label class="image-upload-container btn btn-bwm">
                     <span>Upload Image</span>
-                    <input #imageInput
+                    <!-- <input #imageInput
                            type="file"
                            accept="image/*"
-                           (change)="processFile(imageInput)">
+                           (change)="processFile($event)"> -->
+                           <input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
+                           <button type="button" class="btn btn-success btn-s" 
+                             (click)="uploader.uploadAll()" 
+                             [disabled]="!uploader.getNotUploadedItems().length" >
+                                 Upload an Image
+                           </button>   
                 </label>
               </div>
             </div>  

@@ -16,6 +16,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule, JwtHelperService} from '@auth0/angular-jwt';
 import { NavComponent } from './nav/nav.component';
+import { FileSelectDirective } from 'ng2-file-upload';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBpazWx_m3UGkQAh6zgEMujQ2JtU3OJzEc',
@@ -34,7 +35,7 @@ const firebaseConfig = {
     AddingComponent,
     OTPComponent,
     HomeComponent,
-    NavComponent
+    NavComponent,FileSelectDirective
   ],
   imports: [
     BrowserModule,

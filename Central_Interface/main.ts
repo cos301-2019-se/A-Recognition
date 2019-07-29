@@ -242,3 +242,7 @@ export function verifyToken(token : any){
 
     //var legit = jwt.verify(token, publicKEY, verifyOptions);
 }
+export function addEmplpoyee(image : any)
+{
+  
+}

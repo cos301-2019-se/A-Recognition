@@ -1,13 +1,21 @@
+## 
+# Filename: encoding.py
+# Version: V1.0
+# Author: Richard McFadden
+# Project name: A-Recognition (Advance)
+# Organization: Singularity
+# Funtional description: Provides ability to add add people to database
+
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import numpy as np
 import face_recognition
 import cv2
-
+import base64
 
 # Fetch the service account key JSON file contents
-cred = credentials.Certificate('capstoneusers-b474f-firebase-adminsdk-rtpcf-4a8a042a1d.json')
+cred = credentials.Certificate('credentials.json')
 firebase_admin.initialize_app(cred)
 
 #Create the DB object
@@ -18,27 +26,37 @@ users_ref = db.collection(u'Users')
 
 #docs now contain the data in Users
 docs = users_ref.stream()
+
+##
+#Function that stores encodings of given images in DB
 #
-#@params images,name,surname,title
-#
-def encodeImageForDB(images,name,surname,title):
-    if(images is None or name is None or surname is None or title is None):
-        raise TypeError("encodingImage expected 4 parameters")
+#@param images: Images to be encoded
+#@param name: The names of the corresponding images
+#@param surname: The surnames of the corresonding images
+#@param title: The titles of the corresponding images
+#@param email: The emails of the corresponding images
+#@return: Return status of function
+def encodeImageForDB(name,surname,title,email,images):
+    if( name is None or surname is None or title is None or email is None):
+        name ="RichardTest"
+        surname = "RichardTest"
+        email="RichardTest"
+        title ='RichardTest'
+        
     encoding=[]
     print("ENCODING the dataset")
     try:
-        for image_path in (images):
-            # Load image
-            image = cv2.imread(image_path)
-            # Convert it from BGR to RGB
-            #Because opencv uses RGB
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            
-            # detect face in the image and get its location (square boxes coordinates)
-            boxes = face_recognition.face_locations(image, model='hog')
+        temp = "../Admin/Admin/"+images.Filename
+        image = cv2.imread(temp)
+        # Convert it from BGR to RGB
+        #Because opencv uses RGB
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        
+        # detect face in the image and get its location (square boxes coordinates)
+        boxes = face_recognition.face_locations(image, model='hog')
 
-            # Encode the face into a 128-d embeddings vector
-            encoding.append(np.array(face_recognition.face_encodings(image,boxes)[0]).tolist())
+        # Encode the face into a 128-d embeddings vector
+        encoding.append(np.array(face_recognition.face_encodings(image,boxes)[0]).tolist())
         
         if len(encoding) > 0 :
             #Create an array of encoding objects
@@ -49,39 +67,14 @@ def encodeImageForDB(images,name,surname,title):
                 u'Name': name,
                 u'Surname': surname,
                 u'Title': title,
-                u'image_vector':arr
+                u'image_vector':arr,
+                u'Email':email
             }
             # Add the new user to the database
             users_ref.document(name).set(user)
             if user:
-                return True
+                print(True)
+            else: 
+                print(False)
     except TypeError:
         return "An error occured while trying to encode the image or saving to the database"
-
-def encodingsOfImages(images,name,surname,title):
-    if(images is None or name is None or surname is None or title is None):
-        raise TypeError("encodingImage expected 4 parameters")
-    encoding=[]
-    print("ENCODING the dataset for the facial Recognition ")
-    try:
-        for image_path in (images):
-            # Load image
-            image = cv2.imread(image_path)
-            # Convert it from BGR to RGB
-            #Because opencv uses RGB
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            
-            # detect face in the image and get its location (square boxes coordinates)
-            boxes = face_recognition.face_locations(image, model='hog')
-
-            # Encode the face into a 128-d embeddings vector
-            encoding.append(np.array(face_recognition.face_encodings(image,boxes)[0]).tolist())
-        
-        if len(encoding) > 0 :
-                tempObj = title+" "+name+" "+ surname
-                return {"encodings":encoding,"name":tempObj}
-    except TypeError:
-        return "An error occured while trying to encode the image or saving to the database"
-
-# imageNames = ['./tester.jpg',"./5.jpg"]
-# encodeImageFro(imageNames,"Richard Two","McFadden","Mr")

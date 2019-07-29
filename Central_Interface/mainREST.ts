@@ -12,10 +12,12 @@
 import * as Main from "./main";
 
 var express = require("express");
+var cors = require('cors');
 var app = express();
 
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
+app.use(cors());
 
 app.listen(3000, () => {
  console.log("Server running on port 3000");
@@ -96,13 +98,13 @@ app.get('/isEmployee', (req, res) => {
     
 });
 
-app.get('/addEmployee', (req, res) => {
+app.post('/addEmployee', (req, res) => {
 
     // doTheThingWithTheObject();
     // passItToRichard();
+   
 });
 
 app.get('/generateToken', (req, res) => {
-
     res.json(Main.generateToken());
 });

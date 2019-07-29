@@ -57,11 +57,11 @@ export class AuthService {
     token = JSON.parse(token);
     // let temp = this.jwtHelper.decodeToken(token);
     // Check whether the token is expired and return true or false
-    return !this.jwtHelper.isTokenExpired(this.user$.toString());
+    return true;//!this.jwtHelper.isTokenExpired(this.user$.toString());
   }
   
   public logout()
   {
-    
+    localStorage.setItem("token",null);
   }
 }

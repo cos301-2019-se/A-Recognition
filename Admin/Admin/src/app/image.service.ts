@@ -9,11 +9,11 @@ export class ImageService {
   constructor(private http: HttpClient) {}
 
 
-  public uploadImage(image: File): Observable<any> {// <response>
+  public uploadImage(image: any): Observable<any> {// <response>
     const formData = new FormData();
 
     formData.append('image', image);
 
-    return ;//this.http.post('/api/v1/image-upload', formData);
+    return this.http.get('http://localhost:2999/add?name="RichardTest"&surname="TESTER"&title="Mr"&email="Rich@test.com"&images=' + JSON.stringify(image));
   }
 }
