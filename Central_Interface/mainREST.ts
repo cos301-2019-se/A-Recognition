@@ -95,3 +95,14 @@ app.get('/isEmployee', (req, res) => {
         });
     
 });
+
+app.get('/addEmployee', (req, res) => {
+
+    // doTheThingWithTheObject();
+    // passItToRichard();
+});
+
+app.get('/generateToken', (req, res) => {
+
+    res.json(Main.generateToken());
+});

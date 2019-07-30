@@ -1,0 +1,87 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="home" routerlink="home">EMPLOYEES</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="admin" routerlink="adding">ADD EMPLOYEE</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="otp" routerlink="otp">OTP</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="" (click)="authService.logout()">Logout</a>
+          </li>
+        </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="container">  
+  
+  <mat-card>  
+    <mat-toolbar color="accent">  
+      <div align="center" style="color:white;text-align: right;">  
+        Request a manual OTP
+      </div>    
+    </mat-toolbar>  
+  <br><br>  
+    <mat-card-content> 
+      <mat-card>
+          <mat-toolbar>  
+              <div align="center" style="color:black;text-align: right;">  
+                  Give the user's details
+              </div>    
+            </mat-toolbar>
+            <mat-card-content>
+      <form [formGroup]="otpForm"(ngSubmit)="onFormSubmit(otpForm.value)">  
+              <table class="table">  
+                <tr>  
+                  <td class="tbl1">  
+                    <mat-form-field class="demo-full-width">  
+                      <input formControlName="Name" matTooltip="Add your first name" matInput placeholder="Name">  
+                    </mat-form-field>  
+                    <mat-error>  
+                      <span *ngIf="!otpForm.get('Name').value && otpForm.get('Name').touched"></span>  
+                    </mat-error>  
+                  </td>  
+                  <td class="tbl1">  
+                    <mat-form-field class="demo-full-width">  
+                      <input formControlName="Surname" matTooltip="Add your surname" matInput placeholder="Surname">  
+                    </mat-form-field>  
+                    <mat-error>  
+                      <span *ngIf="!otpForm.get('Surname').value && otpForm.get('Surname').touched"></span>  
+                    </mat-error>  
+                  </td>  
+                  <td class="tbl1">  
+                    <mat-form-field class="demo-full-width">  
+                      <input formControlName="Email" matTooltip="Add your Email used to log in" matInput placeholder="Email">  
+                    </mat-form-field>  
+                    <mat-error>  
+                      <span *ngIf="!otpForm.get('Email').value && otpForm.get('Email').touched"></span>  
+                    </mat-error>  
+                  </td>  
+                </tr>  
+                 
+                <tr>  
+                  <td></td>  
+                  <td  class="content-center">  
+                    <button type="submit" mat-raised-button color="accent"matTooltip="Click Submit Button">Request OTP</button>      <!--[disabled]="!otpForm.valid"-->  
+                  </td>  
+                  <td>  
+                    <p *ngIf="dataSaved" style="color:rgb(0, 128, 0);font-size:20px;font-weight:bold" Class="success" align="left">  
+                      {{message}}  
+                    </p>  
+                  </td>  
+                </tr>  
+              </table>
+            </form>
+            </mat-card-content>
+            </mat-card>        
+    </mat-card-content>  
+  </mat-card>  
+  </div>

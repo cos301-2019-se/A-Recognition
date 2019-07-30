@@ -45,9 +45,9 @@ export class Adapter{
                     break;
 
                 case "microsoft" :
-                        this.adaptee = new MicrosoftAdaptee();
-                        this.currentAdapteeIndex = 1;
-                        break;
+                    this.adaptee = new MicrosoftAdaptee();
+                    this.currentAdapteeIndex = 1;
+                    break;
             
                 default:
                     this.adaptee = new GoogleAdaptee();
@@ -78,8 +78,7 @@ export class Adapter{
                 //Most probably no events, but possibly something else
                 reject(err);
             })
-        })
-       
+        });
     }
 
 
@@ -94,8 +93,7 @@ export class Adapter{
                 resolve(calendarList);
                
             }).catch( (err)=>{
-                console.log(err);
-                reject({});
+                reject(err);
             })
         })
     

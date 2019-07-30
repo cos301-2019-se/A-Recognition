@@ -10,9 +10,14 @@ import * as Adapter from "../API_Adapter/main";
 import * as Utils from "../Utils/Utils";
 import {PythonShell} from 'python-shell'; //npm install python-shell
 import * as NotificationSystem from "../notification";
+import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
+import * as fs from "fs";
 
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
+const ISSUER  = 'Central Interface';         
+const SUBJECT  = 'admin System';        
+const AUDIENCE  = 'A_Recognition'; 
 /**
  * Returns a list of user emails for all users that have bookings on the current day
  * @returns {Promise<Array<string> | null>} an array of emails if there are events for the current day or a null object if there is none or an error occured.
@@ -168,13 +173,18 @@ export function checkBookingsForGuests(){ //TODO : MAke it work for the same use
                         if(!Utils.inArray(attendee,markedAsGuest) && !Utils.inArray(attendee,emails)){
                             markedAsGuest.push(attendee);
                             
+                            console.log(event);
+                            
                             let notifyViaOTP ={
                                 guest : attendee,
                                 location : event.location,
-                                startDate : event.start.dateTime.substring(0,event.start.dateTime.indexOf("T")),
-                                startTime : event.start.dateTime.substring(event.start.dateTime.indexOf("T") + 1,event.start.dateTime.length)
+                                startDate : event.startDate
                             }
-                            console.log("Sending OTP",notifyViaOTP);
+
+                            if(event.startTime != null){
+                                notifyViaOTP["startTime"] = event.startTime;
+                            }
+                        
                             NotificationSystem.sendEmail("otp",notifyViaOTP,NotificationSystem.generateOTP().otp);
                             
                             
@@ -193,4 +203,42 @@ export function checkBookingsForGuests(){ //TODO : MAke it work for the same use
     
 }
 
-checkBookingsForGuests();
+export function generateToken(){
+    let privateKEY  = fs.readFileSync('./private.key', 'utf8');
+    let publicKEY  = fs.readFileSync('./public.key', 'utf8');
+
+    let payload = {
+        item : true,
+        item2 : "hello"
+    }
+
+    
+    let signOptions = {
+    issuer:  ISSUER,
+    subject:  SUBJECT,
+    audience:  AUDIENCE,
+    expiresIn:  "1h",
+    algorithm:  "RS256"
+    };
+
+    let token = jwt.sign(payload, privateKEY, signOptions);
+  
+    console.log(token);
+    
+    return token;
+    
+}
+
+
+export function verifyToken(token : any){
+
+    var verifyOptions = {
+        issuer:  ISSUER,
+        subject:  SUBJECT,
+        audience:  AUDIENCE,
+        expiresIn:  "1h",
+        algorithm:  ["RS256"]
+    };
+
+    //var legit = jwt.verify(token, publicKEY, verifyOptions);
+}
