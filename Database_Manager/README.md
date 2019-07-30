@@ -8,7 +8,7 @@ in the form of two paralel arrays.
 i.e index 0 of the "emails" array corresponds to index 0 of the "fd" (Facial data) array.
 
 Example:
-<code>
+```
 {
     "emails": [
         "email1@some.domain",
@@ -42,7 +42,7 @@ Example:
         ]
     ]
 }
-</code>
+```
 ---
 
 #### /register
@@ -50,7 +50,7 @@ Endpoint used to add users to the system. The request containing the details
 should be a JSON object as follows:
 
 Example:
-<code>
+```
 { 
     "email" : "email@some.domain",
     "name" : "John",
@@ -59,23 +59,23 @@ Example:
     "fd": [123,...,456],
     "active" : false
 }
-</code>
+```
 
 Success response:
 
-<code>
+```
 {
     "status" : "Success"
 }
-</code>
+```
 
 Failure response:
-<code>
+```
 {
     "status" : "Failure",
     "message" : "some description of the error"
 }
-</code>
+```
 
 ---
 
@@ -83,7 +83,7 @@ Failure response:
 Endpoint for updating a user's details. The request should contain all user details.
 
 Example:
-<code>
+```
 { 
     "email" : "email@some.domain",
     "name" : "John",
@@ -92,22 +92,22 @@ Example:
     "fd": [123,...,456],
     "active" : true
 }
-</code>
+```
 
 Success response:
-<code>
+```
 {
     "status" : "Success"
 }
-</code>
+```
 
 Failure response:
-<code>
+```
 {
     "status" : "Failure",
     "message" : "some description of the error"
 }
-</code>
+```
 
 ---
 
@@ -115,14 +115,14 @@ Failure response:
 Endpoint to retrive a user's details based on given email. The request:
 
 Example:
-<code>
+```
 {
     "email" : "email@some.domain"
 }
-</code>
+```
 
 Success response:
-<code>
+```
 {
     "status" : "Success"
     "email" : "email@some.domain",
@@ -131,14 +131,14 @@ Success response:
     "title": "Mr",
     "fd": [123,...,456]
 }
-</code>
+```
 
 Failure response:
-<code>
+```
 {
     "status" : "Failure",
     "message" : "some description of the error"
 }
-</code>
+```
 
 ---
