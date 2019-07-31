@@ -212,10 +212,11 @@ export class GoogleAdaptee{
                 maxResults: resultSize,
                 singleEvents: true,
                 orderBy: 'startTime',
-                }, (err, res) => {
+                }, (err, res ) => {
 
                 if (err) 
                     reject('The API returned an error: ' + err);
+                
                 
                 const bookings = res.data.items;
                 if (bookings.length) {
