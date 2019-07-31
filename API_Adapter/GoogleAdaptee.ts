@@ -27,13 +27,10 @@ export class GoogleAdaptee{
 
 
     constructor(){
-        var path = require("path");
+       // var path = require("path");
+        this.CREDENTIAL_PATH = __dirname + "/credentials.json";
+        this.TOKEN_PATH = __dirname + "/token.json";
         
-        var absolutePath = path.resolve("..");
-        absolutePath += "/API_Adapter/";
-
-        this.CREDENTIAL_PATH = absolutePath + "credentials.json";
-        this.TOKEN_PATH = absolutePath + "token.json";
     }
 
 /**
@@ -44,16 +41,32 @@ export class GoogleAdaptee{
  */
     async getUserEvents(identifier : string = "primary",resultSize : number = -1,endTimeISOString : string) : Promise<any>{
 
-       return new Promise( (resolve,reject)=>{ 
-            this.loadClientSecrets()
-            .then( (credentials)=>{ return credentials;})
-            .catch( err => reject(err))
-        .then( (credentials) =>{ this.authorize(credentials)
-        .then( (oAuth2Client)=>{ this.listEvents(oAuth2Client,identifier,resultSize,endTimeISOString)
-        .then( (bookings)=>{ resolve(bookings);})
-        .catch( (err)=>{ reject(err);})})
-        .catch( (err)=>{ reject(err);})})
-        .catch( (err)=>{ reject(err);})})
+    //    return new Promise( (resolve,reject)=>{ 
+    //         this.loadClientSecrets()
+    //         .then( (credentials)=>{ return credentials;})
+    //         .catch( err => reject(err))
+    //     .then( (credentials) =>{ this.authorize(credentials)
+    //     .then( (oAuth2Client)=>{ this.listEvents(oAuth2Client,identifier,resultSize,endTimeISOString)
+    //     .then( (bookings)=>{ resolve(bookings);})
+    //     .catch( (err)=>{ reject(err);})})
+    //     .catch( (err)=>{ reject(err);})})
+    //     .catch( (err)=>{ reject(err);})})
+
+            return new Promise( (resolve,reject)=>{
+
+                this.loadClientSecrets().then( (credentials)=>{
+
+                    this.authorize(credentials).then( (oAuth2Client)=>{ 
+
+                        this.listEvents(oAuth2Client,identifier,resultSize,endTimeISOString).then( (bookings)=>{ 
+                            resolve(bookings);
+                        }).catch( (err)=>{ reject(err);});
+
+                    }).catch( err => reject(err))
+
+                }).catch( (err)=>{ reject(err);})
+            });
+                    
     }
 
 /**
@@ -171,6 +184,7 @@ export class GoogleAdaptee{
  * @param {string} calendarId The calendar identifier
  * @param {number} resultSize Amount of events returned
  * @param {string} endTimeISOString ISO string of end of search time, defaults to end of the day
+ * @returns {Object[] | Object | string} events If any events are found under specifications or a message stating none found
  * 
  */
     listEvents(auth,calendarId : string,resultSize : number,endTimeISOString : string = "") : Promise<any> {

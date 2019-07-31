@@ -7,7 +7,7 @@
  * Funtional Description: Used to hold pre-prepared messages that will be send via the notification system
 */
 
-const otpGen = require('./notification.js');
+//const otpGen = require('./notification.js');
 
 const roomName = "Rome";
 

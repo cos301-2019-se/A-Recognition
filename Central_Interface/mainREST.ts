@@ -37,8 +37,10 @@ app.get("/validateUserHasBooking", (req, res, next) => {
 
     if(req.query.hasOwnProperty("email") && req.query.hasOwnProperty("room")){
         
-        email = JSON.parse(req.query.email);
-        room = JSON.parse(req.query.room);
+        //email = JSON.parse(req.query.email);
+        //room = JSON.parse(req.query.room);
+        email = req.query.email;
+        room = req.query.room;
 
         Main.validateUserHasBooking(email,room).then(msg=> {res.send(msg);console.log(msg)}).catch( err => res.send(err));
     }else{
@@ -84,11 +86,12 @@ app.get('/getEmails', (req, res) => {
 app.get('/isEmployee', (req, res) => {
 
     let email = req.query.email;
-
+    console.log(email);
+    
     if(email == undefined)
         res.send("Please send a valid email");
     else
-        Main.isEmployee(JSON.parse(email) ).then( result =>{
+        Main.isEmployee(email).then( result =>{
             res.send(result);
         }).catch( result=>{
             res.send(result);
