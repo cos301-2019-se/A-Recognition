@@ -9,41 +9,41 @@
  *          - OTP generation for clients (the /otp endpoint)
 */
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const nodemailer = require('nodemailer');
+// const express = require('express');
+// const bodyParser = require('body-parser');
+// const cors = require('cors');
+// const helmet = require('helmet');
+// const morgan = require('morgan');
+// const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
 const messages = require('./messages');
 
 // defining the Express app
-const app = express();
+// const app = express();
 
-// adding Helmet to enhance your API's security
-app.use(helmet());
+// // adding Helmet to enhance your API's security
+// app.use(helmet());
 
-// using bodyParser to parse JSON bodies into JS objects
-app.use(bodyParser.json());
+// // using bodyParser to parse JSON bodies into JS objects
+// app.use(bodyParser.json());
 
-// enabling CORS for all requests
-app.use(cors());
+// // enabling CORS for all requests
+// app.use(cors());
 
-// adding morgan to log HTTP requests
-app.use(morgan('combined'));
+// // adding morgan to log HTTP requests
+// app.use(morgan('combined'));
 
-// Default endpoint to generate an otp with no emails being sent
-app.get('/', (req, res) => {
-  res.send(generateOTP().otp);
-});
+// // Default endpoint to generate an otp with no emails being sent
+// app.get('/', (req, res) => {
+//   res.send(generateOTP().otp);
+// });
 
 
 // starting the server
-app.listen(3000, () => {
-  console.log('listening on port 3000');
-});
+// app.listen(3000, () => {
+//   console.log('listening on port 3000');
+// });
 
 // Determine a way to clean up the details about the email sender as well as determing what timeframe variables
 // will be used. Possibly do only current time in the form of HH:MM
@@ -55,7 +55,7 @@ app.listen(3000, () => {
  * @param {A string token that is passed to determine the action of the notification to be sent, 
  * determined by the relevant endpoint used} emailToken 
  */
-async function sendEmail(emailToken) {
+exports.sendEmail = async function sendEmail(emailToken, recipient = null) {
     /**
      * A simple variable array that will hold the relevant details per message that will determine the type
      * of notification to send and whom to send it to.
@@ -114,7 +114,11 @@ async function sendEmail(emailToken) {
         }
         else if(emailToken == "otp") 
         {
+            if(recipient == null)       //Allowed for your test functionality and normal
             mailOptions = messages.otpClient;
+            else 
+            mailOptions = recipient;
+
             mailOptions.html += generateOTP().otp;
             mailOptions = '';
             console.log(mailOptions.text);
@@ -157,11 +161,11 @@ async function sendEmail(emailToken) {
     }
 
 
-    app.get('/email', (req, res) => {
-        console.log('OTP value generated: ' + otpValue.otp);
-        console.log('testing');
-        sendEmail('otp');
-})  
+//     app.get('/email', (req, res) => {
+//         console.log('OTP value generated: ' + otpValue.otp);
+//         console.log('testing');
+//         sendEmail('otp');
+// })  
 
     /*
     *   
@@ -170,21 +174,29 @@ async function sendEmail(emailToken) {
     *
     *
     */
-    app.get('/otp', (req, res) => {
+    // app.get('/otp', (req, res) => {
 
-        sendEmail("otp");
-        res.send(generateOTP());
-    })
+    //     sendEmail("otp");
+    //     res.send(generateOTP());
+    // })
+exports.sendOTP = function sendOTP(){
+    sendEmail("otp");
+    return generateOTP();
+}
 
     /**
      * The unauthorized endpoint will be used in cases where the facial recognition detects
      * a person attempting to gain entrance to a room they were not added to or any unauthorized
      * access being attempted. In this case, an admin will be notified to the behaviour.
      */
-    app.get('/unauthorized', (req, res) => {
-        res.send(messages.unauthMessage);
-        sendEmail('unauth');
-    })
+    // app.get('/unauthorized', (req, res) => {
+    //     res.send(messages.unauthMessage);
+    //     sendEmail('unauth');
+    // })
+    exports.sendUnauthorized = function sendUnauthorized(){
+        sendEmail("unauth");
+        return messages.unauthMessage;
+    }
 
     /*
     *
@@ -193,10 +205,14 @@ async function sendEmail(emailToken) {
     *
     *
     */
-    app.get('/tesing', (req, res) => {
-        res.send("testing cases");
-        sendEmail('test');
-    })
+    // app.get('/tesing', (req, res) => {
+    //     res.send("testing cases");
+    //     sendEmail('test');
+    // })
+    exports.sendTest= function sendTest(){
+        sendEmail("test");
+        return "testing cases";
+    }
 
     function formatDate() {
         var dateCurrent = {
