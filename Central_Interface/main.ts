@@ -255,13 +255,49 @@ export function addEmplpoyee(req : any)
     console.log("Surname", req.body.surname);
     console.log("Email",req.body.email);
     console.log("image",req.file['filename']);
-    
+
     let nameOfFile =req.file['filename'];
    
     let options = {
         pythonOptions: ['-u'], // get print results in real-time
         scriptPath: '../Facial_Recogntion/',
         args: [nameOfFile ,req.body.name, req.body.surname ,req.body.title, req.body.email ]
+      };
+
+      let shell = new PythonShell('encodingBackup.py',options);
+      shell.on('message',(message)=>
+      {
+          console.log(message);
+      });
+
+      shell.end(function (err,code,signal) {
+        if (err) throw err;
+        console.log('The exit code was: ' + code);
+        console.log('The exit signal was: ' + signal);
+
+        return true;
+      });
+}
+/** 
+ * Function Name:addEmployee
+ * Version: V2.7
+ * Author: Richard McFadden
+ * Funtional description: makes the request to the python file
+ * to add the new employee to the database
+*/
+export function addEmplpoyeeTaken(req : any)
+{   
+    console.log("Name",req.query.name );
+    console.log("Surname", req.query.surname);
+    console.log("Email",req.query.email);
+    var ext = (req.query.image).split(';')[0].match(/jpeg|png|gif/)[0];
+    
+    let nameOfFile = 'image.'+ext;
+   
+    let options = {
+        pythonOptions: ['-u'], // get print results in real-time
+        scriptPath: '../Facial_Recogntion/',
+        args: [nameOfFile ,req.query.name, req.query.surname ,req.query.title, req.query.email ]
       };
 
       let shell = new PythonShell('encodingBackup.py',options);

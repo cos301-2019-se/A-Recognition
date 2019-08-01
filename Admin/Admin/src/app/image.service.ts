@@ -11,11 +11,11 @@ export class ImageService {
 
   public uploadImage(body: any): Observable<any> 
   {
-    // let config = {
-    //   headers: {
-    //      'Content-Type': 'multipart/form-data'//'application/x-www-form-urlencoded'
-    //   }
-  // };
     return this.http.post('http://localhost:3000/addEmployee', body);
+  }
+  public uploadImageTaken(img, name, surname, title, email): Observable<any> 
+  {
+    const temp = '?image=' + img + '&name=' + name + '&surname=' + surname + '&title=' + title + '&email=' + email;
+    return this.http.get('http://localhost:3000/addEmployeeTaken' + temp);
   }
 }

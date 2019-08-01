@@ -12,11 +12,11 @@
 import * as Main from "./main";
 
 var express = require("express");
+var fs = require('fs');
 var cors = require('cors');
 var multer = require('multer');
 var upload = multer({ dest: '../Facial_Recogntion/' })
 var app = express();
-
 
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
@@ -114,6 +114,29 @@ app.post('/addEmployee',upload.single('image'), async(req, res) => {
     await delay(6000);
     res.json(Main.addEmplpoyee(req)); 
 });
+/** 
+ * Function Name:addEmployeeTaken
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: first tranforms the base64 to be usable
+*/
+app.get('/addEmployeeTaken', async(req, res) => 
+{
+    //console.log(req.query.image);
+    // Grab the extension to resolve any image error
+    var ext = (req.query.image).split(';')[0].match(/jpeg|png|gif/)[0];
+    var data = (req.query.image).replace(/^data:image\/\w+;base64,/, "");
+    console.log(data);
+    fs.writeFile('../Facial_Recogntion/image.'+ext, data,'base64', (err,res)=>
+    {
+        if(err) 
+        {
+            console.log("error",err);
+        }
+    });
+    await delay(6000);
+    res.json(Main.addEmplpoyeeTaken(req)); 
+});
 
 app.get('/generateToken', (req, res) => {
     res.json(Main.generateToken());
@@ -122,3 +145,4 @@ app.get('/generateToken', (req, res) => {
 function delay(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
 }
+  

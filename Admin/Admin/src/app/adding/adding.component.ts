@@ -1,6 +1,5 @@
 import { Component, OnInit,ViewChild, ElementRef  } from '@angular/core';
 import {ImageService} from '../image.service';
-//import {  FileUploader, FileSelectDirective } from 'ng2-file-upload/ng2-file-upload';
 @Component({
   selector: 'app-adding',
   templateUrl: './adding.component.html',
@@ -9,8 +8,6 @@ import {ImageService} from '../image.service';
 
 export class AddingComponent implements OnInit 
 {
-  //uploader: FileUploader = new FileUploader({ url: 'http://localhost:2999/add', itemAlias: 'photo' });
-  selectedFile: ImageSnippet;
   @ViewChild('video', {static: false})
     public video: ElementRef;
 
@@ -27,11 +24,17 @@ export class AddingComponent implements OnInit
   ngOnInit() 
   {
   }
-
+/** 
+ * Function Name:processFile
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: this is where the data is processed which
+ * needs to be send to the central interface for registration
+*/
   processFile($event,name,surname,title,email) 
   {
       const file: File = $event.files[0];
-      let formData :FormData = new FormData();
+      const formData: FormData = new FormData();
       formData.append('image', file);
       formData.append('name', name);
       formData.append('surname', surname);
@@ -39,18 +42,21 @@ export class AddingComponent implements OnInit
       formData.append('title', title);
       
       this.imageService.uploadImage(formData).subscribe(res =>
+      {
+        console.log(res);
+        if (res === true)
         {
-          console.log(res);
-          if (res === true)
-          {
-            window.location.reload();
-          }
-        }     
-      );
+          window.location.reload();
+        }
+      });
   }
-
-
-
+  /** 
+ * Function Name:whenPressed
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: Activates the webcam when the respective modal is 
+ * opened
+*/
   public whenPressed() 
   {
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -60,37 +66,28 @@ export class AddingComponent implements OnInit
         });
     }
   }
-
+/** 
+ * Function Name:Capture
+ * Version: V3.0
+ * Author: Richard McFadden
+ * Funtional description: Almost like processFile 
+ * But This function has to do a lot more processing 
+ * Gets in all the text based info and an canvas.
+*/
   public capture(name,surname,title,email) 
   {
-    const flatten = this.canvas.nativeElement.getContext('2d');
-    // var context = this.canvas.nativeElement.getContext('2d').drawImage(this.video.nativeElement, 0, 0, 640, 480);
-    // this.captures.push(this.canvas.nativeElement.toDataURL('image/jpg'));
-    // this.processFile(this.captures[0],name,surname,title,email);
-    const img = this.canvas.nativeElement.toDataURL();
-    const blob = new Blob([img], {type: 'image/jpeg'});
-    const file = new File([blob], 'imageFileName.jpeg');
-    const formData : FormData = new FormData();
-    formData.append('image', file);
-    formData.append('name', name);
-    formData.append('surname', surname);
-    formData.append('email', email);
-    formData.append('title', title);
-    
-    this.imageService.uploadImage(formData).subscribe(res =>
-      {
-        console.log(res);
-        if (res === true)
-        {
-          window.location.reload();
-        }
-      }     
-    );
+    const img = this.canvas.nativeElement.toDataURL('image/jpeg',0.5);
+
+    // const formData : FormData = new FormData();
+    // formData.append('image', img);
+    // formData.append('name', name);
+    // formData.append('surname', surname);
+    // formData.append('email', email);
+    // formData.append('title', title);
+
+    this.imageService.uploadImageTaken(img, name, surname, title, email).subscribe( res =>
+    {
+      
+    });
   }
-
-}
-
-
-class ImageSnippet {
-  constructor(public src: string, public file: File) {}
 }
