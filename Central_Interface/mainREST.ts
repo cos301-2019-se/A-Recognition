@@ -13,7 +13,10 @@ import * as Main from "./main";
 
 var express = require("express");
 var cors = require('cors');
+var multer = require('multer');
+var upload = multer({ dest: '../Facial_Recogntion/' })
 var app = express();
+
 
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
@@ -97,14 +100,25 @@ app.get('/isEmployee', (req, res) => {
         });
     
 });
-
-app.post('/addEmployee', (req, res) => {
+/** 
+ * Function Name:addEmployee
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: takes in formdata which contains everything
+ * needed to add a new user.
+*/
+app.post('/addEmployee',upload.single('image'), async(req, res) => {
 
     // doTheThingWithTheObject();
     // passItToRichard();
-   
+    await delay(6000);
+    res.json(Main.addEmplpoyee(req)); 
 });
 
 app.get('/generateToken', (req, res) => {
     res.json(Main.generateToken());
 });
+
+function delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}

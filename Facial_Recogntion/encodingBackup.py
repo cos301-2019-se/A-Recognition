@@ -12,8 +12,7 @@ from firebase_admin import firestore
 import numpy as np
 import face_recognition
 import cv2
-import base64
-
+import sys
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate('credentials.json')
 firebase_admin.initialize_app(cred)
@@ -36,45 +35,46 @@ docs = users_ref.stream()
 #@param title: The titles of the corresponding images
 #@param email: The emails of the corresponding images
 #@return: Return status of function
-def encodeImageForDB(name,surname,title,email,images):
-    if( name is None or surname is None or title is None or email is None):
-        name ="RichardTest"
-        surname = "RichardTest"
-        email="RichardTest"
-        title ='RichardTest'
-        
-    encoding=[]
-    print("ENCODING the dataset")
-    try:
-        temp = "../Admin/Admin/"+images.Filename
-        image = cv2.imread(temp)
-        # Convert it from BGR to RGB
-        #Because opencv uses RGB
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        
-        # detect face in the image and get its location (square boxes coordinates)
-        boxes = face_recognition.face_locations(image, model='hog')
+imageFileName = sys.argv[1]
+name = sys.argv[2]
+surname = sys.argv[3]
+title = sys.argv[4]
+email = sys.argv[5]
+print(imageFileName) 
+print("")
+print("")   
+encoding=[]
+print("ENCODING the dataset")
+try:
+    temp = '../Facial_Recogntion/'+imageFileName
+    image = cv2.imread(temp)
+    # Convert it from BGR to RGB
+    #Because opencv uses RGB
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    
+    # detect face in the image and get its location (square boxes coordinates)
+    boxes = face_recognition.face_locations(image, model='hog')
 
-        # Encode the face into a 128-d embeddings vector
-        encoding.append(np.array(face_recognition.face_encodings(image,boxes)[0]).tolist())
-        
-        if len(encoding) > 0 :
-            #Create an array of encoding objects
-            arr=[]
-            for enc in encoding:
-                arr.append({"encoding":enc})
-            user = {
-                u'Name': name,
-                u'Surname': surname,
-                u'Title': title,
-                u'image_vector':arr,
-                u'Email':email
-            }
-            # Add the new user to the database
-            users_ref.document(name).set(user)
-            if user:
-                print(True)
-            else: 
-                print(False)
-    except TypeError:
-        return "An error occured while trying to encode the image or saving to the database"
+    # Encode the face into a 128-d embeddings vector
+    encoding.append(np.array(face_recognition.face_encodings(image,boxes)[0]).tolist())
+    
+    if len(encoding) > 0 :
+        #Create an array of encoding objects
+        arr=[]
+        for enc in encoding:
+            arr.append({"encoding":enc})
+        user = {
+            u'Name': name,
+            u'Surname': surname,
+            u'Title': title,
+            u'image_vector':arr,
+            u'Email':email
+        }
+        # Add the new user to the database
+        users_ref.document(name).set(user)
+        if user:
+            print(True)
+        else: 
+            print(False)
+except TypeError:
+    print("An error occured while trying to encode the image or saving to the database")

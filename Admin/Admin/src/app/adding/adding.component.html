@@ -22,32 +22,85 @@
         </div>
       </div>
   <div class="container">
-        <div class="row">
-          <div class="col-3">
-            <div id="app">
-              <div><video #video id="video" width="640" height="480" autoplay></video></div>
-              <div><button id="snap" (click)="capture()">Snap Photo</button></div>
-              <canvas #canvas id="canvas" width="640" height="480"></canvas>
-            </div>
+    <div class="row">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#takePicture" (click)="whenPressed()">
+            Take a picture
+        </button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadImage">
+            Upload an image
+        </button>
+    <!-- Modal -->
+<div class="modal fade" id="takePicture" tabindex="-1" role="dialog" aria-labelledby="takePicture" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Take a picture</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-        <div class="col-4"></div>
-            <div class='col-5 '>
-              <div class="mx-auto w-50 text-center">
-                <label class="image-upload-container btn btn-bwm">
-                    <span>Upload Image</span>
-                    <!-- <input #imageInput
-                           type="file"
-                           accept="image/*"
-                           (change)="processFile($event)"> -->
-                           <input type="file" name="photo" ng2FileSelect [uploader]="uploader" />
-                           <button type="button" class="btn btn-success btn-s" 
-                             (click)="uploader.uploadAll()" 
-                             [disabled]="!uploader.getNotUploadedItems().length" >
-                                 Upload an Image
-                           </button>   
-                </label>
-              </div>
-            </div>  
+        <div class="modal-body">
+            <div id="app">
+                <div><video #video id="video" capture="camera" width="240" height="240" autoplay></video></div>
+                 <canvas #canvas id="canvas" width="240" height="240"></canvas> 
+                <!-- <input type="file" capture="camera" accept="image/*" #camera name="cameraInput"> -->
+                <div class="mx-auto w-50">
+                <input #NameSnap  type="text" placeholder="Name" >
+                    <input #SurnameSnap  type="text" placeholder="Surname">
+                    <input #EmailSnap  type="email" placeholder="Email" >
+                    <select #TitleSnap>
+                        <option selected disabled>Choose one</option>
+                        <option value="Mr">Mr</option>
+                        <option value="Mrs">Mrs</option>
+                        <option value="Ms">Ms</option>
+                        <option value="Apache Helicopter">Apache Helicopter</option>
+                    </select><br>
+                <div><button id="snap" (click)="capture(NameSnap.value,SurnameSnap.value,TitleSnap.value,EmailSnap.value)">Snap Photo</button></div>
+                </div>
+           </div> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
         </div>
       </div>
+    </div>
+  </div>
+  <!-- Modal -->
+<div class="modal fade" id="uploadImage" tabindex="-1" role="dialog" aria-labelledby="uploadImage" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Upload an image</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="mx-auto w-50">
+                <label class="image-upload-container btn btn-bwm">
+                    <input #imageInput  type="file" accept="image/*" >
+                    <input #Name  type="text" placeholder="Name" >
+                    <input #Surname  type="text" placeholder="Surname">
+                    <input #Email  type="email" placeholder="Email" >
+                    <select #Title>
+                        <option selected disabled>Choose one</option>
+                        <option value="Mr">Mr</option>
+                        <option value="Mrs">Mrs</option>
+                        <option value="Ms">Ms</option>
+                        <option value="Apache Helicopter">Apache Helicopter</option>
+                    </select><br>
+                    <input type="submit" (click) ="processFile(imageInput,Name.value,Surname.value,Title.value,Email.value)">
+                </label>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
 

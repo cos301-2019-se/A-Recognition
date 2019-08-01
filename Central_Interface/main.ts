@@ -242,7 +242,39 @@ export function verifyToken(token : any){
 
     //var legit = jwt.verify(token, publicKEY, verifyOptions);
 }
-export function addEmplpoyee(image : any)
-{
-  
+/** 
+ * Function Name:addEmployee
+ * Version: V2.7
+ * Author: Richard McFadden
+ * Funtional description: makes the request to the python file
+ * to add the new employee to the database
+*/
+export function addEmplpoyee(req : any)
+{   
+    console.log("Name",req.body.name );
+    console.log("Surname", req.body.surname);
+    console.log("Email",req.body.email);
+    console.log("image",req.file['filename']);
+    
+    let nameOfFile =req.file['filename'];
+   
+    let options = {
+        pythonOptions: ['-u'], // get print results in real-time
+        scriptPath: '../Facial_Recogntion/',
+        args: [nameOfFile ,req.body.name, req.body.surname ,req.body.title, req.body.email ]
+      };
+
+      let shell = new PythonShell('encodingBackup.py',options);
+      shell.on('message',(message)=>
+      {
+          console.log(message);
+      });
+
+      shell.end(function (err,code,signal) {
+        if (err) throw err;
+        console.log('The exit code was: ' + code);
+        console.log('The exit signal was: ' + signal);
+
+        return true;
+      });
 }
