@@ -13,6 +13,7 @@ import numpy as np
 import face_recognition
 import cv2
 import sys
+import os
 # Fetch the service account key JSON file contents
 cred = credentials.Certificate('credentials.json')
 firebase_admin.initialize_app(cred)
@@ -76,5 +77,8 @@ try:
             print(True)
         else: 
             print(False)
+    #After this delete the image as if it was never there
+    os.remove(temp)
+
 except TypeError:
     print("An error occured while trying to encode the image or saving to the database")
