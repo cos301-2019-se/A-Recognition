@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col">
             <div class="mx-auto w-50 p-3 bg-dark text-white text-center">
-                <h1>Registering Users</h1>
+                <h1>Registering Employees</h1>
             </div>
         </div>
     </div>
@@ -22,14 +22,15 @@
         </div>
       </div>
   <div class="container">
+      <div class="mx-auto w-50 text-center">
     <div class="row">
-      <!--(click)="whenPressed()"-->
+      <div class="col 6">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#takePicture" (click)='this.showWebcam = true;' >
             Take a picture
-        </button>
+        </button></div><div class="col 6">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadImage">
             Upload an image
-        </button>
+        </button></div>
     <!-- Modal -->
 <div class="modal fade" id="takePicture" tabindex="-1" role="dialog" aria-labelledby="takePicture" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -46,12 +47,13 @@
                 <!-- <div><video #video id="video" capture="camera" width="440" height="440" autoplay></video></div> -->
                  <!-- <canvas #canvas id="canvas" width="440" height="440"></canvas>  -->
                 <!-- <input type="file" capture="camera" accept="image/*" #camera name="cameraInput"> -->
-                <div class="mx-auto w-50">
-                    <webcam [height]="400" [width]="400" [trigger]="triggerObservable" (imageCapture)="handleImage($event,NameSnap.value,SurnameSnap.value,TitleSnap.value,EmailSnap.value)" *ngIf="showWebcam"
+                <webcam [height]="400" [width]="400" [trigger]="triggerObservable" (imageCapture)="handleImage($event,NameSnap.value,SurnameSnap.value,TitleSnap.value,EmailSnap.value)" *ngIf="showWebcam"
                     [videoOptions]="videoOptions"
                     [imageQuality]="1"
                     (initError)="handleInitError($event)"
                      ></webcam>
+                <div class="mx-auto w-50">
+                    
                 <input #NameSnap  type="text" placeholder="Name" >
                     <input #SurnameSnap  type="text" placeholder="Surname">
                     <input #EmailSnap  type="email" placeholder="Email" >
@@ -62,7 +64,7 @@
                         <option value="Ms">Ms</option>
                         <option value="Apache Helicopter">Apache Helicopter</option>
                     </select><br>
-                <div><button id="snap" (click)="triggerSnapshot()">Snap Photo</button></div>
+                <div><button id="snap" data-dismiss="modal" (click)='this.showWebcam = false;' (click)="triggerSnapshot()">Snap Photo</button></div>
                 <!-- <div class="snapshot" *ngIf="webcamImage">
                     <img [src]="webcamImage.imageAsDataUrl"/>
                   </div> -->
@@ -70,8 +72,7 @@
            </div> 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" (click)='this.showWebcam = false;'>Save changes</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)='this.showWebcam = false;'> Close</button>
         </div>
       </div>
     </div>
@@ -88,7 +89,6 @@
         </div>
         <div class="modal-body">
             <div class="mx-auto w-50">
-                <label class="image-upload-container btn btn-bwm">
                     <input #imageInput  type="file" accept="image/*" >
                     <input #Name  type="text" placeholder="Name" >
                     <input #Surname  type="text" placeholder="Surname">
@@ -100,17 +100,16 @@
                         <option value="Ms">Ms</option>
                         <option value="Apache Helicopter">Apache Helicopter</option>
                     </select><br>
-                    <input type="submit" (click) ="processFile(imageInput,Name.value,Surname.value,Title.value,Email.value)">
-                </label>
+                    <input type="submit" data-dismiss="modal" (click) ="processFile(imageInput,Name.value,Surname.value,Title.value,Email.value)">
+
             </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
+        </div> <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" (click)='this.showWebcam = false;'> Close</button>
+          </div>
       </div>
     </div>
   </div>
     </div>
+      </div>
   </div>
 
