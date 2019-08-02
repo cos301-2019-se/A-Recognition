@@ -1,5 +1,7 @@
 import { Component, OnInit,ViewChild, ElementRef  } from '@angular/core';
 import {ImageService} from '../image.service';
+import {Subject, Observable} from 'rxjs';
+import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
 @Component({
   selector: 'app-adding',
   templateUrl: './adding.component.html',
@@ -8,21 +10,86 @@ import {ImageService} from '../image.service';
 
 export class AddingComponent implements OnInit 
 {
-  @ViewChild('video', {static: false})
-    public video: ElementRef;
-
-  @ViewChild('canvas', {static: false})
-  public canvas: ElementRef;
-
-  public captures: Array<any>;
-
+  public showWebcam = false;
+  public multipleWebcamsAvailable = false;
+  public deviceId: string;
+  public errors: WebcamInitError[] = [];
+  public webcamImage: WebcamImage = null;
+  private trigger: Subject<void> = new Subject<void>();
+  public videoOptions: MediaTrackConstraints = {
+    // width: {ideal: 1024},
+    // height: {ideal: 576}
+  };
   constructor(private imageService: ImageService) 
   { 
-    this.captures = [];
+   
   }
 
   ngOnInit() 
   {
+    WebcamUtil.getAvailableVideoInputs()
+      .then((mediaDevices: MediaDeviceInfo[]) => {
+        this.multipleWebcamsAvailable = mediaDevices && mediaDevices.length > 1;
+      });
+  }
+  /** 
+ * Function Name:triggerSnapshot
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: triggers the event that takes the photo
+*/
+  public triggerSnapshot(): void {
+    this.trigger.next();
+  }
+/** 
+ * Function Name:toggleWbecam
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: show or hide the webcam
+*/
+  public toggleWebcam(): void {
+    this.showWebcam = !this.showWebcam;
+  }
+/** 
+ * Function Name:handleInitError
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: prints out errors that occur during execution
+*/
+  public handleInitError(error: WebcamInitError): void {
+    this.errors.push(error);
+  }
+  /** 
+ * Function Name:handleImage
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description:gets the imagedata and sends it along
+*/
+  public handleImage(webcamImage: WebcamImage,name,surname,title,email): void {
+    console.info('received webcam image', webcamImage);
+    this.webcamImage = webcamImage;
+    let temp = this.webcamImage.imageAsDataUrl;
+    let tempTwo:Blob = this.dataURItoBlob(temp);
+    const imageFile = new File([tempTwo], name, { type: 'image/jpeg' });
+
+    this.imageService.uploadImageTaken(imageFile,name,surname,title,email).subscribe( res =>
+    {
+         
+    });
+  }
+  public dataURItoBlob(dataURI)
+  {
+    var byteString = atob(dataURI.split(',')[1]);
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: 'image/jpeg' });
+  }
+
+  public get triggerObservable(): Observable<void> {
+    return this.trigger.asObservable();
   }
 /** 
  * Function Name:processFile
@@ -50,44 +117,8 @@ export class AddingComponent implements OnInit
         }
       });
   }
-  /** 
- * Function Name:whenPressed
- * Version: V1.0
- * Author: Richard McFadden
- * Funtional description: Activates the webcam when the respective modal is 
- * opened
-*/
-  public whenPressed() 
+  public close()
   {
-    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-            this.video.nativeElement.srcObject = stream; // window.URL.createObjectURL(stream);
-            this.video.nativeElement.play();
-        });
-    }
-  }
-/** 
- * Function Name:Capture
- * Version: V3.0
- * Author: Richard McFadden
- * Funtional description: Almost like processFile 
- * But This function has to do a lot more processing 
- * Gets in all the text based info and an canvas.
-*/
-  public capture(name,surname,title,email) 
-  {
-    const img = this.canvas.nativeElement.toDataURL('image/jpeg',0.5);
-
-    // const formData : FormData = new FormData();
-    // formData.append('image', img);
-    // formData.append('name', name);
-    // formData.append('surname', surname);
-    // formData.append('email', email);
-    // formData.append('title', title);
-
-    this.imageService.uploadImageTaken(img, name, surname, title, email).subscribe( res =>
-    {
-      
-    });
+    window.location.reload();
   }
 }

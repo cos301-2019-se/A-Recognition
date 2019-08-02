@@ -290,9 +290,9 @@ export function addEmplpoyeeTaken(req : any)
     console.log("Name",req.query.name );
     console.log("Surname", req.query.surname);
     console.log("Email",req.query.email);
-    var ext = (req.query.image).split(';')[0].match(/jpeg|png|gif/)[0];
+    //var ext = (req.query.image).split(';')[0].match(/jpeg|png|gif/)[0];
     
-    let nameOfFile = 'image.'+ext;
+    let nameOfFile = 'image.png';
    
     let options = {
         pythonOptions: ['-u'], // get print results in real-time

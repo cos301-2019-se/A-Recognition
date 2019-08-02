@@ -16,7 +16,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule, JwtHelperService} from '@auth0/angular-jwt';
 import { NavComponent } from './nav/nav.component';
-import { FileSelectDirective } from 'ng2-file-upload';
+import {WebcamModule} from 'ngx-webcam';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBpazWx_m3UGkQAh6zgEMujQ2JtU3OJzEc',
@@ -35,7 +35,7 @@ const firebaseConfig = {
     AddingComponent,
     OTPComponent,
     HomeComponent,
-    NavComponent,FileSelectDirective
+    NavComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +44,7 @@ const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule, ReactiveFormsModule, AngularFirestoreModule, AngularFireDatabaseModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,WebcamModule
   ],
   providers: [{ provide: FirestoreSettingsToken, useValue: {} },{provide: AngularFireModule},{provide: JwtHelperService}],
   bootstrap: [AppComponent]

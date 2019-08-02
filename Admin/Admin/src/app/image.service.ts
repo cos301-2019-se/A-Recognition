@@ -13,9 +13,14 @@ export class ImageService {
   {
     return this.http.post('http://localhost:3000/addEmployee', body);
   }
-  public uploadImageTaken(img, name, surname, title, email): Observable<any> 
+  public uploadImageTaken(img,name,surname,title,email): Observable<any> 
   {
-    const temp = '?image=' + img + '&name=' + name + '&surname=' + surname + '&title=' + title + '&email=' + email;
-    return this.http.get('http://localhost:3000/addEmployeeTaken' + temp);
+    const formData:FormData = new FormData();
+    formData.append('image', img);
+    formData.append('name', name);
+    formData.append('surname', surname);
+    formData.append('email', email);
+    formData.append('title', title);
+    return this.http.post('http://localhost:3000/addEmployee', formData);
   }
 }

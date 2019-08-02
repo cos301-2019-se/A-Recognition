@@ -41,9 +41,7 @@ name = sys.argv[2]
 surname = sys.argv[3]
 title = sys.argv[4]
 email = sys.argv[5]
-print(imageFileName) 
-print("")
-print("")   
+
 encoding=[]
 print("ENCODING the dataset")
 try:
@@ -78,7 +76,7 @@ try:
         else: 
             print(False)
     #After this delete the image as if it was never there
-    os.remove(temp)
+    #os.remove(temp)
 
 except TypeError:
     print("An error occured while trying to encode the image or saving to the database")

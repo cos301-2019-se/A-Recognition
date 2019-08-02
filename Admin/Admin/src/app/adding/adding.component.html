@@ -23,7 +23,8 @@
       </div>
   <div class="container">
     <div class="row">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#takePicture" (click)="whenPressed()">
+      <!--(click)="whenPressed()"-->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#takePicture" (click)='this.showWebcam = true;' >
             Take a picture
         </button>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadImage">
@@ -41,10 +42,16 @@
         </div>
         <div class="modal-body">
             <div id="app">
-                <div><video #video id="video" capture="camera" width="440" height="440" autoplay></video></div>
-                 <canvas #canvas id="canvas" width="440" height="440"></canvas> 
+               
+                <!-- <div><video #video id="video" capture="camera" width="440" height="440" autoplay></video></div> -->
+                 <!-- <canvas #canvas id="canvas" width="440" height="440"></canvas>  -->
                 <!-- <input type="file" capture="camera" accept="image/*" #camera name="cameraInput"> -->
                 <div class="mx-auto w-50">
+                    <webcam [height]="400" [width]="400" [trigger]="triggerObservable" (imageCapture)="handleImage($event,NameSnap.value,SurnameSnap.value,TitleSnap.value,EmailSnap.value)" *ngIf="showWebcam"
+                    [videoOptions]="videoOptions"
+                    [imageQuality]="1"
+                    (initError)="handleInitError($event)"
+                     ></webcam>
                 <input #NameSnap  type="text" placeholder="Name" >
                     <input #SurnameSnap  type="text" placeholder="Surname">
                     <input #EmailSnap  type="email" placeholder="Email" >
@@ -55,13 +62,16 @@
                         <option value="Ms">Ms</option>
                         <option value="Apache Helicopter">Apache Helicopter</option>
                     </select><br>
-                <div><button id="snap" (click)="capture(NameSnap.value,SurnameSnap.value,TitleSnap.value,EmailSnap.value)">Snap Photo</button></div>
+                <div><button id="snap" (click)="triggerSnapshot()">Snap Photo</button></div>
+                <!-- <div class="snapshot" *ngIf="webcamImage">
+                    <img [src]="webcamImage.imageAsDataUrl"/>
+                  </div> -->
                 </div>
            </div> 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-primary" (click)='this.showWebcam = false;'>Save changes</button>
         </div>
       </div>
     </div>

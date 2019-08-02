@@ -21,6 +21,20 @@ var app = express();
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 app.use(cors());
+var allowCrossDomain = function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Cache-Control");
+
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.send(200);
+    }
+    else {
+      next();
+    }
+};
+app.use(allowCrossDomain);
 
 app.listen(3000, () => {
  console.log("Server running on port 3000");
@@ -113,29 +127,6 @@ app.post('/addEmployee',upload.single('image'), async(req, res) => {
     // passItToRichard();
     await delay(6000);
     res.json(Main.addEmplpoyee(req)); 
-});
-/** 
- * Function Name:addEmployeeTaken
- * Version: V1.0
- * Author: Richard McFadden
- * Funtional description: first tranforms the base64 to be usable
-*/
-app.get('/addEmployeeTaken', async(req, res) => 
-{
-    //console.log(req.query.image);
-    // Grab the extension to resolve any image error
-    var ext = (req.query.image).split(';')[0].match(/jpeg|png|gif/)[0];
-    var data = (req.query.image).replace(/^data:image\/\w+;base64,/, "");
-    console.log(data);
-    fs.writeFile('../Facial_Recogntion/image.'+ext, data,'base64', (err,res)=>
-    {
-        if(err) 
-        {
-            console.log("error",err);
-        }
-    });
-    await delay(6000);
-    res.json(Main.addEmplpoyeeTaken(req)); 
 });
 
 app.get('/generateToken', (req, res) => {
