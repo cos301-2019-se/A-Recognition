@@ -9,7 +9,7 @@
 import * as Adapter from "../API_Adapter/main";
 import * as Utils from "../Utils/Utils";
 import {PythonShell} from 'python-shell'; //npm install python-shell
-import * as NotificationSystem from "../notification";
+import * as NotificationSystem from "../Database_Manager/notification";
 import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 
@@ -74,7 +74,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                 let event = closestEvents[i];
 
                 let timeNow = new Date();
-                let entranceAllowedToEvent = new Date(event.start.dateTime);
+                let entranceAllowedToEvent = new Date(event.startDate + "T"+ event.startTime);
                 entranceAllowedToEvent.setMinutes(entranceAllowedToEvent.getMinutes() - MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED);
                 
                 if(room == event.location){
@@ -112,7 +112,8 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
 export function getEmployeeEmails() : Promise<any>{
 
     return new Promise( (resolve,reject) =>{
-        var pyshell = new PythonShell("test.py");
+        
+        var pyshell = new PythonShell(__dirname+"/test.py");
 
         pyshell.on('message', function (message) {
             // received a message sent from the Python script (a simple "print" statement)
@@ -185,8 +186,7 @@ export function checkBookingsForGuests(){ //TODO : MAke it work for the same use
                                 notifyViaOTP["startTime"] = event.startTime;
                             }
                         
-                            NotificationSystem.sendEmail("otp",notifyViaOTP,NotificationSystem.generateOTP().otp);
-                            
+                            NotificationSystem.sendEmail("otp",notifyViaOTP);
                             
                         }
                     });
