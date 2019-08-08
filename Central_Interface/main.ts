@@ -251,10 +251,10 @@ export function verifyToken(token : any){
 */
 export function addEmplpoyee(req : any)
 {   
-    console.log("Name",req.body.name );
-    console.log("Surname", req.body.surname);
-    console.log("Email",req.body.email);
-    console.log("image",req.file['filename']);
+    // console.log("Name",req.body.name );
+    // console.log("Surname", req.body.surname);
+    // console.log("Email",req.body.email);
+    // console.log("image",req.file['filename']);
 
     let nameOfFile =req.file['filename'];
    
@@ -270,47 +270,16 @@ export function addEmplpoyee(req : any)
           console.log(message);
       });
 
-      shell.end(function (err,code,signal) {
-        if (err) throw err;
-        console.log('The exit code was: ' + code);
-        console.log('The exit signal was: ' + signal);
-
-        return true;
-      });
-}
-/** 
- * Function Name:addEmployee
- * Version: V2.7
- * Author: Richard McFadden
- * Funtional description: makes the request to the python file
- * to add the new employee to the database
-*/
-export function addEmplpoyeeTaken(req : any)
-{   
-    console.log("Name",req.query.name );
-    console.log("Surname", req.query.surname);
-    console.log("Email",req.query.email);
-    //var ext = (req.query.image).split(';')[0].match(/jpeg|png|gif/)[0];
-    
-    let nameOfFile = 'image.png';
-   
-    let options = {
-        pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: '../Facial_Recogntion/',
-        args: [nameOfFile ,req.query.name, req.query.surname ,req.query.title, req.query.email ]
-      };
-
-      let shell = new PythonShell('encodingBackup.py',options);
-      shell.on('message',(message)=>
+      shell.end(function (err,code,signal) 
       {
-          console.log(message);
-      });
-
-      shell.end(function (err,code,signal) {
-        if (err) throw err;
+        if(err)
+        {
+            throw err;
+        }
         console.log('The exit code was: ' + code);
         console.log('The exit signal was: ' + signal);
 
         return true;
       });
 }
+checkBookingsForGuests();

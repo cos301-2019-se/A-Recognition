@@ -15,20 +15,20 @@ from collections import defaultdict
 from imutils.video import VideoStream
 from eye_status import * 
 from encoding import *
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+# import firebase_admin
+# from firebase_admin import credentials
+# from firebase_admin import firestore
 import requests
 import json
 import time
 
-db = firestore.client()
+# db = firestore.client()
 
-#GET the collection Users for Facial Recognition
-users_ref = db.collection(u'Users')
+# #GET the collection Users for Facial Recognition
+# users_ref = db.collection(u'Users')
 
-#docs now contain the data in Users
-docs = users_ref.stream()
+# #docs now contain the data in Users
+# docs = users_ref.stream()
 
 ##
 #Function that returns a tuple containing all needed models and data that is used for the facial recognition
@@ -210,7 +210,12 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 #@return: A list of emails expected during current day
 def updateExpectedUsers():
     endpointURL = "http://localhost:3000/getUsersFromDaysEvents"
-    response = requests.get(url = endpointURL).json()
+    responseTemp =requests.get(url = endpointURL)
+
+    if(responseTemp is None):
+        repsponse = {"test@test.com"}
+    else:
+        response = requests.get(url = endpointURL).json()
     return response
 
 ##

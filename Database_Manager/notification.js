@@ -9,12 +9,12 @@
  *          - OTP generation for clients (the /otp endpoint)
 */
 
-// const express = require('express');
-// const bodyParser = require('body-parser');
-// const cors = require('cors');
-// const helmet = require('helmet');
-// const morgan = require('morgan');
-// const nodemailer = require('nodemailer');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
 const messages = require('./messages');
@@ -79,7 +79,7 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null) {
     )
 
     oauth2client.setCredentials({
-        refresh_token: "1/-b6FCrGDiFQ2nGvGCOpGOCf3nzxMjen7jfR_8J8XH1w"
+        refresh_token: "1/tM8goA8Ammkz318CPXl7VlorjRq_WEVdw9YbGnQ5sto"
     });
     const tokens = await oauth2client.refreshAccessToken();
     const accessToken = tokens.credentials.access_token;
@@ -91,7 +91,7 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null) {
             user: "arecognition.bot@gmail.com",
             clientId: "680276265540-jr5q5k0kfvp7elsav0jfdf9621c3etai.apps.googleusercontent.com",
             clientSecret: "S-Ka9zoEMPRvDk8ROsyvgYdn",
-            refreshToken: "1/-b6FCrGDiFQ2nGvGCOpGOCf3nzxMjen7jfR_8J8XH1w",
+            refreshToken: "1/tM8goA8Ammkz318CPXl7VlorjRq_WEVdw9YbGnQ5sto",
             accessToken: accessToken
         }
     });
@@ -117,13 +117,18 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null) {
             if(recipient == null)       //Allowed for your test functionality and normal
             mailOptions = messages.otpClient;
             else 
-            mailOptions = recipient;
+            mailOptions.from = "arecognition.bot@gmail.com",
+            mailOptions.to = recipient.guest,
+            mailOptions.subject = "OTP Access",
+            //mailOptions.generateTextFromHTML = true,
+            mailOptions.html += "Your OTP to gain entrance to the Advance HQ as well as the specified meeting room is: " ;
+            
 
             mailOptions.html += generateOTP().otp;
-            mailOptions = '';
-            console.log(mailOptions.text);
-            mailOptions = messages.otpClient;
-            console.log(mailOptions.text);
+            // mailOptions = '';
+            // console.log(mailOptions.text);
+            // mailOptions = messages.otpClient;
+            // console.log(mailOptions.text);
         }
 
     smtpTransport.sendMail(mailOptions, (error, response) => {

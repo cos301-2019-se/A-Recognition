@@ -77,6 +77,13 @@ export class AddingComponent implements OnInit
          
     });
   }
+    /** 
+ * Function Name:dataURItoBlob
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description:takes a uri and transforms it into a blob to be
+ * saved as a file
+*/
   public dataURItoBlob(dataURI)
   {
     var byteString = atob(dataURI.split(',')[1]);
@@ -117,6 +124,12 @@ export class AddingComponent implements OnInit
         }
       });
   }
+  /** 
+ * Function Name:close
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: Just reloads the page.
+*/
   public close()
   {
     window.location.reload();
