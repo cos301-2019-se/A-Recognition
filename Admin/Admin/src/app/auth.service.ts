@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from  '@angular/fire/auth';
-import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router'; 
 import { HttpClient } from '@angular/common/http';
 @Injectable({
@@ -11,7 +10,7 @@ export class AuthService {
   user$: Object;
   displayMessage: string;
   message: boolean = true;
-  constructor(public jwtHelper: JwtHelperService, public  authAf: AngularFireAuth, public router: Router,public http: HttpClient)
+  constructor( public  authAf: AngularFireAuth, public router: Router,public http: HttpClient)
   {
 
   }

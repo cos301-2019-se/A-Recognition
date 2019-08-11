@@ -211,9 +211,8 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 def updateExpectedUsers():
     endpointURL = "http://localhost:3000/getUsersFromDaysEvents"
     responseTemp =requests.get(url = endpointURL)
-
-    if(responseTemp is None):
-        repsponse = {"test@test.com"}
+    if(responseTemp.json() is None):  
+        response = {"test@test.com","Test@TEST.com"}
     else:
         response = requests.get(url = endpointURL).json()
     return response
@@ -222,67 +221,59 @@ def updateExpectedUsers():
 #Main function; Continuosly processes stream and recognises people
 #Press 'q' button to stop
 if __name__ == "__main__":
-    while True:
-        try:
-            #Initialize
-            (model, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, video_capture) = init()
+    try:       
+        #Initialize
+        (model, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, video_capture) = init()     
+        data = encodingsOfImages()
+        email ="UNKOWN"
+        pleaseStopTheScanning = False
+        isAllowed = False
+        allowedResponse = "NO"
+
+        eyes_detected = defaultdict(str)
+
+        oldRefreshTime = 0
+        lastSendTime = 0
+        emailList = updateExpectedUsers()
+        while True:
+            #Clear the history after 30 frames - Go back to non-human mode and wait for blink
+            for x in eyes_detected:
+                if len(eyes_detected[x]) > 30:
+                    eyes_detected = defaultdict(str)
+
+            #Run our facial detection
+            frame = detect_and_display(model, video_capture, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, data, eyes_detected)
             
-            data = encodingsOfImages()
-            email ="UNKOWN"
-            pleaseStopTheScanning = False
-            isAllowed = False
-            allowedResponse = "NO"
+            #Show a nice video feed of what is happening
+            cv2.imshow("Face Liveness Detector", frame)
 
-            eyes_detected = defaultdict(str)
-
-            oldRefreshTime = 0
-            lastSendTime = 0
-            try:
+            if (time.time() - oldRefreshTime > 1800):
+                print("***************REFRESHED***************")
+                oldRefreshTime = time.time()
                 emailList = updateExpectedUsers()
-                while True:
-                    #Clear the history after 30 frames - Go back to non-human mode and wait for blink
-                    for x in eyes_detected:
-                        if len(eyes_detected[x]) > 30:
-                            eyes_detected = defaultdict(str)
 
-                    #Run our facial detection
-                    frame = detect_and_display(model, video_capture, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, data, eyes_detected)
-                    
-                    #Show a nice video feed of what is happening
-                    cv2.imshow("Face Liveness Detector", frame)
+            if pleaseStopTheScanning == True and (time.time() - lastSendTime > 1): #and counter <= 60:
+                try:
+                    #we now need to compare and see if the email that appears the most is in this json object
+                    for emailItem in emailList:
+                        if email == emailItem:                         
+                            validate(email,"Room 9")
+                            lastSendTime = time.time()
+                            print(str(emailItem))
+            
+                    pleaseStopTheScanning = False 
+                    isAllowed = False  
 
-                    if (time.time() - oldRefreshTime > 1800):
-                        oldRefreshTime = time.time()
-                        emailList = updateExpectedUsers()
-
-                    if pleaseStopTheScanning == True and (time.time() - lastSendTime > 1): #and counter <= 60:
-                        try:
-                            #we now need to compare and see if the email that appears the most is in this json object
-                            for emailItem in emailList:
-                                if email == emailItem:                         
-                                    validate(email,"Room 9")
-                                    lastSendTime = time.time()
-                                    print(str(emailItem))
-                    
-                            pleaseStopTheScanning = False 
-                            isAllowed = False  
-
-                        except json.decoder.JSONDecodeError:
-                            print("Non json object returned")
-                        
-                    #Quit on 'q' button    
-                    if cv2.waitKey(1) & 0xFF == ord('q'):
-                        break
+                except json.decoder.JSONDecodeError:
+                    print("Non json object returned")
                 
-                cv2.destroyAllWindows()
-            except ConnectionError as e:
-                print("*****************")
-                print(e)
-                continue
-        except Exception:
-            print("PROBLEM")
-            continue
-        break
+            #Quit on 'q' button    
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        
+        cv2.destroyAllWindows()
+    except Exception as e:
+        print("PROBLEM",e)
         
 
 

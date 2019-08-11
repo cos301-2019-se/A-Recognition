@@ -6,7 +6,6 @@ import { HomeComponent } from './home/home.component';
 import { AddingComponent } from './adding/adding.component';
 import { OTPComponent } from './otp/otp.component';
 import { ReportsComponent } from './reports/reports.component';
-import { RoleGuardService as RoleGuard } from './role-guard.service';
 
 // PREVENT ACTIVATION BY USING
 //canLoad instead of canActivate

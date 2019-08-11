@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {AngularFireModule} from '@angular/fire';
+import {AngularFireModule,} from '@angular/fire';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
 import {AngularFireAuthModule} from '@angular/fire/auth';
@@ -14,7 +15,6 @@ import { HomeComponent } from './home/home.component';
 import { FirestoreSettingsToken} from '@angular/fire/firestore';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { JwtModule, JwtHelperService} from '@auth0/angular-jwt';
 import { NavComponent } from './nav/nav.component';
 import {WebcamModule} from 'ngx-webcam';
 
@@ -40,13 +40,12 @@ const firebaseConfig = {
   imports: [
     BrowserModule,
     AppRoutingModule,
-    JwtModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule, ReactiveFormsModule, AngularFirestoreModule, AngularFireDatabaseModule,
     HttpClientModule,
-    FormsModule,WebcamModule
+    FormsModule,WebcamModule,AngularFireAuth
   ],
-  providers: [{ provide: FirestoreSettingsToken, useValue: {} },{provide: AngularFireModule},{provide: JwtHelperService}],
+  providers: [{ provide: FirestoreSettingsToken, useValue: {} },{provide: AngularFireModule},{provide: AngularFireAuth}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
