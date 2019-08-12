@@ -12,10 +12,13 @@ export class OtpCallsService {
   }
   public getList()
   {
-    return this.http.post("","");
+    return this.http.post('http://localhost:3000/getEventList', '');
   }
-  public manualOTP(email: any, event: any)
+  public manualOTP(emailin: any, eventin: any)
   {
-    return this.http.post("","");
+    return this.http.post('http://localhost:3000/generateOTP', {
+      eventId : eventin,
+      email : emailin
+    });
   }
 }

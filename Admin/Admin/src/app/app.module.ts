@@ -14,9 +14,10 @@ import { OTPComponent } from './otp/otp.component';
 import { HomeComponent } from './home/home.component';
 import { FirestoreSettingsToken} from '@angular/fire/firestore';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule , HTTP_INTERCEPTORS} from '@angular/common/http';
+import { TokenInterceptor } from './token.interceptor';
 import { NavComponent } from './nav/nav.component';
-import {WebcamModule} from 'ngx-webcam';
+import { WebcamModule } from 'ngx-webcam';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBpazWx_m3UGkQAh6zgEMujQ2JtU3OJzEc',
@@ -43,9 +44,16 @@ const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule, ReactiveFormsModule, AngularFirestoreModule, AngularFireDatabaseModule,
     HttpClientModule,
-    FormsModule,WebcamModule,AngularFireAuth
+    FormsModule,WebcamModule
   ],
-  providers: [{ provide: FirestoreSettingsToken, useValue: {} },{provide: AngularFireModule},{provide: AngularFireAuth}],
+  providers: [
+    { provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    { provide: FirestoreSettingsToken, useValue: {} },
+    {provide: AngularFireModule}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -7,15 +7,16 @@
        </div>
     </div>
 </div>
-<div class="mx-auto w-50">
+<div class="mx-auto w-50 text-center">
     <input #email  type="email" placeholder="Email" >
+    <br>
     <select #EventInfo>
-        <option *ngFor="let i of eventList" [value]="i.Name">
-            {{i.Name}}
+        <option *ngFor="let i of eventList" [value]="i.id">
+            {{i.summary}}-{{i.location}} || {{i.startDate}} - {{i.startTime}} ||
         </option>
     </select>
     <br>
     <div>
-    <button id="snap"  (click)=''>Generate OTP</button>
+    <button id="snap" class="btn btn-primary" (click)='generateOTP(email.value,EventInfo.value)'>Generate OTP</button>
     </div>
 </div>

@@ -151,9 +151,10 @@ app.post('/getEventList',(req,res) => {
 
 app.post('/generateOTP',(req,res) => {
 
-    if(req.query.eventId != null)
-        if(req.query.email != null)
-            res.send(Main.generateOTP(req.query.eventId,req.query.email));
+    console.log(req.body.eventId);
+    if(req.body.eventId != null)
+        if(req.body.email != null)
+            res.send(Main.generateOTP(req.body.eventId,req.body.email));
         else 
             res.send("Invalid email");
     else
