@@ -11,11 +11,11 @@
 //pip3 install firebase
 import * as Main from "./main";
 
-var express = require("express");
-var fs = require('fs');
-var cors = require('cors');
-var multer = require('multer');
-var upload = multer({ dest: '../Facial_Recogntion/' })
+import express = require("express");
+import fs = require('fs');
+import cors = require('cors');
+import multer = require('multer');
+let upload = multer({ dest: '../Facial_Recogntion/' })
 var app = express();
 
 app.use(express.json());       // to support JSON-encoded bodies
@@ -57,8 +57,11 @@ app.get("/validateUserHasBooking", (req, res, next) => {
     if(req.query.hasOwnProperty("email") && req.query.hasOwnProperty("room")){
         
         console.log(req.query);
+        //if(JSON.parse(req.query.email) != null )
         email = JSON.parse(req.query.email);
         room = JSON.parse(req.query.room);
+        //email = req.query.email;
+        //room = req.query.room;
 
         Main.validateUserHasBooking(email,room).then(msg=> {res.send(msg);console.log(msg)}).catch( err => res.send(err));
     }else{
@@ -138,4 +141,23 @@ app.get('/generateToken', (req, res) => {
 function delay(ms: number) {
     return new Promise( resolve => setTimeout(resolve, ms) );
 }
+
+app.post('/getEventList',(req,res) => {
+
+    Main.getEventList().then( events =>{
+        res.json(events);
+    })
+});
+
+app.post('/generateOTP',(req,res) => {
+
+    if(req.query.eventId != null)
+        if(req.query.email != null)
+            res.send(Main.generateOTP(req.query.eventId,req.query.email));
+        else 
+            res.send("Invalid email");
+    else
+        res.send("Invalid event ID supplied");
+    
+});
   

@@ -58,7 +58,8 @@ export class GoogleAdaptee{
 
                     this.authorize(credentials).then( (oAuth2Client)=>{ 
 
-                        this.listEvents(oAuth2Client,identifier,resultSize,endTimeISOString).then( (bookings)=>{ 
+                        this.listEvents(oAuth2Client,identifier,resultSize,endTimeISOString).then( (bookings)=>{
+                             
                             resolve(bookings);
                         }).catch( (err)=>{ reject(err);});
 
