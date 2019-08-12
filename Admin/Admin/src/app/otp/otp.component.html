@@ -1,1 +1,21 @@
-<p>otp works!</p>
+<div class="jumbotron">
+    <div class="row">
+       <div class="col">
+          <div class="mx-auto w-50 p-3 bg-dark text-white text-center">
+             <h1>Manual OTP generation</h1>
+          </div>
+       </div>
+    </div>
+</div>
+<div class="mx-auto w-50">
+    <input #email  type="email" placeholder="Email" >
+    <select #EventInfo>
+        <option *ngFor="let i of eventList" [value]="i.Name">
+            {{i.Name}}
+        </option>
+    </select>
+    <br>
+    <div>
+    <button id="snap"  (click)=''>Generate OTP</button>
+    </div>
+</div>

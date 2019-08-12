@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { OtpCallsService } from '../otp-calls.service';
 @Component({
   selector: 'app-otp',
   templateUrl: './otp.component.html',
@@ -7,9 +7,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OTPComponent implements OnInit {
 
-  constructor() { }
+  eventList: any;
+  constructor(public otpCall: OtpCallsService) 
+  { 
 
-  ngOnInit() {
+  }
+
+  ngOnInit() 
+  {
+    this.otpCall.getList().subscribe( (res)=>
+    {
+      this.eventList = res;
+    });
+  }
+
+  public generateOTP(email: any, event: any)
+  {
+    this.otpCall.manualOTP(email, event).subscribe( (res)=>
+    {
+
+    });
   }
 
 }
