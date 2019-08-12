@@ -1,7 +1,0 @@
-{
-  "lockfileVersion": 1,
-  "dependencies": {
-    "@types/node": "^12.6.8",
-    "npm": "^6.10.1"
-  }
-}

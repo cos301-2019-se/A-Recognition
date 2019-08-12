@@ -9,11 +9,11 @@
  *          - OTP generation for clients (the /otp endpoint)
 */
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
+// const express = require('express');
+// const bodyParser = require('body-parser');
+// const cors = require('cors');
+// const helmet = require('helmet');
+// const morgan = require('morgan');
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
@@ -151,7 +151,7 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null) {
     *   after every call.
     */
 
-    function generateOTP() {
+exports.generateOTP = function generateOTP() {
         let otpTemp = {
             "otp": "",
             "timeCreated": ""

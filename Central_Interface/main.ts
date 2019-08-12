@@ -10,6 +10,7 @@ import * as Adapter from "../API_Adapter/main";
 import * as Utils from "../Utils/Utils";
 import {PythonShell} from 'python-shell'; //npm install python-shell
 import * as NotificationSystem from "../Database_Manager/notification";
+import * as DatabaseManager from "../Database_Manager/databaseManager";
 import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 
@@ -282,4 +283,22 @@ export function addEmplpoyee(req : any)
         return true;
       });
 }
-checkBookingsForGuests();
+
+export function getEventList() : Promise<any>{
+
+    return new Promise( (resolve,reject)=>{
+        Adapter.getEvents("primary",true,{id:true,summary:true,location:true,start:true,end:true}).then( events =>{
+            resolve(events);
+        }).catch(err => reject(err));
+    });
+    
+}
+
+export function generateOTP(eventId : number,email : string) : boolean{
+
+    let otp = NotificationSystem.generateOTP();
+    
+    return DatabaseManager.addOTP(eventId,otp,email);
+
+}
+//checkBookingsForGuests();
