@@ -496,10 +496,119 @@ exports.retrieveUser = function retrieveUser(request,response){
 /** 
  * @description: Function that adds a person to an event
  * @param eventId: The eventId toidentify event
+ * @param location: The location of the venue
+ * @param startTime: When the event starts
+ * @param endTime: When the event stops
+ * @param attendeeOTPpairs: JSON object array containg emails and their respective OTP
+**/
+exports.addEvent = function addEvent(request,response) {
+    if(request.body.eventId == undefined || request.body.eventId.length < 1)
+    {
+        response.end(JSON.stringify(
+            {
+                "status" : "Failure",
+                "message" : "'eventId' field was not specified"
+            }
+        ));
+        return; //Stop add Event operation as information provided was not sufficient
+    }
+
+    if(request.body.location == undefined || request.body.location < 1)
+    {
+        response.end(JSON.stringify(
+            {
+                "status" : "Failure",
+                "message" : "'location' field was not specified"
+            }
+        ));
+        return; //Stop add Event operation as information provided was not sufficient
+    }
+
+    if(request.body.startTime == undefined || request.body.startTime < 1)
+    {
+        response.end(JSON.stringify(
+            {
+                "status" : "Failure",
+                "message" : "'startTime' field was not specified"
+            }
+        ));
+        return; //Stop add Event operation as information provided was not sufficient
+    }
+
+    if(request.body.endTime == undefined || request.body.endTime < 1)
+    {
+        response.end(JSON.stringify(
+            {
+                "status" : "Failure",
+                "message" : "'endTime' field was not specified"
+            }
+        ));
+        return; //Stop add Event operation as information provided was not sufficient
+    }
+
+    if(request.body.attendeeOTPpairs == undefined || request.body.attendeeOTPpairs.length < 1)
+    {
+        response.end(JSON.stringify(
+            {
+                "status" : "Failure",
+                "message" : "'attendeeOTPpairs' field was not specified"
+            }
+        ));
+        return; //Stop add Event operation as information provided was not sufficient
+    }
+
+    //Check if event exists
+    var eventsRef = db.collection('events').doc(request.body.eventId);
+    var getDoc = eventsRef.get()
+        .then(doc => {
+            if (doc.exists) //Event exists 
+            {
+                response.end(JSON.stringify(
+                    {
+                        "status" : "Failure",
+                        "message" : "Specified event already exists!"
+                    }
+                ));
+                return; //Stop as event already exists
+            } 
+            else //Event does not exist
+            {
+                //Create DB event
+                let updateDoc = db.collection('events').doc(request.body.eventId).add(
+                    {
+                        "room" : doc.room,
+                        "startTime" : doc.startTime,
+                        "endTime" : doc.endTime,
+                        "attendees" : doc.attendeeOTPpairs
+                    })
+                .then(ref => {
+                    console.log('Added Event: ' + request.body.eventId);
+                    response.end(JSON.stringify(
+                        {
+                            "status" : "Success"
+                        }));
+                });
+                return;
+            }
+        })
+        .catch(err => {
+            response.end(JSON.stringify(
+                {
+                    "status" : "Failure",
+                    "message" : "Document could not be retrieved"
+                }
+            ));
+            return;
+        });
+}
+
+/** 
+ * @description: Function that adds a person to an event
+ * @param eventId: The eventId toidentify event
  * @param email: Email to add to the event
  * @param otp: The OTP generated to allow access to the room
 **/
-exports.addOTP = function addOTP(request,response) {
+exports.addAttendee = function addAttendee(request,response) {
     if(request.body.eventId == undefined || request.body.eventId.length < 1)
     {
         response.end(JSON.stringify(
@@ -511,7 +620,7 @@ exports.addOTP = function addOTP(request,response) {
         return; //Stop add OTP operation as information provided was not sufficient
     }
 
-    if(request.body.otp == undefined || request.body.eventId.otp < 1)
+    if(request.body.otp == undefined || request.body.otp < 1)
     {
         response.end(JSON.stringify(
             {
@@ -612,7 +721,7 @@ exports.addOTP = function addOTP(request,response) {
  * @description: Function that returns the emails and otps 
  * @param eventId: The eventId toidentify event
 **/
-exports.addOTP = function getEventAttendees(request,response) {
+exports.getEventAttendees = function getEventAttendees(request,response) {
     if(request.body.eventId == undefined || request.body.eventId.length < 1)
     {
         response.end(JSON.stringify(
