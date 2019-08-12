@@ -492,3 +492,167 @@ exports.retrieveUser = function retrieveUser(request,response){
 //    var port = server.address().port
 //    console.log("Listening at http://%s:%s", host, port)
 // });
+
+/** 
+ * @description: Function that adds a person to an event
+ * @param eventId: The eventId toidentify event
+ * @param email: Email to add to the event
+ * @param otp: The OTP generated to allow access to the room
+**/
+exports.addOTP = function addOTP(request,response) {
+    if(request.body.eventId == undefined || request.body.eventId.length < 1)
+    {
+        response.end(JSON.stringify(
+            {
+                "status" : "Failure",
+                "message" : "'eventId' field was not specified"
+            }
+        ));
+        return; //Stop add OTP operation as information provided was not sufficient
+    }
+
+    if(request.body.otp == undefined || request.body.eventId.otp < 1)
+    {
+        response.end(JSON.stringify(
+            {
+                "status" : "Failure",
+                "message" : "'otp' field was not specified"
+            }
+        ));
+        return; //Stop add OTP operation as information provided was not sufficient
+    }
+
+    if(request.body.email == undefined || request.body.email.length < 1)
+    {
+        response.end(JSON.stringify(
+            {
+                "status" : "Failure",
+                "message" : "'email' field was not specified"
+            }
+        ));
+        return; //Stop add OTP operation as information provided was not sufficient
+    }
+
+    //Check if event exists
+    var eventsRef = db.collection('events').doc(request.body.eventId);
+    var getDoc = eventsRef.get()
+        .then(doc => {
+            if (doc.exists) //Event exists 
+            {
+                //Load the current otp/emails registered for this event
+                var emails = [];
+                var otps = [];
+
+                doc.attendees.forEach(attendee => {
+                    //Check if email already exists
+                    if(attendee.email == request.body.email)
+                    {
+                        response.end(JSON.stringify(
+                            {
+                                "status" : "Failure",
+                                "message" : "Provided email is already registered in event!"
+                            }
+                        ));
+                        return; //Stop as the email was already part of the event
+                    }
+
+                    emails.push(attendee.email);
+                    otps.push(attendee.otp);
+                });
+
+                //Add the OTP to the event
+                emails.push(request.body.email);
+                otps.push(request.body.otp);
+            
+
+                //Save updated event to DB
+                let updateDoc = db.collection('events').doc(request.body.eventId).set(
+                    {
+                        "room" : doc.room,
+                        "startTime" : doc.startTime,
+                        "endTime" : doc.endTime,
+                        "attendees" : 
+                                    { 
+                                        emails,
+                                        otps
+                                    }
+                    })
+                .then(ref => {
+                    console.log('Added \' ' + request.body.email + '\' to event: ' + request.body.eventId);
+                    response.end(JSON.stringify(
+                        {
+                            "status" : "Success"
+                        }));
+                });
+                return;
+            } 
+            else //Event does not exist
+            {
+                response.end(JSON.stringify(
+                    {
+                        "status" : "Failure",
+                        "message" : "Specified event does not exist"
+                    }
+                ));
+                return; //Stop as event does not exist 
+            }
+        })
+        .catch(err => {
+            response.end(JSON.stringify(
+                {
+                    "status" : "Failure",
+                    "message" : "Document could not be retrieved"
+                }
+            ));
+            return;
+        });
+}
+
+/** 
+ * @description: Function that returns the emails and otps 
+ * @param eventId: The eventId toidentify event
+**/
+exports.addOTP = function getEventAttendees(request,response) {
+    if(request.body.eventId == undefined || request.body.eventId.length < 1)
+    {
+        response.end(JSON.stringify(
+            {
+                "status" : "Failure",
+                "message" : "'eventId' field was not specified"
+            }
+        ));
+        return; //Stop retreive operation as information provided was not sufficient
+    }
+
+    //Check if event exists
+    var eventsRef = db.collection('events').doc(request.body.eventId);
+    var getDoc = eventsRef.get()
+        .then(doc => {
+            if (doc.exists) //Event exists 
+            {
+                //Load the current otp/emails registered for this event
+                var emails = [];
+                var otps = [];
+
+                    emails.push(attendee.email);
+                    otps.push(attendee.otp);
+            }
+
+            response.end(JSON.stringify(
+                {
+                    "status" : "Failure",
+                    "message" : "Given OTP was incorrect"
+                }
+            ));
+            return;
+        })
+        .catch(err => {
+            response.end(JSON.stringify(
+                {
+                    "status" : "Failure",
+                    "message" : "Document could not be retrieved"
+                }
+            ));
+            return;
+        });
+}
