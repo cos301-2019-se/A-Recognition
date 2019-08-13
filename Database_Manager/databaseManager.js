@@ -9,13 +9,13 @@ admin.initializeApp(
 let db = admin.firestore();
 
 //Express setup
-
+/*
 var express = require('express');
 var app = express();
 
 var parser = require("body-parser");
 app.use(parser.urlencoded({extended : false}));
-
+*/
 
 //Helper functions
 /** 
@@ -718,7 +718,7 @@ exports.getEventAttendees = function getEventAttendees(request,response) {
 
 
 /* For Testing */
-
+/*
 app.post('/register', function (request, response)
 {
     exports.register(request, response);
@@ -774,3 +774,4 @@ var server = app.listen(42069, function ()
 {    
     console.log("Dope ass server listening at http://%s:%s", '127.0.0.1', 42069);
 })
+*/
