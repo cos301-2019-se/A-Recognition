@@ -10,21 +10,27 @@ let db = admin.firestore();
 
 //Express setup
 /*
- var express = require('express');
- var app = express();
+var express = require('express');
+var app = express();
 
 var parser = require("body-parser");
 app.use(parser.urlencoded({extended : false}));
 */
 
 //Helper functions
-
-function checkBody(requestBody,key,message,response){
+/** 
+ * @description: Function that updates a user
+ * @param requestBody: The body of the request
+ * @param key: The field name to check
+ * @param response: The response object of the request to serve
+**/
+function checkBody(requestBody, key, response)
+{
     if(requestBody[key] == undefined || requestBody[key].length < 1){
         response.end(JSON.stringify(
             {
                 "status" : "Failure",
-                "message" : message
+                "message" : '\'' + key + '\' field was not specified!'
             }
         ));
         return false;
@@ -32,97 +38,9 @@ function checkBody(requestBody,key,message,response){
     return true;
 }
 
-function validateUserObject(request, response)
-{
-    var valid = true;
-    
-    //Check for email field
-    if(request.body.email == undefined || request.body.email.length < 1)
-    {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'email' field was not specified"
-            }
-        ));
-        valid = false;
-    }
-
-    //Check for name field
-    if(request.body.name == undefined || request.body.name.length < 1)
-    {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'name' field was not specified"
-            }
-        ));
-        valid = false;
-    }
-
-    //Check for surname field
-    if(request.body.surname == undefined || request.body.surname.length < 1)
-    {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'surname' field was not specified"
-            }
-        ));
-        valid = false;
-    }
-
-    //Check for title field
-    if(request.body.title == undefined || request.body.title.length < 1)
-    {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'title' field was not specified"
-            }
-        ));
-        valid = false;
-    }
-    
-    //Check for facial data field
-    if(request.body.fd == undefined || request.body.fd.length < 1)
-    {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'fd' field was not specified. If no facial data is known please indicate with '[]'"
-            }
-        ));
-        valid = false;
-    }
-
-    //Check for active field
-    if(request.body.active == undefined || request.body.active.length < 1)
-    {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'active' field was not specified."
-            }
-        ));
-        valid = false;
-    }
-
-    if(request.body.active != 'false' && request.body.active != 'true')
-    {
-        response.end(JSON.stringify(
-        {
-            "status" : "Failure",
-            "message" : "'active' field must be boolean ('true'/'false')"
-        }
-        ));
-        valid = false;
-    }
-
-    return valid;
-}
-
-//Endpoint for retrieving known email-facial data pairs (To be used for facial recognition)
+/** 
+ * @description: Function to retrieve facial data and emails for facial recognition
+**/
 exports.retrieveEncodings = function retrieveEncodings(request,response){
     users = db.collection("users").get()
         .then(userSet => {
@@ -148,10 +66,62 @@ exports.retrieveEncodings = function retrieveEncodings(request,response){
     });
 }
 
+/** 
+ * @description: Function that registers a user
+ * @param email: Email to identify a user
+ * @param name: The user's first name
+ * @param surname: The user's surname
+ * @param title: The user's title
+ * @param fd: The user's facial data array
+ * @param active: The user's active field
+**/
 exports.register = function register(request,response){
-    if(!validateUserObject(request, response))
+    //Check for email field
+    if(!checkBody(request.body, "email", response))
     {
-        return; //Stop registration as information provided was not sufficient
+        return;
+    }
+
+    //Check for name field
+    if(!checkBody(request.body, "name", response))
+    {
+        return;
+    }
+
+
+    //Check for surname field
+    if(!checkBody(request.body, "surname", response))
+    {
+        return;
+    }
+
+    //Check for title field
+   if(!checkBody(request.body, "title", response))
+   {
+       return;
+   }
+    
+    //Check for facial data field
+    if(!checkBody(request.body, "fd", response))
+    {
+        return;
+    }
+
+    //Check for active field
+    if(!checkBody(request.body, "active", response))
+    {
+        return;
+    }
+
+    if(request.body.active != 'false' && request.body.active != 'true')
+    {
+        response.end(JSON.stringify(
+        {
+            "status" : "Failure",
+            "message" : "'active' field must be boolean ('true'/'false')"
+        }
+        ));
+        return;
     }
 
     //Check if user exists
@@ -181,7 +151,7 @@ exports.register = function register(request,response){
                         "active" : JSON.parse(request.body.active)
                     })
                 .then(ref => {
-                    console.log('Updated: ', request.body.email);
+                    console.log('Added user: ', request.body.email);
                     response.end(JSON.stringify(
                         {
                             "status" : "Success"
@@ -201,10 +171,62 @@ exports.register = function register(request,response){
         });
 }
 
+/** 
+ * @description: Function that updates a user
+ * @param email: Email to identify a user
+ * @param name: The user's first name
+ * @param surname: The user's surname
+ * @param title: The user's title
+ * @param fd: The user's facial data array
+ * @param active: The user's active field
+**/
 exports.update = function update(request,response){
-    if(!validateUserObject(request, response))
+    //Check for email field
+    if(!checkBody(request.body, "email", response))
     {
-        return; //Stop update operation as information provided was not sufficient
+        return;
+    }
+
+    //Check for name field
+    if(!checkBody(request.body, "name", response))
+    {
+        return;
+    }
+
+
+    //Check for surname field
+    if(!checkBody(request.body, "surname", response))
+    {
+        return;
+    }
+
+    //Check for title field
+   if(!checkBody(request.body, "title", response))
+   {
+       return;
+   }
+    
+    //Check for facial data field
+    if(!checkBody(request.body, "fd", response))
+    {
+        return;
+    }
+
+    //Check for active field
+    if(!checkBody(request.body, "active", response))
+    {
+        return;
+    }
+
+    if(request.body.active != 'false' && request.body.active != 'true')
+    {
+        response.end(JSON.stringify(
+        {
+            "status" : "Failure",
+            "message" : "'active' field must be boolean ('true'/'false')"
+        }
+        ));
+        return;
     }
 
     //Check if user exists
@@ -253,16 +275,15 @@ exports.update = function update(request,response){
         });
 }
 
+/** 
+ * @description: Function retrieves a given user
+ * @param email: Email to identify a user
+**/
 exports.retrieveUser = function retrieveUser(request,response){
-    if(request.body.email == undefined || request.body.email.length < 1)
+    //Check for email field
+    if(!checkBody(request.body, "email", response))
     {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'email' field was not specified"
-            }
-        ));
-        return; //Stop update operation as information provided was not sufficient
+        return;
     }
 
     //Check if user exists
@@ -314,59 +335,34 @@ exports.retrieveUser = function retrieveUser(request,response){
  * @param attendeeOTPpairs: JSON object array containg emails and their respective OTP
 **/
 exports.addEvent = function addEvent(request,response) {
-    if(request.body.eventId == undefined || request.body.eventId.length < 1)
+    //Check for eventId field
+    if(!checkBody(request.body, "eventId", response))
     {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'eventId' field was not specified"
-            }
-        ));
-        return; //Stop add Event operation as information provided was not sufficient
+        return;
     }
 
-    if(request.body.location == undefined || request.body.location < 1)
+    //Check for location field
+    if(!checkBody(request.body, "location", response))
     {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'location' field was not specified"
-            }
-        ));
-        return; //Stop add Event operation as information provided was not sufficient
+        return;
     }
 
-    if(request.body.startTime == undefined || request.body.startTime < 1)
+    //Check for startTime field
+    if(!checkBody(request.body, "startTime", response))
     {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'startTime' field was not specified"
-            }
-        ));
-        return; //Stop add Event operation as information provided was not sufficient
+        return;
     }
 
-    if(request.body.endTime == undefined || request.body.endTime < 1)
+    //Check for endTime field
+    if(!checkBody(request.body, "endTime", response))
     {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'endTime' field was not specified"
-            }
-        ));
-        return; //Stop add Event operation as information provided was not sufficient
+        return;
     }
 
-    if(request.body.attendeeOTPpairs == undefined || request.body.attendeeOTPpairs.length < 1)
+    //Check for attendeeOTPpairs field
+    if(!checkBody(request.body, "attendeeOTPpairs", response))
     {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'attendeeOTPpairs' field was not specified"
-            }
-        ));
-        return; //Stop add Event operation as information provided was not sufficient
+        return;
     }
 
     //Check if event exists
@@ -388,7 +384,7 @@ exports.addEvent = function addEvent(request,response) {
                 //Create DB event
                 let updateDoc = db.collection('events').doc(request.body.eventId).set(
                     {
-                        "location" : request.body.eventId,
+                        "location" : request.body.location,
                         "startTime" : request.body.startTime,
                         "endTime" : request.body.endTime,
                         "attendees" : JSON.parse(request.body.attendeeOTPpairs)
@@ -415,43 +411,161 @@ exports.addEvent = function addEvent(request,response) {
 }
 
 /** 
+ * @description: Function that updates an event
+ * @param eventId: The eventId toidentify event
+ * @param location: The location of the venue
+ * @param startTime: When the event starts
+ * @param endTime: When the event stops
+ * @param attendeeOTPpairs: JSON object array containg emails and their respective OTP
+**/
+exports.updateEvent = function updateEvent(request,response) {
+    //Check for eventId field
+    if(!checkBody(request.body, "eventId", response))
+    {
+        return;
+    }
+
+    //Check for location field
+    if(!checkBody(request.body, "location", response))
+    {
+        return;
+    }
+
+    //Check for startTime field
+    if(!checkBody(request.body, "startTime", response))
+    {
+        return;
+    }
+
+    //Check for endTime field
+    if(!checkBody(request.body, "endTime", response))
+    {
+        return;
+    }
+
+    //Check for attendeeOTPpairs field
+    if(!checkBody(request.body, "attendeeOTPpairs", response))
+    {
+        return;
+    }
+
+    //Check if event exists
+    var eventsRef = db.collection('events').doc(request.body.eventId);
+    var getDoc = eventsRef.get()
+        .then(doc => {
+            if (doc.exists) //Event exists 
+            {
+                //Update DB event
+                let updateDoc = db.collection('events').doc(request.body.eventId).set(
+                    {
+                        "location" : request.body.location,
+                        "startTime" : request.body.startTime,
+                        "endTime" : request.body.endTime,
+                        "attendees" : JSON.parse(request.body.attendeeOTPpairs)
+                    })
+                .then(ref => {
+                    console.log('Updated Event: ' + request.body.eventId);
+                    response.end(JSON.stringify(
+                        {
+                            "status" : "Success"
+                        }));
+                });
+                return;
+            } 
+            else //Event does not exist
+            {
+                response.end(JSON.stringify(
+                    {
+                        "status" : "Failure",
+                        "message" : "Specified event does not exist!"
+                    }
+                ));
+                return; //Stop as event does not exist
+            }
+        })
+        .catch(err => {
+            response.end(JSON.stringify(
+                {
+                    "status" : "Failure",
+                    "message" : "Document could not be retrieved"
+                }
+            ));
+            return;
+        });
+}
+
+/** 
+ * @description: Function deletes an event
+ * @param eventId: The event to deleted
+**/
+exports.deleteEvent = function deleteEvent(request,response) {
+    //Check for eventId field
+    if(!checkBody(request.body, "eventId", response))
+    {
+        return;
+    }
+
+    //Check if event exists
+    var eventsRef = db.collection('events').doc(request.body.eventId);
+    var getDoc = eventsRef.get()
+        .then(doc => {
+            if (doc.exists) //Event exists 
+            {
+                //Delete event
+                eventsRef.delete();
+                console.log("Deleted eventId: \'" + request.body.eventId + '\'');
+                response.end(JSON.stringify(
+                    {
+                        "status" : "Success",
+                    }
+                ));
+                return;
+            } 
+            else //Event does not exist
+            {
+                response.end(JSON.stringify(
+                    {
+                        "status" : "Failure",
+                        "message" : "Specified event does not exist!"
+                    }
+                ));
+                return; //Stop as event already exists
+            }
+        })
+        .catch(err => {
+            response.end(JSON.stringify(
+                {
+                    "status" : "Failure",
+                    "message" : "Document could not be retrieved"
+                }
+            ));
+            return;
+        });
+}
+
+/** 
  * @description: Function that adds a person to an event
  * @param eventId: The eventId toidentify event
  * @param email: Email to add to the event
  * @param otp: The OTP generated to allow access to the room
 **/
 exports.addAttendee = function addAttendee(request,response) {
-    if(request.body.eventId == undefined || request.body.eventId.length < 1)
+    //Check for eventId field
+    if(!checkBody(request.body, "eventId", response))
     {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'eventId' field was not specified"
-            }
-        ));
-        return; //Stop add OTP operation as information provided was not sufficient
+        return;
     }
 
-    if(request.body.otp == undefined || request.body.otp < 1)
+    //Check for email field
+    if(!checkBody(request.body, "email", response))
     {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'otp' field was not specified"
-            }
-        ));
-        return; //Stop add OTP operation as information provided was not sufficient
+        return;
     }
 
-    if(request.body.email == undefined || request.body.email.length < 1)
+    //Check for otp field
+    if(!checkBody(request.body, "otp", response))
     {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'email' field was not specified"
-            }
-        ));
-        return; //Stop add OTP operation as information provided was not sufficient
+        return;
     }
 
     //Check if event exists
@@ -539,15 +653,10 @@ exports.addAttendee = function addAttendee(request,response) {
  * @param eventId: The eventId toidentify event
 **/
 exports.getEventAttendees = function getEventAttendees(request,response) {
-    if(request.body.eventId == undefined || request.body.eventId.length < 1)
+    //Check for eventId field
+    if(!checkBody(request.body, "eventId", response))
     {
-        response.end(JSON.stringify(
-            {
-                "status" : "Failure",
-                "message" : "'eventId' field was not specified"
-            }
-        ));
-        return; //Stop retreive operation as information provided was not sufficient
+        return;
     }
 
     //Check if event exists
@@ -591,10 +700,37 @@ exports.getEventAttendees = function getEventAttendees(request,response) {
         });
 }
 
-/* For Testing
+
+/* For Testing */
+/*
+app.post('/register', function (request, response)
+{
+    exports.register(request, response);
+});
+
+app.post('/retrieveEncodings', function (request, response)
+{
+    exports.retrieveEncodings(request, response);
+});
+
 app.post('/addEvent', function (request, response)
 {
     exports.addEvent(request, response);
+});
+
+app.post('/update', function (request, response)
+{
+    exports.update(request, response);
+});
+
+app.post('/updateEvent', function (request, response)
+{
+    exports.updateEvent(request, response);
+});
+
+app.post('/retrieveUser', function (request, response)
+{
+    exports.retrieveUser(request, response);
 });
 
 app.post('/addAttendee', function (request, response)
@@ -605,6 +741,11 @@ app.post('/addAttendee', function (request, response)
 app.post('/getEventAttendees', function (request, response)
 {
     exports.getEventAttendees(request, response);
+});
+
+app.post('/deleteEvent', function (request, response)
+{
+    exports.deleteEvent(request, response);
 });
 
 console.log("Starting server...");
