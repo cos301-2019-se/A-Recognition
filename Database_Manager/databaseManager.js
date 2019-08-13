@@ -9,15 +9,16 @@ admin.initializeApp(
 let db = admin.firestore();
 
 //Express setup
-// var express = require('express');
-// var app = express();
+/*
+ var express = require('express');
+ var app = express();
 
-//var parser = require("body-parser");
-//app.use(parser.urlencoded({extended : false}));
+var parser = require("body-parser");
+app.use(parser.urlencoded({extended : false}));
+*/
 
 //Helper functions
 
-//Hey I saw the oppertunity to function-ise your if statements
 function checkBody(requestBody,key,message,response){
     if(requestBody[key] == undefined || requestBody[key].length < 1){
         response.end(JSON.stringify(
@@ -30,6 +31,7 @@ function checkBody(requestBody,key,message,response){
     }
     return true;
 }
+
 function validateUserObject(request, response)
 {
     var valid = true;
@@ -145,31 +147,6 @@ exports.retrieveEncodings = function retrieveEncodings(request,response){
         ));
     });
 }
-// app.post('/retrieveEncodings', function (request, response) {
-//     //Get known face encodings from the DB with their respective email addresses
-//     users = db.collection("users").get()
-//         .then(userSet => {
-//         var emails = [];
-//         var faceData = [];
-
-//         userSet.forEach(user => {
-//             if(user.get("active"))
-//             {
-//                 emails.push(user.get("email"));
-//                 faceData.push(user.get("fd"));
-//             }
-//         });
-        
-//         //Return JSON object with two arrays; One with faces and the other with emails to match
-//         response.setHeader('Content-Type', 'application/json');
-//         response.end(JSON.stringify(
-//             {
-//                 "emails" : emails,
-//                 "fd" : faceData
-//             }
-//         ));
-//     });
-// });
 
 exports.register = function register(request,response){
     if(!validateUserObject(request, response))
@@ -224,60 +201,6 @@ exports.register = function register(request,response){
         });
 }
 
-// app.post('/register', function (request, response) 
-// {
-//     if(!validateUserObject(request, response))
-//     {
-//         return; //Stop registration as information provided was not sufficient
-//     }
-
-//     //Check if user exists
-//     var userRef = db.collection('users').doc(request.body.email);
-//     var getDoc = userRef.get()
-//         .then(doc => {
-//             if (doc.exists) //User exists 
-//             {
-//                 response.end(JSON.stringify(
-//                     {
-//                         "status" : "Failure",
-//                         "message" : "Specified user already exists"
-//                     }
-//                 ));
-//                 return;
-//             } 
-//             else //User does not exist
-//             {
-//                 //Update
-//                 let updateDoc = db.collection('users').doc(request.body.email).set(
-//                     {
-//                         "email" : request.body.email,
-//                         "name" : request.body.name,
-//                         "surname" : request.body.surname,
-//                         "title" : request.body.title,
-//                         "fd" : JSON.parse(request.body.fd),
-//                         "active" : JSON.parse(request.body.active)
-//                     })
-//                 .then(ref => {
-//                     console.log('Updated: ', request.body.email);
-//                     response.end(JSON.stringify(
-//                         {
-//                             "status" : "Success"
-//                         }));
-//                 });
-//                 return;
-//             }
-//         })
-//         .catch(err => {
-//             response.end(JSON.stringify(
-//                 {
-//                     "status" : "Failure",
-//                     "message" : "Document could not be retrieved"
-//                 }
-//             ));
-//             return;
-//         });
-// });
-
 exports.update = function update(request,response){
     if(!validateUserObject(request, response))
     {
@@ -329,58 +252,6 @@ exports.update = function update(request,response){
             return;
         });
 }
-// app.post('/update', function (request, response)
-// {
-//     if(!validateUserObject(request, response))
-//     {
-//         return; //Stop update operation as information provided was not sufficient
-//     }
-
-//     //Check if user exists
-//     var userRef = db.collection('users').doc(request.body.email);
-//     var getDoc = userRef.get()
-//         .then(doc => {
-//             if (doc.exists) //User exists 
-//             {
-//                 //Update
-//                 let updateDoc = db.collection('users').doc(request.body.email).set(
-//                     {
-//                         "email" : request.body.email,
-//                         "name" : request.body.name,
-//                         "surname" : request.body.surname,
-//                         "title" : request.body.title,
-//                         "fd" : JSON.parse(request.body.fd),
-//                         "active" : JSON.parse(request.body.active)
-//                     })
-//                 .then(ref => {
-//                     console.log('Updated: ', request.body.email);
-//                     response.end(JSON.stringify(
-//                         {
-//                             "status" : "Success"
-//                         }));
-//                 });
-//             } 
-//             else //User does not exist
-//             {
-//                 response.end(JSON.stringify(
-//                     {
-//                         "status" : "Failure",
-//                         "message" : "Specified user does not exist"
-//                     }
-//                 ));
-//                 return; //Stop as user does not exist 
-//             }
-//         })
-//         .catch(err => {
-//             response.end(JSON.stringify(
-//                 {
-//                     "status" : "Failure",
-//                     "message" : "Document could not be retrieved"
-//                 }
-//             ));
-//             return;
-//         });
-// });
 
 exports.retrieveUser = function retrieveUser(request,response){
     if(request.body.email == undefined || request.body.email.length < 1)
@@ -433,65 +304,6 @@ exports.retrieveUser = function retrieveUser(request,response){
         });
 
 }
-// app.post('/retrieveUser', function (request, response)
-// {
-//     if(request.body.email == undefined || request.body.email.length < 1)
-//     {
-//         response.end(JSON.stringify(
-//             {
-//                 "status" : "Failure",
-//                 "message" : "'email' field was not specified"
-//             }
-//         ));
-//         return; //Stop update operation as information provided was not sufficient
-//     }
-
-//     //Check if user exists
-//     var userRef = db.collection('users').doc(request.body.email);
-//     var getDoc = userRef.get()
-//         .then(doc => {
-//             if (doc.exists) //User exists 
-//             {
-//                 response.end(JSON.stringify(
-//                     {
-//                         "status" : "Success",
-//                         "email" : doc.get("email"),
-//                         "name" : doc.get("name"),
-//                         "surname" : doc.get("surname"),
-//                         "title" : doc.get("title"),
-//                         "fd" : doc.get("fd")
-//                     }
-//                 ));
-//             } 
-//             else //User does not exist
-//             {
-//                 response.end(JSON.stringify(
-//                     {
-//                         "status" : "Failure",
-//                         "message" : "Specified user does not exist"
-//                     }
-//                 ));
-//                 return; //Stop as user does not exist 
-//             }
-//         })
-//         .catch(err => {
-//             response.end(JSON.stringify(
-//                 {
-//                     "status" : "Failure",
-//                     "message" : "Document could not be retrieved"
-//                 }
-//             ));
-//             return;
-//         });
-// });
-
-//Run server
-// var server = app.listen(8081, function () 
-// {
-//    var host = server.address().address
-//    var port = server.address().port
-//    console.log("Listening at http://%s:%s", host, port)
-// });
 
 /** 
  * @description: Function that adds a person to an event
@@ -574,12 +386,12 @@ exports.addEvent = function addEvent(request,response) {
             else //Event does not exist
             {
                 //Create DB event
-                let updateDoc = db.collection('events').doc(request.body.eventId).add(
+                let updateDoc = db.collection('events').doc(request.body.eventId).set(
                     {
-                        "room" : doc.room,
-                        "startTime" : doc.startTime,
-                        "endTime" : doc.endTime,
-                        "attendees" : doc.attendeeOTPpairs
+                        "location" : request.body.eventId,
+                        "startTime" : request.body.startTime,
+                        "endTime" : request.body.endTime,
+                        "attendees" : JSON.parse(request.body.attendeeOTPpairs)
                     })
                 .then(ref => {
                     console.log('Added Event: ' + request.body.eventId);
@@ -652,9 +464,9 @@ exports.addAttendee = function addAttendee(request,response) {
                 var emails = [];
                 var otps = [];
 
-                doc.attendees.forEach(attendee => {
+                doc.get("attendees").forEach(person => {
                     //Check if email already exists
-                    if(attendee.email == request.body.email)
+                    if(person.email == request.body.email)
                     {
                         response.end(JSON.stringify(
                             {
@@ -664,28 +476,33 @@ exports.addAttendee = function addAttendee(request,response) {
                         ));
                         return; //Stop as the email was already part of the event
                     }
-
-                    emails.push(attendee.email);
-                    otps.push(attendee.otp);
+        
+                    emails.push(person.email);
+                    otps.push(person.otp);
                 });
 
                 //Add the OTP to the event
                 emails.push(request.body.email);
                 otps.push(request.body.otp);
-            
+
+                attendeesArray = [];
+                for(let a = 0; a < emails.length; a++)
+                {
+                    attendeesArray.push({"email" : emails[a], "otp" : otps[a]});
+                }
+
+                var objectToSend =
+                {
+                    "location" : doc.get('location'),
+                    "startTime" : doc.get("startTime"),
+                    "endTime" : doc.get("endTime"),
+                    "attendees" : attendeesArray
+                };
 
                 //Save updated event to DB
                 let updateDoc = db.collection('events').doc(request.body.eventId).set(
-                    {
-                        "room" : doc.room,
-                        "startTime" : doc.startTime,
-                        "endTime" : doc.endTime,
-                        "attendees" : 
-                                    { 
-                                        emails,
-                                        otps
-                                    }
-                    })
+                    objectToSend
+                    )
                 .then(ref => {
                     console.log('Added \' ' + request.body.email + '\' to event: ' + request.body.eventId);
                     response.end(JSON.stringify(
@@ -743,25 +560,56 @@ exports.getEventAttendees = function getEventAttendees(request,response) {
                 var emails = [];
                 var otps = [];
 
-                    emails.push(attendee.email);
-                    otps.push(attendee.otp);
+                //Return the attendees
+                response.end(JSON.stringify(
+                    {
+                        "status" : "Succsess",
+                        "attendeeOTPpairs" : doc.get("attendees")
+                    }
+                ));
+                return;
             }
-
-            response.end(JSON.stringify(
-                {
-                    "status" : "Failure",
-                    "message" : "Given OTP was incorrect"
-                }
-            ));
-            return;
+            else
+            {
+                response.end(JSON.stringify(
+                    {
+                        "status" : "Failure",
+                        "message" : "Specified event does not exist!"
+                    }
+                ));
+                return;
+            }
         })
         .catch(err => {
             response.end(JSON.stringify(
                 {
                     "status" : "Failure",
-                    "message" : "Document could not be retrieved"
+                    "message" : "Document could not be retrieved!"
                 }
             ));
             return;
         });
 }
+
+/* For Testing
+app.post('/addEvent', function (request, response)
+{
+    exports.addEvent(request, response);
+});
+
+app.post('/addAttendee', function (request, response)
+{
+    exports.addAttendee(request, response);
+});
+
+app.post('/getEventAttendees', function (request, response)
+{
+    exports.getEventAttendees(request, response);
+});
+
+console.log("Starting server...");
+var server = app.listen(42069, function () 
+{    
+    console.log("Dope ass server listening at http://%s:%s", '127.0.0.1', 42069);
+})
+*/
