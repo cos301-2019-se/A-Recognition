@@ -9,13 +9,13 @@ admin.initializeApp(
 let db = admin.firestore();
 
 //Express setup
-/*
+
 var express = require('express');
 var app = express();
 
 var parser = require("body-parser");
 app.use(parser.urlencoded({extended : false}));
-*/
+
 
 //Helper functions
 /** 
@@ -327,40 +327,12 @@ exports.retrieveUser = function retrieveUser(request,response){
 }
 
 /** 
- * @description: Function that adds a person to an event
+ * @description: Function that retrieves an event
  * @param eventId: The eventId toidentify event
- * @param location: The location of the venue
- * @param startTime: When the event starts
- * @param endTime: When the event stops
- * @param attendeeOTPpairs: JSON object array containg emails and their respective OTP
 **/
-exports.addEvent = function addEvent(request,response) {
+exports.retrieveEvent = function retrieveEvent(request,response) {
     //Check for eventId field
     if(!checkBody(request.body, "eventId", response))
-    {
-        return;
-    }
-
-    //Check for location field
-    if(!checkBody(request.body, "location", response))
-    {
-        return;
-    }
-
-    //Check for startTime field
-    if(!checkBody(request.body, "startTime", response))
-    {
-        return;
-    }
-
-    //Check for endTime field
-    if(!checkBody(request.body, "endTime", response))
-    {
-        return;
-    }
-
-    //Check for attendeeOTPpairs field
-    if(!checkBody(request.body, "attendeeOTPpairs", response))
     {
         return;
     }
@@ -372,31 +344,24 @@ exports.addEvent = function addEvent(request,response) {
             if (doc.exists) //Event exists 
             {
                 response.end(JSON.stringify(
-                    {
-                        "status" : "Failure",
-                        "message" : "Specified event already exists!"
-                    }
-                ));
-                return; //Stop as event already exists
+                {
+                    "status" : "Success",
+                    "location" : doc.get("location"),
+                    "startTime" : doc.get("startTime"),
+                    "endTime" : doc.get("endTime"),
+                    "attendeeOTPpairs" : doc.get("attendees")
+                }));
+                return;
             } 
             else //Event does not exist
             {
-                //Create DB event
-                let updateDoc = db.collection('events').doc(request.body.eventId).set(
+                response.end(JSON.stringify(
                     {
-                        "location" : request.body.location,
-                        "startTime" : request.body.startTime,
-                        "endTime" : request.body.endTime,
-                        "attendees" : JSON.parse(request.body.attendeeOTPpairs)
-                    })
-                .then(ref => {
-                    console.log('Added Event: ' + request.body.eventId);
-                    response.end(JSON.stringify(
-                        {
-                            "status" : "Success"
-                        }));
-                });
-                return;
+                        "status" : "Failure",
+                        "message" : "Specified event does not exist!"
+                    }
+                ));
+                return; //Stop event does not exist
             }
         })
         .catch(err => {
@@ -408,6 +373,57 @@ exports.addEvent = function addEvent(request,response) {
             ));
             return;
         });
+}
+
+/** 
+ * @description: Function retrieves a given user
+ * @param email: Email to identify a user
+**/
+exports.retrieveUser = function retrieveUser(request,response){
+    //Check for email field
+    if(!checkBody(request.body, "email", response))
+    {
+        return;
+    }
+
+    //Check if user exists
+    var userRef = db.collection('users').doc(request.body.email);
+    var getDoc = userRef.get()
+        .then(doc => {
+            if (doc.exists) //User exists 
+            {
+                response.end(JSON.stringify(
+                    {
+                        "status" : "Success",
+                        "email" : doc.get("email"),
+                        "name" : doc.get("name"),
+                        "surname" : doc.get("surname"),
+                        "title" : doc.get("title"),
+                        "fd" : doc.get("fd")
+                    }
+                ));
+            } 
+            else //User does not exist
+            {
+                response.end(JSON.stringify(
+                    {
+                        "status" : "Failure",
+                        "message" : "Specified user does not exist"
+                    }
+                ));
+                return; //Stop as user does not exist 
+            }
+        })
+        .catch(err => {
+            response.end(JSON.stringify(
+                {
+                    "status" : "Failure",
+                    "message" : "Document could not be retrieved"
+                }
+            ));
+            return;
+        });
+
 }
 
 /** 
@@ -702,7 +718,7 @@ exports.getEventAttendees = function getEventAttendees(request,response) {
 
 
 /* For Testing */
-/*
+
 app.post('/register', function (request, response)
 {
     exports.register(request, response);
@@ -716,6 +732,11 @@ app.post('/retrieveEncodings', function (request, response)
 app.post('/addEvent', function (request, response)
 {
     exports.addEvent(request, response);
+});
+
+app.post('/retrieveEvent', function (request, response)
+{
+    exports.retrieveEvent(request, response);
 });
 
 app.post('/update', function (request, response)
@@ -753,4 +774,3 @@ var server = app.listen(42069, function ()
 {    
     console.log("Dope ass server listening at http://%s:%s", '127.0.0.1', 42069);
 })
-*/
