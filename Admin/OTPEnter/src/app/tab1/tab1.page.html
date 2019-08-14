@@ -38,11 +38,13 @@
       </ion-card-content>
     </ion-card>
       <ion-item >
-          <ion-input type="number" clearInput value="333"></ion-input>
-            <!-- <ion-select placeholder="Select One" [(ngModel)]="eventList"  #EventInfo>
-                <ion-select-option *ngFor="let i of eventList" value="{{i.items.id}}">{{i.items.id}}</ion-select-option>
-            </ion-select> -->
+          <ion-input type="number" maxlength="6" clearInput value="123456" #otp></ion-input>
+            <ion-select placeholder="Select One"   #EventInfo>
+                <ion-select-option *ngFor="let i of eventList"  value="{{i.id}}">
+                    {{i.summary}}-{{i.location}} || {{i.startDate}} - {{i.startTime}} ||
+                </ion-select-option>
+            </ion-select>
               <br>
-          <button id="snap" class="btn btn-primary" (click)='validateOneTimePin(EventInfo.value)'>Sumbit</button>
+          <button id="snap" class="btn btn-primary" (click)='validateOTP(EventInfo.value,otp.value)'>Sumbit</button>
       </ion-item>
 </ion-content>

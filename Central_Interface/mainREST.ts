@@ -87,15 +87,6 @@ app.post("/validateUserHasBooking", (req, res, next) => {
     }    
 });
 
-app.post("/richardsResponse", (req, res, next) => {
-
-    //console.log(req.body);
-    let answer = req.body;
-
-    console.log(answer);
-    
-    res.send(answer);
-});
 
 app.get('/getEmails', (req, res) => {
 

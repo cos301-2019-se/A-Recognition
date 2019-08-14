@@ -44,7 +44,7 @@ export class AuthService {
   {
     return new Promise((res, rej) =>
     {
-      return this.http.post('http://localhost:3000/getEventList', '').subscribe((response)=>
+      return this.http.post('http://192.168.8.107:3000/getEventList', '').subscribe((response)=>
       {
         res(response);
       },(err)=>
