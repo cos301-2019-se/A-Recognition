@@ -1,6 +1,21 @@
 # Database Management API
 ## A-Recognition Access Control
-### Endpoints
+
+### API Responses in general
+All responses have a 'status' field that is used to indicate the success or failure
+of a request. 
+
+### API Failure responses
+In addition to the status field, all failure responses provides a 'message' field to provide information about the error that occured. 
+Example:
+```
+{
+    "status" : "Failure",
+    "message" : "Some description of the error"
+}
+```
+
+### User related endpoints
 
 #### /retrieveEncodings
 This endpoint returns all active registered users as a JSON object containing email-facialData pairs
@@ -61,22 +76,6 @@ Example:
 }
 ```
 
-Success response:
-
-```
-{
-    "status" : "Success"
-}
-```
-
-Failure response:
-```
-{
-    "status" : "Failure",
-    "message" : "some description of the error"
-}
-```
-
 ---
 
 #### /update
@@ -91,21 +90,6 @@ Example:
     "title": "Mr",
     "fd": [123,...,456],
     "active" : true
-}
-```
-
-Success response:
-```
-{
-    "status" : "Success"
-}
-```
-
-Failure response:
-```
-{
-    "status" : "Failure",
-    "message" : "some description of the error"
 }
 ```
 
@@ -133,12 +117,119 @@ Success response:
 }
 ```
 
-Failure response:
+### Event related endpoints
+
+#### /addEvent
+Enpoint to allow storing of a new event in the DB. The request:
+Example:
 ```
 {
-    "status" : "Failure",
-    "message" : "some description of the error"
+    "eventId" : "38173",
+    "location" : "Rome",
+    "startTime" : "20/04/2019 15:30",
+    "endTime" : "20/04/2019 16:30",
+    "attendeeOTPpairs" : [
+        {
+            "email" : "john@some.domain",
+            "otp" : "12345"
+        },
+        {
+            "email" : "jane@some.domain",
+            "otp" : "67890"
+        }
+    ]
+}
+```
+#### /retrieveEvent
+Endpoint the returns a specific event. The request:
+Example:
+```
+{
+    "eventId" : "eventid1234"
+}
+```
+Returns the event in the form:
+Example:
+```
+{
+    "status": "Success",
+    "location": "Italy",
+    "startTime": "18:20",
+    "endTime": "19:20",
+    "attendeeOTPpairs": [
+        {
+            "email": "alice@gmail.com",
+            "otp": "1234"
+        },
+        {
+            "email": "bob@gmail.com",
+            "otp": "5678"
+        }
+    ]
 }
 ```
 
+#### /updateEvent
+Endpoint to allow the updating of a existing event. The request:
+Example:
+```
+{
+    "eventId" : "38173",
+    "location" : "Paris",
+    "startTime" : "21/04/2019 16:30",
+    "endTime" : "21/04/2019 17:30",
+    "attendeeOTPpairs" : [
+        {
+            "email" : "john@some.domain",
+            "otp" : "12345"
+        },
+        {
+            "email" : "jane@some.domain",
+            "otp" : "67890"
+        }
+    ]
+}
+```
+#### /deleteEvent
+Endpoint to allow deletion of a specific event. The request:
+Example:
+```
+{
+    "eventId" : "38173"
+}
+```
+#### /addAttendee
+Allows the adding of an extra person (email + otp pair) to an existing event, to allow them access. The request:
+Example:
+```
+{
+    "eventId" : "38173",
+    "email" : "newly@addedEmail",
+    "otp" : "22334"
+}
+```
+#### /getEventAttendees
+Retrieves all email/otp pairs for a specific event. The request:
+Example:
+```
+{
+    "eventId" : "38173"
+}
+```
+Succsess response example:
+```
+{
+    "status" : "Succsess",
+    "attendeeOTPpairs" : [
+        {
+            "email" : "attendee@email.here",
+            "OTP" : "12345"
+        },
+        {
+            "email" : "attendee2@email.here",
+            "otp" : "67890"
+        }
+    ]
+}
+```
 ---
