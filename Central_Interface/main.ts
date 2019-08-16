@@ -10,7 +10,7 @@ import * as Adapter from "../API_Adapter/main";
 import * as Utils from "../Utils/Utils";
 import {PythonShell} from 'python-shell'; //npm install python-shell
 import * as NotificationSystem from "../Database_Manager/notification";
-import * as DatabaseManager from "../Database_Manager/databaseManager";
+import * as DatabaseManager from "../Database_Manager/databaseManager"
 import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 
@@ -200,7 +200,7 @@ export function checkBookingsForGuests(){ //TODO : MAke it work for the same use
         }).catch(err =>{
             console.log(err);
         })
-    },5000);
+    },15000);
     
 }
 
@@ -294,11 +294,120 @@ export function getEventList() : Promise<any>{
     
 }
 
-export function generateOTP(eventId : number,email : string) : boolean{
+export function generateOTP(eventId : number,email : string) : Promise<boolean>{
 
-    let otp = NotificationSystem.generateOTP();
+    return new Promise( (resolve,reject) =>{
+        let otp = NotificationSystem.generateOTP();
+  
+    DatabaseManager.retrieveEvent({ body : {eventId : eventId}})
+    .then( event => {
+        event.eventId = eventId;
+        event.eventOTP = otp;
+        
+        DatabaseManager.updateEvent({ body : event}).then( result =>{
+            console.log(result);
+            resolve(true);
+            
+        }).catch( err => {
+            console.log(err.message);
+            reject(false)
+        });
+     })
+     .catch( err => {
+        console.log(err.message);
+        reject(false)
+    });
+});
     
-    return DatabaseManager.addOTP(eventId,otp,email);
 
 }
+
+function compileValidOTPList(event) : Array<string>{
+    let validOtp = [];
+
+    if(event.eventOTP != "")
+        validOtp.push(event.eventOTP.otp);
+    
+    event.attendeeOTPpairs.forEach(attendee => {
+        validOtp.push( attendee.otp.otp);
+    });
+
+    return validOtp;
+}
+export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
+
+  return new Promise( (resolve,reject) =>{
+    DatabaseManager.retrieveEvent({ body : {eventId : eventId}})
+    .then( event => {
+        
+        let otpList = compileValidOTPList(event);        
+        
+        if( Utils.inArray(otp,otpList))
+            resolve(true);
+        else 
+            reject(false);
+     })
+     .catch( err => reject(err.message));
+  })
+    
+
+}
+function clearOutdatedEvents() : void{
+    //getAllEvents
+    // let events;
+
+    // events.forEach(event => {
+    //     if(event.endTime < (new Date()).toISOString() )
+    //     DatabaseManager.deleteEvent({body : {eventId : event.eventId}});
+    // });
+}
+export function syncEventsToDB() : void{
+
+    //clearOutdatedEvents();
+    Adapter.getEvents("primary",true,
+    {id:true,summary:true,location:true,start:true,end:true,attendees: true})
+    
+    .then( events =>{
+        
+        events.forEach(event => {
+
+            let attendees = event.attendees;
+            let otpList = [];
+            let userOtpPair = [];
+            
+            
+            attendees.forEach(attendee => {
+                userOtpPair.push( {
+                    email : attendee,
+                    otp : NotificationSystem.generateOTP()
+                });
+            });
+
+            let request = {
+                body : {
+                    eventId     : event.id,
+                    summary     : event.summary,
+                    location    : event.location,
+                    startTime   : event.startTime,
+                    endTime     : event.endTime,
+                    attendeeOTPpairs : userOtpPair
+                }
+            }
+            
+            
+            DatabaseManager.addEvent(request).then( response =>{
+                console.log(response);
+                
+            }).catch( err => {} );    //Event already exists, no action
+        });
+
+        console.log("Database synchronized");
+        
+    }).catch( err =>{
+            console.log(err);  
+    })
+
+}
+
+syncEventsToDB();
 //checkBookingsForGuests();
