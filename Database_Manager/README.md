@@ -1,11 +1,10 @@
-# Database Management API
+# Database Manager
 ## A-Recognition Access Control
 
-### API Responses in general
-All responses have a 'status' field that is used to indicate the success or failure
-of a request. 
+### All function Responses in general
+All functions returns a JSON response, which all have a 'status' field that is used to indicate the success or failure of a call. 
 
-### API Failure responses
+### All Failure responses
 In addition to the status field, all failure responses provides a 'message' field to provide information about the error that occured. 
 Example:
 ```
@@ -14,12 +13,11 @@ Example:
     "message" : "Some description of the error"
 }
 ```
+---
+### DB Functions related to users
 
-### User related endpoints
-
-#### /retrieveEncodings
-This endpoint returns all active registered users as a JSON object containing email-facialData pairs
-in the form of two paralel arrays.
+#### retrieveEncodings
+This function returns all active registered users as a JSON object containing email-facialData pairs in the form of two paralel arrays.
 i.e index 0 of the "emails" array corresponds to index 0 of the "fd" (Facial data) array.
 
 Example:
@@ -58,10 +56,9 @@ Example:
     ]
 }
 ```
----
 
-#### /register
-Endpoint used to add users to the system. The request containing the details 
+#### register
+Function used to add users to the system. The request containing the details 
 should be a JSON object as follows:
 
 Example:
@@ -76,10 +73,8 @@ Example:
 }
 ```
 
----
-
-#### /update
-Endpoint for updating a user's details. The request should contain all user details.
+#### update
+Fucntion for updating a user's details. The request should contain all user details.
 
 Example:
 ```
@@ -93,10 +88,8 @@ Example:
 }
 ```
 
----
-
-#### /retrieveUser
-Endpoint to retrive a user's details based on given email. The request:
+#### retrieveUser
+Function that retrieves a user's details based on provided email. The request:
 
 Example:
 ```
@@ -116,11 +109,11 @@ Success response:
     "fd": [123,...,456]
 }
 ```
-
+---
 ### Event related endpoints
 
-#### /addEvent
-Enpoint to allow storing of a new event in the DB. The request:
+#### addEvent
+Function used to create a new event in the DB. The request:
 Example:
 ```
 {
@@ -140,14 +133,17 @@ Example:
     ]
 }
 ```
-#### /retrieveEvent
-Endpoint the returns a specific event. The request:
+
+#### retrieveEvent
+Function that returns a specific event based on the event ID. The request:
+
 Example:
 ```
 {
     "eventId" : "eventid1234"
 }
 ```
+
 Returns the event in the form:
 Example:
 ```
@@ -169,8 +165,9 @@ Example:
 }
 ```
 
-#### /updateEvent
-Endpoint to allow the updating of a existing event. The request:
+#### updateEvent
+Function to allow the update of a existing event. The request:
+
 Example:
 ```
 {
@@ -190,16 +187,20 @@ Example:
     ]
 }
 ```
-#### /deleteEvent
-Endpoint to allow deletion of a specific event. The request:
+
+#### deleteEvent
+Function to allow deletion of a specific event. The request:
+
 Example:
 ```
 {
     "eventId" : "38173"
 }
 ```
-#### /addAttendee
-Allows the adding of an extra person (email + otp pair) to an existing event, to allow them access. The request:
+
+#### addAttendee
+Allows the adding of an extra attendee (email + otp pair) to an existing event, to allow them access to room booked for the event. The request:
+
 Example:
 ```
 {
@@ -208,14 +209,17 @@ Example:
     "otp" : "22334"
 }
 ```
-#### /getEventAttendees
+
+#### getEventAttendees
 Retrieves all email/otp pairs for a specific event. The request:
+
 Example:
 ```
 {
     "eventId" : "38173"
 }
 ```
+
 Succsess response example:
 ```
 {
