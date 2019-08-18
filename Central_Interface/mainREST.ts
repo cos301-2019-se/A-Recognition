@@ -100,8 +100,21 @@ app.post('/addEmployee',upload.single('image'), async(req, res) => {
     res.json(Main.addEmplpoyee(req)); 
 });
 
-app.get('/generateToken', (req, res) => {
-    res.json(Main.generateToken());
+app.post('/generateToken', (req, res) => {
+    if( req.query.hasOwnProperty("sender") != true)
+    res.send("Invalid sender");
+    else
+    res.send(Main.generateToken(req.query.sender));
+});
+
+app.post('/verifyToken', (req, res) => {
+  
+    if( req.query.hasOwnProperty("token") != true)
+    res.send("Invalid token");
+    else
+    Main.verifyToken(req.query.token)
+    .then( success => res.send(success) )
+    .catch( err => res.send(err));
 });
 
 function delay(ms: number) {
@@ -126,6 +139,8 @@ app.post('/generateOTP',(req,res) => {
         res.send("Invalid event ID supplied");
     
 });
+
+
 
 app.post('/validateOTP',(req,res) => {
 
