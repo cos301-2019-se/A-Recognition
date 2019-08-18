@@ -165,7 +165,7 @@ Example:
 }
 ```
 
-#### retrieveAllEvents
+#### retrieveEventIds
 Function that returns a list of eventIds of all stored events
 
 Example response:

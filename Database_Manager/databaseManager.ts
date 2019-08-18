@@ -283,6 +283,53 @@ export async function update(request) : Promise<any> {
 }
 
 /** 
+ * @description: Function retrieves a given user
+ * @param email: Email to identify a user
+**/
+export async function retrieveUser(request) : Promise<any> {
+    return new Promise( (resolve, reject) => {
+        //Check for email field
+        if(!checkBody(request.body, "email"))
+        {
+            reject({
+                "status" : "Failure",
+                "message" : '\'email\' field was not specified!'
+            });
+        }
+
+        //Check if user exists
+        var userRef = db.collection('users').doc(request.body.email);
+        var getDoc = userRef.get()
+            .then(doc => {
+                if (doc.exists) //User exists 
+                {
+                    resolve({
+                        "status" : "Success",
+                        "email" : doc.get("email"),
+                        "name" : doc.get("name"),
+                        "surname" : doc.get("surname"),
+                        "title" : doc.get("title"),
+                        "fd" : doc.get("fd")
+                    });
+                } 
+                else //User does not exist
+                {
+                    reject({
+                        "status" : "Failure",
+                        "message" : "Specified user does not exist!"
+                    });
+                }
+            })
+            .catch(err => {
+                reject({
+                    "status" : "Failure",
+                    "message" : "Document could not be retrieved!"
+                });
+            });
+    });
+}
+
+/** 
  * @description: Function that adds a new event
  * @param eventId: The eventId toidentify event
  * @param location: The location of the venue
@@ -432,49 +479,24 @@ export async function retrieveEvent(request) : Promise<any> {
 }
 
 /** 
- * @description: Function retrieves a given user
- * @param email: Email to identify a user
+ * @description: Function that retrieves the eventIds of all stored events
 **/
-export async function retrieveUser(request) : Promise<any> {
+export async function retrieveEventIds() : Promise<any> {
     return new Promise( (resolve, reject) => {
-        //Check for email field
-        if(!checkBody(request.body, "email"))
-        {
+        let eventIds = [];
+        let eventsRef = db.collection('events').listDocuments().then( (listOfObjects) => {
+            listOfObjects.forEach( (value) => {
+                eventIds.push(value.path.substring(7));
+            });
+            resolve({
+                "eventIds" : eventIds
+            });
+        }).catch( (err) => {
             reject({
                 "status" : "Failure",
-                "message" : '\'email\' field was not specified!'
+                "message" : "Firebase request failed !"
             });
-        }
-
-        //Check if user exists
-        var userRef = db.collection('users').doc(request.body.email);
-        var getDoc = userRef.get()
-            .then(doc => {
-                if (doc.exists) //User exists 
-                {
-                    resolve({
-                        "status" : "Success",
-                        "email" : doc.get("email"),
-                        "name" : doc.get("name"),
-                        "surname" : doc.get("surname"),
-                        "title" : doc.get("title"),
-                        "fd" : doc.get("fd")
-                    });
-                } 
-                else //User does not exist
-                {
-                    reject({
-                        "status" : "Failure",
-                        "message" : "Specified user does not exist!"
-                    });
-                }
-            })
-            .catch(err => {
-                reject({
-                    "status" : "Failure",
-                    "message" : "Document could not be retrieved!"
-                });
-            });
+        });
     });
 }
 
