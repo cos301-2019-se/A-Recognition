@@ -1,4 +1,4 @@
-//Initialise firebase DB
+//Firbase setup
 import admin = require("firebase-admin");
 var serviceAccount = require("./debug_credentials.json");
 admin.initializeApp(
@@ -8,26 +8,24 @@ admin.initializeApp(
     });
 let db = admin.firestore();
 
-/////////////////////////////////-Helper functions-/////////////////////////////////
+//Helper functions
 /** 
  * @description: Function that updates a user
  * @param requestBody: The body of the request
  * @param key: The field name to check
- * @param response: The response object of the request to serve
 **/
-function checkBody(requestBody, key, response)
+function checkBody(requestBody, key)
 {
     if(requestBody[key] == undefined || requestBody[key].length < 1){
         return false;
     }
     return true;
 }
-///////////////////////////////////////////////////////////////////////////////////
 
 /** 
  * @description: Function to retrieve facial data and emails for facial recognition
 **/
-exports.retrieveEncodings = async function retrieveEncodings() : Promise<any> {
+export async function retrieveEncodings() : Promise<any> {
     return new Promise( (resolve, reject) =>
     {   
         let users = db.collection("users").get()
@@ -64,22 +62,22 @@ exports.retrieveEncodings = async function retrieveEncodings() : Promise<any> {
  * @param fd: The user's facial data array
  * @param active: The user's active field
 **/
-exports.register = async function register(request,response) : Promise<any> {
+export async function register(request) : Promise<any> {
     return new Promise ( (resolve, reject) =>
     {    
         //Check for email field
-        if(!checkBody(request.body, "email", response))
+        if(!checkBody(request.body, "email"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'email\' field was not specified!'
             });
         }
 
         //Check for name field
-        if(!checkBody(request.body, "name", response))
+        if(!checkBody(request.body, "name"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'name\' field was not specified!'
             });
@@ -87,36 +85,36 @@ exports.register = async function register(request,response) : Promise<any> {
 
 
         //Check for surname field
-        if(!checkBody(request.body, "surname", response))
+        if(!checkBody(request.body, "surname"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'surname\' field was not specified!'
             });
         }
 
         //Check for title field
-        if(!checkBody(request.body, "title", response))
+        if(!checkBody(request.body, "title"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'title\' field was not specified!'
             });
         }
         
         //Check for facial data field
-        if(!checkBody(request.body, "fd", response))
+        if(!checkBody(request.body, "fd"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'fd\' field was not specified!'
             });
         }
 
         //Check for active field
-        if(!checkBody(request.body, "active", response))
+        if(!checkBody(request.body, "active"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'active\' field was not specified!'
             });
@@ -124,7 +122,7 @@ exports.register = async function register(request,response) : Promise<any> {
 
         if(request.body.active != 'false' && request.body.active != 'true')
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : "'active' field must be boolean ('true'/'false')"
             });
@@ -136,7 +134,7 @@ exports.register = async function register(request,response) : Promise<any> {
             .then(doc => {
                 if (doc.exists) //User exists 
                 {
-                    resolve({
+                    reject({
                         "status" : "Failure",
                         "message" : "Specified user already exists"
                     });
@@ -162,7 +160,7 @@ exports.register = async function register(request,response) : Promise<any> {
                 }
             })
             .catch(err => {
-                resolve({
+                reject({
                     "status" : "Failure",
                     "message" : "Document could not be retrieved"
                 });
@@ -179,22 +177,22 @@ exports.register = async function register(request,response) : Promise<any> {
  * @param fd: The user's facial data array
  * @param active: The user's active field
 **/
-exports.update = async function update(request,response) : Promise<any> {
+export async function update(request) : Promise<any> {
     return new Promise( (resolve, reject) =>
     {
         //Check for email field
-        if(!checkBody(request.body, "email", response))
+        if(!checkBody(request.body, "email"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'email\' field was not specified!'
             });
         }
 
         //Check for name field
-        if(!checkBody(request.body, "name", response))
+        if(!checkBody(request.body, "name"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'name\' field was not specified!'
             });
@@ -202,36 +200,36 @@ exports.update = async function update(request,response) : Promise<any> {
 
 
         //Check for surname field
-        if(!checkBody(request.body, "surname", response))
+        if(!checkBody(request.body, "surname"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'surnname\' field was not specified!'
             });
         }
 
         //Check for title field
-        if(!checkBody(request.body, "title", response))
+        if(!checkBody(request.body, "title"))
         {
-                resolve({
+            reject({
                     "status" : "Failure",
                     "message" : '\'title\' field was not specified!'
                 });
         }
         
         //Check for facial data field
-        if(!checkBody(request.body, "fd", response))
+        if(!checkBody(request.body, "fd"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'fd\' field was not specified!'
             });
         }
 
         //Check for active field
-        if(!checkBody(request.body, "active", response))
+        if(!checkBody(request.body, "active"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'active\' field was not specified!'
             });
@@ -239,7 +237,7 @@ exports.update = async function update(request,response) : Promise<any> {
 
         if(request.body.active != 'false' && request.body.active != 'true')
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : "'active' field must be boolean ('true'/'false')"
             });
@@ -269,16 +267,165 @@ exports.update = async function update(request,response) : Promise<any> {
                 } 
                 else //User does not exist
                 {
-                    resolve({
+                    reject({
                         "status" : "Failure",
                         "message" : "Specified user does not exist!"
                     });
                 }
             })
             .catch(err => {
-                resolve({
+                reject({
                     "status" : "Failure",
                     "message" : "Document could not be retrieved"
+                });
+            });
+    });
+}
+
+/** 
+ * @description: Function that adds a new event
+ * @param eventId: The eventId toidentify event
+ * @param location: The location of the venue
+ * @param startTime: When the event starts
+ * @param endTime: When the event stops
+ * @param attendeeOTPpairs: JSON object array containg emails and their respective OTP
+**/
+export async function addEvent(request) : Promise<any> {
+    
+    return new Promise( (resolve, reject) => {
+    //Check for eventId field
+    if(!checkBody(request.body, "eventId"))
+    {
+        reject({
+            "status" : "Failure",
+            "message" : '\'eventId\' field was not specified!'
+        });
+    }
+
+    //Check for location field
+    if(!checkBody(request.body, "location"))
+    {
+        reject({
+            "status" : "Failure",
+            "message" : '\'location\' field was not specified!'
+        });
+    }
+
+    //Check for startTime field
+    if(!checkBody(request.body, "startTime"))
+    {
+        reject({
+            "status" : "Failure",
+            "message" : '\'startTime\' field was not specified!'
+        });
+    }
+
+    //Check for endTime field
+    if(!checkBody(request.body, "endTime"))
+    {
+        reject({
+            "status" : "Failure",
+            "message" : '\'endTime\' field was not specified!'
+        });
+    }
+
+    //Check for attendeeOTPpairs field
+    if(!checkBody(request.body, "attendeeOTPpairs"))
+    {
+        reject({
+            "status" : "Failure",
+            "message" : '\'attendeeOTPpairs\' field was not specified!'
+        });
+    }
+
+    //Check if event exists
+    var eventsRef = db.collection('events').doc(request.body.eventId);
+    var getDoc = eventsRef.get()
+        .then(doc => {
+            if (doc.exists) //Event exists 
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : "Specified event already exists!"
+                });
+            } 
+            else //Event does not exist
+            {
+                //Update DB event
+                let newEvent = {
+                    "eventId"  : request.body.eventId,
+                    "summary"  : request.body.summary,
+                    "location" : request.body.location,
+                    "startTime" : request.body.startTime,
+                    "endTime" : request.body.endTime,
+                    "attendees" : request.body.attendeeOTPpairs,
+                    "eventOTP"  : ""
+                }
+
+                let updateDoc = db.collection('events').doc(request.body.eventId).set(
+                    newEvent)
+                .then(ref => {
+                    console.log('Updated Event: ' + request.body.eventId);
+                    resolve({
+                        "status" : "Success"
+                    });
+                });
+            }
+        })
+        .catch(err => {
+            console.log("Firebase could not add event");
+            reject({
+                "status" : "Failure",
+                "message" : "Specified event does not exist!"
+            });
+        });
+    });
+}
+
+/** 
+ * @description: Function that retrieves an event
+ * @param eventId: The eventId toidentify event
+**/
+export async function retrieveEvent(request) : Promise<any> {
+    return new Promise( (resolve, reject) => {
+        //Check for eventId field
+        if(!checkBody(request.body, "eventId"))
+        {
+            reject({
+                "status" : "Failure",
+                "message" : '\'eventId\' field was not specified!'
+            });
+        }
+
+        //Check if event exists
+        var eventsRef = db.collection('events').doc(request.body.eventId);
+        var getDoc = eventsRef.get()
+            .then(doc => {
+                if (doc.exists) //Event exists 
+                {
+                    resolve({
+                        "status" : "Success",
+                        "eventId" : doc.get("eventId"),
+                        "summary" : doc.get("summary"),
+                        "location" : doc.get("location"),
+                        "startTime" : doc.get("startTime"),
+                        "endTime" : doc.get("endTime"),
+                        "attendeeOTPpairs" : doc.get("attendees"),
+                        "eventOTP"  : doc.get("eventOTP")
+                    });
+                } 
+                else //Event does not exist
+                {
+                    reject({
+                        "status" : "Failure",
+                        "message" : "Specified event does not exist!"
+                    });
+                }
+            })
+            .catch(err => {
+                reject({
+                    "status" : "Failure",
+                    "message" : "Document could not be retrieved!"
                 });
             });
     });
@@ -288,12 +435,12 @@ exports.update = async function update(request,response) : Promise<any> {
  * @description: Function retrieves a given user
  * @param email: Email to identify a user
 **/
-exports.retrieveUser = async function retrieveUser(request,response) : Promise<any> {
+export async function retrieveUser(request) : Promise<any> {
     return new Promise( (resolve, reject) => {
         //Check for email field
-        if(!checkBody(request.body, "email", response))
+        if(!checkBody(request.body, "email"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'email\' field was not specified!'
             });
@@ -316,14 +463,14 @@ exports.retrieveUser = async function retrieveUser(request,response) : Promise<a
                 } 
                 else //User does not exist
                 {
-                    resolve({
+                    reject({
                         "status" : "Failure",
                         "message" : "Specified user does not exist!"
                     });
                 }
             })
             .catch(err => {
-                resolve({
+                reject({
                     "status" : "Failure",
                     "message" : "Document could not be retrieved!"
                 });
@@ -332,99 +479,109 @@ exports.retrieveUser = async function retrieveUser(request,response) : Promise<a
 }
 
 /** 
- * @description: Function that adds a new event
+ * @description: Function that updates an event
  * @param eventId: The eventId toidentify event
  * @param location: The location of the venue
  * @param startTime: When the event starts
  * @param endTime: When the event stops
  * @param attendeeOTPpairs: JSON object array containg emails and their respective OTP
 **/
-exports.addEvent = async function addEvent(request,response) : Promise<any> {
-    
+export async function updateEvent(request) : Promise<any> {
     return new Promise( (resolve, reject) => {
-    //Check for eventId field
-    if(!checkBody(request.body, "eventId", response))
-    {
-        resolve({
-            "status" : "Failure",
-            "message" : '\'eventId\' field was not specified!'
-        });
-    }
-
-    //Check for location field
-    if(!checkBody(request.body, "location", response))
-    {
-        resolve({
-            "status" : "Failure",
-            "message" : '\'location\' field was not specified!'
-        });
-    }
-
-    //Check for startTime field
-    if(!checkBody(request.body, "startTime", response))
-    {
-        resolve({
-            "status" : "Failure",
-            "message" : '\'startTime\' field was not specified!'
-        });
-    }
-
-    //Check for endTime field
-    if(!checkBody(request.body, "endTime", response))
-    {
-        resolve({
-            "status" : "Failure",
-            "message" : '\'endTime\' field was not specified!'
-        });
-    }
-
-    //Check for attendeeOTPpairs field
-    if(!checkBody(request.body, "attendeeOTPpairs", response))
-    {
-        resolve({
-            "status" : "Failure",
-            "message" : '\'attendeeOTPpairs\' field was not specified!'
-        });
-    }
-
-    //Check if event exists
-    var eventsRef = db.collection('events').doc(request.body.eventId);
-    var getDoc = eventsRef.get()
-        .then(doc => {
-            if (doc.exists) //Event exists 
-            {
-               resolve({
-                    "status" : "Failure",
-                    "message" : "Specified event already exists!"
-                });
-            } 
-            else //Event does not exist
-            {
-                //Update DB event
-                let newEvent = {
-                    "location" : request.body.location,
-                    "startTime" : request.body.startTime,
-                    "endTime" : request.body.endTime,
-                    "attendees" : request.body.attendeeOTPpairs
-                }
-
-                let updateDoc = db.collection('events').doc(request.body.eventId).set(
-                    newEvent)
-                .then(ref => {
-                    console.log('Updated Event: ' + request.body.eventId);
-                    resolve({
-                        "status" : "Success"
-                    });
-                });
-            }
-        })
-        .catch(err => {
-            console.log("Firebase could not add event");
-            resolve({
+        //Check for eventId field
+        if(!checkBody(request.body, "eventId"))
+        {
+            reject({
                 "status" : "Failure",
-                "message" : "Specified event does not exist!"
+                "message" : '\'eventId\' field was not specified!'
             });
-        });
+        }
+
+        if(!checkBody(request.body, "summary"))
+        {
+            reject({
+                "status" : "Failure",
+                "message" : '\'summary\' field was not specified!'
+            });
+        }
+
+        //Check for location field
+        if(!checkBody(request.body, "location"))
+        {
+            reject({
+                "status" : "Failure",
+                "message" : '\'location\' field was not specified!'
+            });
+        }
+
+        //Check for startTime field
+        if(!checkBody(request.body, "startTime"))
+        {
+            reject({
+                "status" : "Failure",
+                "message" : '\'startTime\' field was not specified!'
+            });
+        }
+
+        //Check for endTime field
+        if(!checkBody(request.body, "endTime"))
+        {
+            reject({
+                "status" : "Failure",
+                "message" : '\'endTime\' field was not specified!'
+            });
+        }
+
+        //Check for attendeeOTPpairs field
+        if(!checkBody(request.body, "attendeeOTPpairs"))
+        {
+            reject({
+                "status" : "Failure",
+                "message" : '\'attendeeOTPpairs\' field was not specified!'
+            });
+        }
+
+        if(!checkBody(request.body, "eventOTP")){
+            request.body["eventOTP"] = "";
+        }
+        //Check if event exists
+        var eventsRef = db.collection('events').doc(request.body.eventId);
+        var getDoc = eventsRef.get()
+            .then(doc => {
+                if (doc.exists) //Event exists 
+                {
+                    //Update DB event
+                    let updateDoc = db.collection('events').doc(request.body.eventId).set(
+                        {
+                            "eventId" : request.body.eventId,
+                            "summary" : request.body.summary,
+                            "location" : request.body.location,
+                            "startTime" : request.body.startTime,
+                            "endTime" : request.body.endTime,
+                            "attendees" : request.body.attendeeOTPpairs,
+                            "eventOTP"  : request.body.eventOTP
+                        })
+                    .then(ref => {
+                        console.log('Updated Event: ' + request.body.eventId);
+                        resolve({
+                            "status" : "Success"
+                        });
+                    });
+                } 
+                else //Event does not exist
+                {
+                    reject({
+                        "status" : "Failure",
+                        "message" : "Specified event does not exist!"
+                    });
+                }
+            })
+            .catch(err => {
+                reject({
+                    "status" : "Failure",
+                    "message" : "Specified event does not exist!"
+                });
+            });
     });
 }
 
@@ -432,12 +589,12 @@ exports.addEvent = async function addEvent(request,response) : Promise<any> {
  * @description: Function deletes an event
  * @param eventId: The event to deleted
 **/
-exports.deleteEvent = async function deleteEvent(request,response) : Promise<any> {
+export async function deleteEvent(request) : Promise<any> {
     return new Promise( (resolve, reject) => {
         //Check for eventId field
-        if(!checkBody(request.body, "eventId", response))
+        if(!checkBody(request.body, "eventId"))
         {
-            resolve({
+            reject({
                 "status" : "Failure",
                 "message" : '\'eventId\' field was not specified!'
             });
@@ -458,173 +615,16 @@ exports.deleteEvent = async function deleteEvent(request,response) : Promise<any
                 } 
                 else //Event does not exist
                 {
-                    resolve({
+                    reject({
                         "status" : "Failure",
                         "message" : "Specified event does not exist!"
                     });
                 }
             })
             .catch(err => {
-                resolve({
+                reject({
                     "status" : "Failure",
                     "message" : "Document could not be retrieved!"
-                });
-            });
-    });
-}
-
-
-/** 
- * @description: Function that retrieves an event
- * @param eventId: The eventId toidentify event
-**/
-exports.retrieveEvent = async function retrieveEvent(request,response) : Promise<any> {
-    return new Promise( (resolve, reject) => {
-        //Check for eventId field
-        if(!checkBody(request.body, "eventId", response))
-        {
-            resolve({
-                "status" : "Failure",
-                "message" : '\'eventId\' field was not specified!'
-            });
-        }
-
-        //Check if event exists
-        var eventsRef = db.collection('events').doc(request.body.eventId);
-        var getDoc = eventsRef.get()
-            .then(doc => {
-                if (doc.exists) //Event exists 
-                {
-                    resolve({
-                        "status" : "Success",
-                        "location" : doc.get("location"),
-                        "startTime" : doc.get("startTime"),
-                        "endTime" : doc.get("endTime"),
-                        "attendeeOTPpairs" : doc.get("attendees")
-                    });
-                } 
-                else //Event does not exist
-                {
-                    resolve({
-                        "status" : "Failure",
-                        "message" : "Specified event does not exist!"
-                    });
-                }
-            })
-            .catch(err => {
-                resolve({
-                    "status" : "Failure",
-                    "message" : "Document could not be retrieved!"
-                });
-            });
-    });
-}
-
-/** 
- * @description: Function that retrieves the eventIds of all stored events
-**/
-exports.retrieveAllEvents = async function retrieveAllEvents() : Promise<any> {
-    return new Promise( (resolve, reject) => {
-        let eventIds = [];
-        let eventsRef = db.collection('events').listDocuments().then( (listOfObjects) => {
-            listOfObjects.forEach( (value) => {
-                eventIds.push(value.path.substring(7));
-            });
-            resolve({
-                "eventIds" : eventIds
-            });
-        });
-    });
-}
-
-/** 
- * @description: Function that updates an event
- * @param eventId: The eventId toidentify event
- * @param location: The location of the venue
- * @param startTime: When the event starts
- * @param endTime: When the event stops
- * @param attendeeOTPpairs: JSON object array containg emails and their respective OTP
-**/
-exports.updateEvent = async function updateEvent(request,response) : Promise<any> {
-    return new Promise( (resolve, reject) => {
-        //Check for eventId field
-        if(!checkBody(request.body, "eventId", response))
-        {
-            resolve({
-                "status" : "Failure",
-                "message" : '\'eventId\' field was not specified!'
-            });
-        }
-
-        //Check for location field
-        if(!checkBody(request.body, "location", response))
-        {
-            resolve({
-                "status" : "Failure",
-                "message" : '\'location\' field was not specified!'
-            });
-        }
-
-        //Check for startTime field
-        if(!checkBody(request.body, "startTime", response))
-        {
-            resolve({
-                "status" : "Failure",
-                "message" : '\'startTime\' field was not specified!'
-            });
-        }
-
-        //Check for endTime field
-        if(!checkBody(request.body, "endTime", response))
-        {
-            resolve({
-                "status" : "Failure",
-                "message" : '\'endTime\' field was not specified!'
-            });
-        }
-
-        //Check for attendeeOTPpairs field
-        if(!checkBody(request.body, "attendeeOTPpairs", response))
-        {
-            resolve({
-                "status" : "Failure",
-                "message" : '\'attendeeOTPpairs\' field was not specified!'
-            });
-        }
-
-        //Check if event exists
-        var eventsRef = db.collection('events').doc(request.body.eventId);
-        var getDoc = eventsRef.get()
-            .then(doc => {
-                if (doc.exists) //Event exists 
-                {
-                    //Update DB event
-                    let updateDoc = db.collection('events').doc(request.body.eventId).set(
-                        {
-                            "location" : request.body.location,
-                            "startTime" : request.body.startTime,
-                            "endTime" : request.body.endTime,
-                            "attendees" : request.body.attendeeOTPpairs
-                        })
-                    .then(ref => {
-                        console.log('Updated Event: ' + request.body.eventId);
-                        resolve({
-                            "status" : "Success"
-                        });
-                    });
-                } 
-                else //Event does not exist
-                {
-                    resolve({
-                        "status" : "Failure",
-                        "message" : "Specified event does not exist!"
-                    });
-                }
-            })
-            .catch(err => {
-                resolve({
-                    "status" : "Failure",
-                    "message" : "Specified event does not exist!"
                 });
             });
     });
@@ -636,33 +636,33 @@ exports.updateEvent = async function updateEvent(request,response) : Promise<any
  * @param email: Email to add to the event
  * @param otp: The OTP generated to allow access to the room
 **/
-exports.addAttendee = async function addAttendee(request,response) : Promise<any> {
+export async function addAttendee(request) : Promise<any> {
     return new Promise( (resolve, reject) => {
         //Check for eventId field
-        if(!checkBody(request.body, "eventId", response))
+        if(!checkBody(request.body, "eventId"))
         {
-            return {
+            reject( {
                 "status" : "Failure",
                 "message" : '\'eventId\' field was not specified!'
-            }
+            });
         }
 
         //Check for email field
-        if(!checkBody(request.body, "email", response))
+        if(!checkBody(request.body, "email"))
         {
-            return {
+            reject({
                 "status" : "Failure",
                 "message" : '\'email\' field was not specified!'
-            }
+            });
         }
 
         //Check for otp field
-        if(!checkBody(request.body, "otp", response))
+        if(!checkBody(request.body, "otp"))
         {
-            return {
+            reject( {
                 "status" : "Failure",
                 "message" : '\'otp\' field was not specified!'
-            }
+            });
         }
 
         //Check if event exists
@@ -720,14 +720,14 @@ exports.addAttendee = async function addAttendee(request,response) : Promise<any
                 } 
                 else //Event does not exist
                 {
-                    resolve({
+                    reject({
                         "status" : "Failure",
                         "message" : "Specified event does not exist!"
                     });
                 }
             })
             .catch(err => {
-                resolve({
+                reject({
                     "status" : "Failure",
                     "message" : "Document could not be retrieved!"
                 });
@@ -739,12 +739,12 @@ exports.addAttendee = async function addAttendee(request,response) : Promise<any
  * @description: Function that returns the emails and otps 
  * @param eventId: The eventId toidentify event
 **/
-exports.getEventAttendees = function getEventAttendees(request,response) : Promise<any> {
+export function getEventAttendees(request) : Promise<any> {
     return new Promise( (resolve, reject) => {
             //Check for eventId field
-            if(!checkBody(request.body, "eventId", response))
+            if(!checkBody(request.body, "eventId"))
             {
-                resolve({
+                reject({
                     "status" : "Failure",
                     "message" : '\'eventId\' field was not specified!'
                 });
@@ -762,20 +762,20 @@ exports.getEventAttendees = function getEventAttendees(request,response) : Promi
     
                         //Return the attendees
                         resolve ({
-                            "status" : "Succsess",
+                            "status" : "Success",
                             "attendeeOTPpairs" : doc.get("attendees")
                         });
                     }
                     else
                     {
-                        resolve({
+                        reject({
                             "status" : "Failure",
                             "message" : "Specified event does not exist!"
                         });
                     }
                 })
                 .catch(err => {
-                    resolve({
+                    reject({
                         "status" : "Failure",
                         "message" : "Document could not be retrieved!"
                     });
@@ -783,7 +783,7 @@ exports.getEventAttendees = function getEventAttendees(request,response) : Promi
     });
 }
 
-/////////////////////////////////////////--TESTING--///////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
 /*
 console.debug(exports.addEvent({ "body" : {
                                 "eventId" : "functionTestEvent",
@@ -941,10 +941,5 @@ let result = this.getEventAttendees({ "body" :   {
     }
 }, {}).then( (res) => {
 console.debug(res);
-});
-*/
-/*
-let result = exports.retrieveAllEvents().then( (res) => {
-    console.debug(res);
 });
 */

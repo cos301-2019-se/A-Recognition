@@ -40,41 +40,17 @@ app.listen(3000, () => {
  console.log("Server running on port 3000");
 });
 
-app.get("/getUsersFromDaysEvents", (req, res, next) => {
-    Main.getUsersFromDaysEvents().then( users => res.json(users)).catch( err => res.json(err));
-});
 
 app.post("/getUsersFromDaysEvents", (req, res) => { 
     Main.getUsersFromDaysEvents().then( users => res.json(users)).catch( err => res.send(err));
 });
 
 
-app.get("/validateUserHasBooking", (req, res, next) => {
-
-    let email;
-    let room;
-
-    if(req.query.hasOwnProperty("email") && req.query.hasOwnProperty("room")){
-        
-        console.log(req.query);
-        //if(JSON.parse(req.query.email) != null )
-        email = JSON.parse(req.query.email);
-        room = JSON.parse(req.query.room);
-        //email = req.query.email;
-        //room = req.query.room;
-
-        Main.validateUserHasBooking(email,room).then(msg=> {res.send(msg);console.log(msg)}).catch( err => res.send(err));
-    }else{
-        res.send("Please send email and room name");
-    }    
-});
-
 app.post("/validateUserHasBooking", (req, res, next) => {
 
     let email;
     let room;
 
-    console.log(req.query);
     
     if(req.query.hasOwnProperty("email") && req.query.hasOwnProperty("room")){
         
@@ -87,15 +63,6 @@ app.post("/validateUserHasBooking", (req, res, next) => {
     }    
 });
 
-app.post("/richardsResponse", (req, res, next) => {
-
-    //console.log(req.body);
-    let answer = req.body;
-
-    console.log(answer);
-    
-    res.send(answer);
-});
 
 app.get('/getEmails', (req, res) => {
 
@@ -107,9 +74,8 @@ app.get('/getEmails', (req, res) => {
 app.get('/isEmployee', (req, res) => {
 
     let email = req.query.email;
-    console.log(email);
     
-    if(email == undefined)
+    if(email == undefined || email == "")
         res.send("Please send a valid email");
     else
         Main.isEmployee(email).then( result =>{
@@ -134,8 +100,21 @@ app.post('/addEmployee',upload.single('image'), async(req, res) => {
     res.json(Main.addEmplpoyee(req)); 
 });
 
-app.get('/generateToken', (req, res) => {
-    res.json(Main.generateToken());
+app.post('/generateToken', (req, res) => {
+    if( req.query.hasOwnProperty("sender") != true)
+    res.send("Invalid sender");
+    else
+    res.send(Main.generateToken(req.query.sender));
+});
+
+app.post('/verifyToken', (req, res) => {
+  
+    if( req.query.hasOwnProperty("token") != true)
+    res.send("Invalid token");
+    else
+    Main.verifyToken(req.query.token)
+    .then( success => res.send(success) )
+    .catch( err => res.send(err));
 });
 
 function delay(ms: number) {
@@ -151,8 +130,8 @@ app.post('/getEventList',(req,res) => {
 
 app.post('/generateOTP',(req,res) => {
 
-    if(req.query.eventId != null)
-        if(req.query.email != null)
+    if(req.query.eventId != null && req.query.eventId != "")
+        if(req.query.email != null && req.query.email != "")
             res.send(Main.generateOTP(req.query.eventId,req.query.email));
         else 
             res.send("Invalid email");
@@ -160,4 +139,22 @@ app.post('/generateOTP',(req,res) => {
         res.send("Invalid event ID supplied");
     
 });
+
+
+
+app.post('/validateOTP',(req,res) => {
+
+    
+    if(req.query.eventId != null && req.query.eventId != "")
+        if(req.query.otp != null && req.query.otp != "")
+            Main.validateOTP(req.query.eventId,req.query.otp)
+            .then( entryAllowed => res.send(entryAllowed))
+            .catch( entryDenied => res.send(entryDenied));
+        else 
+            res.send("Invalid otp");
+    else
+        res.send("Invalid event ID supplied");
+    
+});
+
   
