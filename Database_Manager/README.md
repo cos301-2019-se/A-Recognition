@@ -165,6 +165,21 @@ Example:
 }
 ```
 
+#### retrieveAllEvents
+Function that returns a list of eventIds of all stored events
+
+Example response:
+```
+{ 
+    eventIds: [ 
+        '0bfasnk59cko11i02u3cmpkknp',
+        '16sp7s0nd392tgg6hb5d1drcm2',
+        '1jnhovv1ngb8ppq6v4tejh9js0',
+        '228p0hkrct9me3l5ovmqmqqu0k'
+    ]
+}
+```
+
 #### updateEvent
 Function to allow the update of a existing event. The request:
 

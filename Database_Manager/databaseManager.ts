@@ -1,4 +1,4 @@
-//Firbase setup
+//Initialise firebase DB
 import admin = require("firebase-admin");
 var serviceAccount = require("./debug_credentials.json");
 admin.initializeApp(
@@ -8,7 +8,7 @@ admin.initializeApp(
     });
 let db = admin.firestore();
 
-//Helper functions
+/////////////////////////////////-Helper functions-/////////////////////////////////
 /** 
  * @description: Function that updates a user
  * @param requestBody: The body of the request
@@ -22,6 +22,7 @@ function checkBody(requestBody, key, response)
     }
     return true;
 }
+///////////////////////////////////////////////////////////////////////////////////
 
 /** 
  * @description: Function to retrieve facial data and emails for facial recognition
@@ -284,6 +285,53 @@ exports.update = async function update(request,response) : Promise<any> {
 }
 
 /** 
+ * @description: Function retrieves a given user
+ * @param email: Email to identify a user
+**/
+exports.retrieveUser = async function retrieveUser(request,response) : Promise<any> {
+    return new Promise( (resolve, reject) => {
+        //Check for email field
+        if(!checkBody(request.body, "email", response))
+        {
+            resolve({
+                "status" : "Failure",
+                "message" : '\'email\' field was not specified!'
+            });
+        }
+
+        //Check if user exists
+        var userRef = db.collection('users').doc(request.body.email);
+        var getDoc = userRef.get()
+            .then(doc => {
+                if (doc.exists) //User exists 
+                {
+                    resolve({
+                        "status" : "Success",
+                        "email" : doc.get("email"),
+                        "name" : doc.get("name"),
+                        "surname" : doc.get("surname"),
+                        "title" : doc.get("title"),
+                        "fd" : doc.get("fd")
+                    });
+                } 
+                else //User does not exist
+                {
+                    resolve({
+                        "status" : "Failure",
+                        "message" : "Specified user does not exist!"
+                    });
+                }
+            })
+            .catch(err => {
+                resolve({
+                    "status" : "Failure",
+                    "message" : "Document could not be retrieved!"
+                });
+            });
+    });
+}
+
+/** 
  * @description: Function that adds a new event
  * @param eventId: The eventId toidentify event
  * @param location: The location of the venue
@@ -381,6 +429,52 @@ exports.addEvent = async function addEvent(request,response) : Promise<any> {
 }
 
 /** 
+ * @description: Function deletes an event
+ * @param eventId: The event to deleted
+**/
+exports.deleteEvent = async function deleteEvent(request,response) : Promise<any> {
+    return new Promise( (resolve, reject) => {
+        //Check for eventId field
+        if(!checkBody(request.body, "eventId", response))
+        {
+            resolve({
+                "status" : "Failure",
+                "message" : '\'eventId\' field was not specified!'
+            });
+        }
+
+        //Check if event exists
+        var eventsRef = db.collection('events').doc(request.body.eventId);
+        var getDoc = eventsRef.get()
+            .then(doc => {
+                if (doc.exists) //Event exists 
+                {
+                    //Delete event
+                    eventsRef.delete();
+                    console.log("Deleted eventId: \'" + request.body.eventId + '\'');
+                    resolve({
+                        "status" : "Success",
+                    });
+                } 
+                else //Event does not exist
+                {
+                    resolve({
+                        "status" : "Failure",
+                        "message" : "Specified event does not exist!"
+                    });
+                }
+            })
+            .catch(err => {
+                resolve({
+                    "status" : "Failure",
+                    "message" : "Document could not be retrieved!"
+                });
+            });
+    });
+}
+
+
+/** 
  * @description: Function that retrieves an event
  * @param eventId: The eventId toidentify event
 **/
@@ -427,49 +521,19 @@ exports.retrieveEvent = async function retrieveEvent(request,response) : Promise
 }
 
 /** 
- * @description: Function retrieves a given user
- * @param email: Email to identify a user
+ * @description: Function that retrieves the eventIds of all stored events
 **/
-exports.retrieveUser = async function retrieveUser(request,response) : Promise<any> {
+exports.retrieveAllEvents = async function retrieveAllEvents() : Promise<any> {
     return new Promise( (resolve, reject) => {
-        //Check for email field
-        if(!checkBody(request.body, "email", response))
-        {
+        let eventIds = [];
+        let eventsRef = db.collection('events').listDocuments().then( (listOfObjects) => {
+            listOfObjects.forEach( (value) => {
+                eventIds.push(value.path.substring(7));
+            });
             resolve({
-                "status" : "Failure",
-                "message" : '\'email\' field was not specified!'
+                "eventIds" : eventIds
             });
-        }
-
-        //Check if user exists
-        var userRef = db.collection('users').doc(request.body.email);
-        var getDoc = userRef.get()
-            .then(doc => {
-                if (doc.exists) //User exists 
-                {
-                    resolve({
-                        "status" : "Success",
-                        "email" : doc.get("email"),
-                        "name" : doc.get("name"),
-                        "surname" : doc.get("surname"),
-                        "title" : doc.get("title"),
-                        "fd" : doc.get("fd")
-                    });
-                } 
-                else //User does not exist
-                {
-                    resolve({
-                        "status" : "Failure",
-                        "message" : "Specified user does not exist!"
-                    });
-                }
-            })
-            .catch(err => {
-                resolve({
-                    "status" : "Failure",
-                    "message" : "Document could not be retrieved!"
-                });
-            });
+        });
     });
 }
 
@@ -561,51 +625,6 @@ exports.updateEvent = async function updateEvent(request,response) : Promise<any
                 resolve({
                     "status" : "Failure",
                     "message" : "Specified event does not exist!"
-                });
-            });
-    });
-}
-
-/** 
- * @description: Function deletes an event
- * @param eventId: The event to deleted
-**/
-exports.deleteEvent = async function deleteEvent(request,response) : Promise<any> {
-    return new Promise( (resolve, reject) => {
-        //Check for eventId field
-        if(!checkBody(request.body, "eventId", response))
-        {
-            resolve({
-                "status" : "Failure",
-                "message" : '\'eventId\' field was not specified!'
-            });
-        }
-
-        //Check if event exists
-        var eventsRef = db.collection('events').doc(request.body.eventId);
-        var getDoc = eventsRef.get()
-            .then(doc => {
-                if (doc.exists) //Event exists 
-                {
-                    //Delete event
-                    eventsRef.delete();
-                    console.log("Deleted eventId: \'" + request.body.eventId + '\'');
-                    resolve({
-                        "status" : "Success",
-                    });
-                } 
-                else //Event does not exist
-                {
-                    resolve({
-                        "status" : "Failure",
-                        "message" : "Specified event does not exist!"
-                    });
-                }
-            })
-            .catch(err => {
-                resolve({
-                    "status" : "Failure",
-                    "message" : "Document could not be retrieved!"
                 });
             });
     });
@@ -922,5 +941,10 @@ let result = this.getEventAttendees({ "body" :   {
     }
 }, {}).then( (res) => {
 console.debug(res);
+});
+*/
+/*
+let result = exports.retrieveAllEvents().then( (res) => {
+    console.debug(res);
 });
 */
