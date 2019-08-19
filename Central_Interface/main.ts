@@ -298,7 +298,7 @@ export function generateOTP(eventId : number,email : string) : boolean{
 
     let otp = NotificationSystem.generateOTP();
     
-    return DatabaseManager.addOTP(eventId,otp,email);
+    return true;//DatabaseManager.addOTP(eventId,otp,email);
 
 }
 //checkBookingsForGuests();

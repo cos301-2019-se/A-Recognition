@@ -122,15 +122,10 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null) {
                 mailOptions.to = recipient.guest,
                 mailOptions.subject = "OTP Access",
                 //mailOptions.generateTextFromHTML = true,
-                mailOptions.html = "Your OTP to gain entrance to the Advance HQ as well as the specified meeting room is: " ;               
+                mailOptions.html = "Your OTP to gain entrance to specified meeting room at Advance is: " ;               
     
-                mailOptions.html += generateOTP().otp;
+                mailOptions.html = generateOTP().otp;
             }
-           
-            // mailOptions = '';
-            // console.log(mailOptions.text);
-            // mailOptions = messages.otpClient;
-            // console.log(mailOptions.text);
         }
 
     smtpTransport.sendMail(mailOptions, (error, response) => {

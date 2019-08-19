@@ -55,7 +55,7 @@
                           <input #NameSnap  type="text" placeholder="Name" >
                           <input #SurnameSnap  type="text" placeholder="Surname">
                           <input #EmailSnap  type="email" placeholder="Email" >
-                          <select #TitleSnap>
+                          <select class="selectpicker" data-style="btn-primary" #TitleSnap>
                              <option selected disabled>Choose one</option>
                              <option value="Mr">Mr</option>
                              <option value="Mrs">Mrs</option>
@@ -63,7 +63,7 @@
                              <option value="Apache Helicopter">Apache Helicopter</option>
                           </select>
                           <br>
-                          <div><button id="snap" data-dismiss="modal" (click)='this.showWebcam = false;' (click)="triggerSnapshot()">Snap Photo</button></div>
+                          <div><button id="snap" class="btn btn-primary" data-dismiss="modal" (click)='this.showWebcam = false;' (click)="triggerSnapshot()">Snap Photo</button></div>
                        </div>
                     </div>
                  </div>
@@ -89,7 +89,7 @@
                        <input #Name  type="text" placeholder="Name" >
                        <input #Surname  type="text" placeholder="Surname">
                        <input #Email  type="email" placeholder="Email" >
-                       <select #Title>
+                       <select #Title class="selectpicker" data-style="btn-primary">
                           <option selected disabled>Choose one</option>
                           <option value="Mr">Mr</option>
                           <option value="Mrs">Mrs</option>
@@ -97,7 +97,7 @@
                           <option value="Apache Helicopter">Apache Helicopter</option>
                        </select>
                        <br>
-                       <input type="submit" data-dismiss="modal" (click) ="processFile(imageInput,Name.value,Surname.value,Title.value,Email.value)">
+                       <input type="submit" class="btn btn-primary" data-dismiss="modal" (click) ="processFile(imageInput,Name.value,Surname.value,Title.value,Email.value)">
                     </div>
                  </div>
                  <div class="modal-footer">
