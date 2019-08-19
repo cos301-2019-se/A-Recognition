@@ -1,6 +1,6 @@
 /** 
  * Filename: main.ts
- * Version: V1.0
+ * Version: V1.3
  * Author: JJ Goschen
  * Project name: A-Recognition (Advance)
  * Organization: Singularity
@@ -10,14 +10,15 @@ import * as Adapter from "../API_Adapter/main";
 import * as Utils from "../Utils/Utils";
 import {PythonShell} from 'python-shell'; //npm install python-shell
 import * as NotificationSystem from "../Database_Manager/notification";
-import * as DatabaseManager from "../Database_Manager/databaseManager";
+import * as DatabaseManager from "../Database_Manager/databaseManager"
 import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
+import * as crypto from 'crypto';
 
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
 const ISSUER  = 'Central Interface';         
-const SUBJECT  = 'admin System';        
+//const SUBJECT  = 'admin System';        
 const AUDIENCE  = 'A_Recognition'; 
 /**
  * Returns a list of user emails for all users that have bookings on the current day
@@ -200,23 +201,24 @@ export function checkBookingsForGuests(){ //TODO : MAke it work for the same use
         }).catch(err =>{
             console.log(err);
         })
-    },5000);
+    },15000);
     
 }
 
-export function generateToken(){
-    let privateKEY  = fs.readFileSync('./private.key', 'utf8');
-    let publicKEY  = fs.readFileSync('./public.key', 'utf8');
+var tokenBook = {};
+
+export function generateToken(subject : string) : string{
+    let privateKEY  = fs.readFileSync(__dirname + '/private.key', 'utf8');
+    
 
     let payload = {
         item : true,
-        item2 : "hello"
     }
 
     
     let signOptions = {
     issuer:  ISSUER,
-    subject:  SUBJECT,
+    subject:  subject,
     audience:  AUDIENCE,
     expiresIn:  "1h",
     algorithm:  "RS256"
@@ -225,23 +227,82 @@ export function generateToken(){
     let token = jwt.sign(payload, privateKEY, signOptions);
   
     console.log(token);
+    //the secret sauce
+    tokenBook[subject] = 1;
     
     return token;
     
 }
 
 
-export function verifyToken(token : any){
+export function verifyToken(originalToken : string){
+
+    let publicKEY  = fs.readFileSync(__dirname + '/public.key', 'utf8');
 
     var verifyOptions = {
         issuer:  ISSUER,
-        subject:  SUBJECT,
         audience:  AUDIENCE,
         expiresIn:  "1h",
         algorithm:  ["RS256"]
     };
 
-    //var legit = jwt.verify(token, publicKEY, verifyOptions);
+    let secretKey = originalToken.substring(originalToken.length - 6,originalToken.length);
+    let token = originalToken.substring(0,originalToken.length - 6);
+    
+    return new Promise( (resolve,reject) =>{
+        jwt.verify(token, publicKEY, verifyOptions,(err,result)=>{
+        
+        if( err != null)    //Invalid token,expired etc
+            reject(false);
+        
+        let userEmail = result.sub;
+
+        DatabaseManager.retrieveUser({body: {email : userEmail}}).then( user =>{
+            let secret = user.title;
+            
+            let calculatedSecretKey = calculateKey(userEmail,secret);
+
+            console.log("Calculated:",calculatedSecretKey,"\nReceived:",secretKey);
+
+            if(calculatedSecretKey == null){
+                console.log("The token was never issued in the first place");
+                reject(false);
+            }else if(calculatedSecretKey == secretKey){
+                tokenBook[userEmail] += 1;
+                resolve(true);
+            }else 
+                reject(false);
+                
+        }).catch( err => {
+            reject(false);
+            
+        })        
+    });
+});
+    
+}
+
+//secret sauce for the tokens
+function calculateKey(reference,secret) : string{
+
+    if(tokenBook[reference] == undefined)
+    return null;
+
+    let count = tokenBook[reference];
+    let string = "";
+
+    
+    
+    for (let index = 0; index < count; index++) {
+        string += secret;
+    }
+    
+    var hash = crypto.createHash('sha256')
+   .update(string)
+   .digest('hex');
+
+   let shortHash = hash[0] + hash[7] + hash[23] + hash[39] + hash[46] + hash[55];
+   return shortHash;
 }
 /** 
  * Function Name:addEmployee
@@ -294,11 +355,120 @@ export function getEventList() : Promise<any>{
     
 }
 
-export function generateOTP(eventId : number,email : string) : boolean{
+export function generateOTP(eventId : number,email : string) : Promise<boolean>{
 
-    let otp = NotificationSystem.generateOTP();
+    return new Promise( (resolve,reject) =>{
+        let otp = NotificationSystem.generateOTP();
+  
+    DatabaseManager.retrieveEvent({ body : {eventId : eventId}})
+    .then( event => {
+        event.eventId = eventId;
+        event.eventOTP = otp;
+        
+        DatabaseManager.updateEvent({ body : event}).then( result =>{
+            console.log(result);
+            resolve(true);
+            
+        }).catch( err => {
+            console.log(err.message);
+            reject(false)
+        });
+     })
+     .catch( err => {
+        console.log(err.message);
+        reject(false)
+    });
+});
     
-    return true;//DatabaseManager.addOTP(eventId,otp,email);
 
 }
+
+function compileValidOTPList(event) : Array<string>{
+    let validOtp = [];
+
+    if(event.eventOTP != "")
+        validOtp.push(event.eventOTP.otp);
+    
+    event.attendeeOTPpairs.forEach(attendee => {
+        validOtp.push( attendee.otp.otp);
+    });
+
+    return validOtp;
+}
+export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
+
+  return new Promise( (resolve,reject) =>{
+    DatabaseManager.retrieveEvent({ body : {eventId : eventId}})
+    .then( event => {
+        
+        let otpList = compileValidOTPList(event);        
+        
+        if( Utils.inArray(otp,otpList))
+            resolve(true);
+        else 
+            reject(false);
+     })
+     .catch( err => reject(err.message));
+  })
+    
+
+}
+function clearOutdatedEvents() : void{
+    //getAllEvents
+    // let events;
+
+    // events.forEach(event => {
+    //     if(event.endTime < (new Date()).toISOString() )
+    //     DatabaseManager.deleteEvent({body : {eventId : event.eventId}});
+    // });
+}
+export function syncEventsToDB() : void{
+
+    //clearOutdatedEvents();
+    Adapter.getEvents("primary",true,
+    {id:true,summary:true,location:true,start:true,end:true,attendees: true})
+    
+    .then( events =>{
+        
+        events.forEach(event => {
+
+            let attendees = event.attendees;
+            let otpList = [];
+            let userOtpPair = [];
+            
+            
+            attendees.forEach(attendee => {
+                userOtpPair.push( {
+                    email : attendee,
+                    otp : NotificationSystem.generateOTP()
+                });
+            });
+
+            let request = {
+                body : {
+                    eventId     : event.id,
+                    summary     : event.summary,
+                    location    : event.location,
+                    startTime   : event.startTime,
+                    endTime     : event.endTime,
+                    attendeeOTPpairs : userOtpPair
+                }
+            }
+            
+            
+            DatabaseManager.addEvent(request).then( response =>{
+                console.log(response);
+                
+            }).catch( err => {} );    //Event already exists, no action
+        });
+
+        console.log("Database synchronized");
+        
+    }).catch( err =>{
+            console.log(err);  
+    })
+
+}
+
+syncEventsToDB();
 //checkBookingsForGuests();
