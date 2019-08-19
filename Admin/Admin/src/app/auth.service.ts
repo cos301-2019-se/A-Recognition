@@ -2,14 +2,19 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from  '@angular/fire/auth';
 import { Router } from '@angular/router'; 
 import { HttpClient } from '@angular/common/http';
+import * as crypto from 'crypto-ts';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  user$: Object;
+  user$: any;
+  email: string;
+  title: any;  
   displayMessage: string;
   message: boolean = true;
+  tokenBook = {};
+
   constructor( public  authAf: AngularFireAuth, public router: Router,public http: HttpClient)
   {
 
@@ -17,11 +22,23 @@ export class AuthService {
   
   public generateToken()
   {
-    this.http.get("http://localhost:3000/generateToken").subscribe(data=>
+    this.http.post("http://localhost:3000/generateToken",{
+      sender: this.email
+    },{responseType: 'text'}).subscribe(data=>
     {
       this.user$ = data;
-      console.log(data);
-      localStorage.setItem("token", JSON.stringify(data));
+      localStorage.setItem('token', data);
+      //console.log(data);
+    });
+  }
+
+  public getTitle()
+  {
+    this.http.post("http://localhost:3000/getTitle",{
+      email:this.email
+    }).subscribe(data=>
+    {
+      this.title = data;
     });
   }
 
@@ -30,12 +47,17 @@ export class AuthService {
   {
     try
     {
+      this.email = email;
       await this.authAf.auth.signInWithEmailAndPassword(email,pass).then(value =>
         {
           console.log('SUCCESS', value);
+          this.getTitle();
           this.generateToken();
-          // localStorage.setItem('token', JSON.stringify(this.user$));
-          this.router.navigate(['home']);
+          setTimeout(()=>
+          {
+            this.router.navigate(['home']);
+          }, 2000);
+          
         }).catch(err =>
           {
             console.log('Something went wrong', err.message);
@@ -49,18 +71,38 @@ export class AuthService {
       this.displayMessage = e.message;
     }
   }
+  public getSecret()
+  {
+    if(this.tokenBook[this.email] == undefined)
+    {
+      return null;
+    }
+    let count = this.tokenBook[this.email];
+    let s = "";
+
+    for (let index = 0; index < count; index++) 
+    {
+        s += this.title;
+    }
+    const hash = crypto.SHA256(s);
+    const shortHash = hash[0] + hash[7] + hash[23] + hash[39] + hash[46] + hash[55];
+    return shortHash;
+  }
   // Check whether there exists a token
   public isAuthenticated() : boolean
   {
     let token = localStorage.getItem('token');
-    token = JSON.parse(token);
-    // let temp = this.jwtHelper.decodeToken(token);
-    // Check whether the token is expired and return true or false
-    return true;//!this.jwtHelper.isTokenExpired(this.user$.toString());
+    console.log("Token: ",token);
+    if(token )
+    {
+      return true;
+    }
+    return false;
   }
-  
+
   public logout()
   {
-    localStorage.setItem("token",null);
+    console.log("Removing Token");
+    localStorage.removeItem('token');
   }
 }

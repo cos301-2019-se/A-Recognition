@@ -344,6 +344,12 @@ export function addEmplpoyee(req : any)
         return true;
       });
 }
+export function getTitle(req : any)
+{
+    DatabaseManager.retrieveUser({body: {email : req}}).then( user =>{
+       return user.title;
+    });
+}
 
 export function getEventList() : Promise<any>{
 

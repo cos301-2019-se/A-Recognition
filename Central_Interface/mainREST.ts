@@ -99,12 +99,23 @@ app.post('/addEmployee',upload.single('image'), async(req, res) => {
     await delay(6000);
     res.json(Main.addEmplpoyee(req)); 
 });
-
+app.post('/getTitle',(req,res)=>
+{
+    if(req.body.hasOwnProperty("email") != true)
+    {
+        res.send("Invalid email");
+    }
+    else{
+        console.log(req.query.email);
+        console.log(req.body.email);
+        res.send(Main.getTitle(req.body.email));
+    }
+});
 app.post('/generateToken', (req, res) => {
-    if( req.query.hasOwnProperty("sender") != true)
+    if( req.body.hasOwnProperty("sender") != true)
     res.send("Invalid sender");
     else
-    res.send(Main.generateToken(req.query.sender));
+    res.send(Main.generateToken(req.body.sender));
 });
 
 app.post('/verifyToken', (req, res) => {
