@@ -18,6 +18,7 @@ import { AdminComponent } from './admin/admin.component';
 import { AdminService } from './admin/admin.service';
 import { RegisterComponent } from './register/register.component';
 import { OtpComponent } from './otp/otp.component';
+import { ReportsComponent } from './reports/reports.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { OtpComponent } from './otp/otp.component';
     LoginComponent,
     AdminComponent,
     RegisterComponent,
-    OtpComponent
+    OtpComponent,
+    ReportsComponent
   ],
   imports: [
     BrowserModule,
