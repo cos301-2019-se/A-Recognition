@@ -44,24 +44,20 @@ app.post("/getUsersFromDaysEvents", (req, res) => {
     Main.getUsersFromDaysEvents().then( users => res.json(users)).catch( err => res.send(err));
 });
 
-
 app.post("/validateUserHasBooking", (req, res, next) => {
-
-    let email;
-    let room;
-
     
-    if(req.query.hasOwnProperty("email") && req.query.hasOwnProperty("room")){
+    console.log(req["body"]);
+    
+    if(req["body"].hasOwnProperty("email") && req["body"].hasOwnProperty("room")){
         
-        email = req.query.email;
-        room = req.query.room;
+        let email = req["body"].email;
+        let room = req["body"].room;
 
         Main.validateUserHasBooking(email,room).then( msg => {res.send(msg);console.log(msg)}).catch( err => res.send(err));
     }else{
         res.send("Please send email and room name");
     }    
 });
-
 
 app.post('/getEmails', (req, res) => {
 
@@ -72,12 +68,12 @@ app.post('/getEmails', (req, res) => {
 
 app.post('/isEmployee', (req, res) => {
 
-    let email = req.query.email;
     
-    if(email == undefined || email == "")
+    
+    if(!req["body"].hasOwnProperty("email"))
         res.send("Please send a valid email");
     else
-        Main.isEmployee(email).then( result =>{
+        Main.isEmployee(req["body"].email).then( result =>{
             res.send(result);
         }).catch( result=>{
             res.send(result);
@@ -93,17 +89,45 @@ app.post('/isEmployee', (req, res) => {
 */
 // app.post('/addEmployee',upload.single('image'), async(req, res) => {
 
-//     // doTheThingWithTheObject();
-//     // passItToRichard();
+    // doTheThingWithTheObject();
+    // passItToRichard();
 //     await delay(6000);
 //     res.json(Main.addEmplpoyee(req)); 
 // });
+/** 
+ * Function Name:getEmployeeList
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: list of employees
+*/
+// app.post('/getEmployeeList',(req,res)=>
+// {
+//     res.send(Main.getEmployeeList()); 
+// });
+/** 
+ * Function Name:getTitle
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: sends back the title of the loggedin person
+*/
+app.post('/getTitle',(req,res)=>
+{
+    if(req["body"].hasOwnProperty("email") != true)
+    {
+        res.send("Invalid email");
+    }
+    else{
+        console.log(req.query.email);
+        console.log(req["body"].email);
+        res.send(Main.getTitle(req["body"].email));
+    }
+});
 
 app.post('/generateToken', (req, res) => {
-    if( req.query.hasOwnProperty("sender") != true)
+    if( req["body"].hasOwnProperty("sender") != true)
     res.send("Invalid sender");
     else
-    res.send(Main.generateToken(req.query.sender));
+    res.send(Main.generateToken(req["body"].sender));
 });
 
 app.post('/verifyToken', (req, res) => {
@@ -129,9 +153,10 @@ app.post('/getEventList',(req,res) => {
 
 app.post('/generateOTP',(req,res) => {
 
-    if(req.query.eventId != null && req.query.eventId != "")
-        if(req.query.email != null && req.query.email != "")
-            res.send(Main.generateOTP(req.query.eventId,req.query.email));
+    console.log(req["body"].eventId);
+    if(req["body"].hasOwnProperty("eventId"))
+        if(req["body"].hasOwnProperty("email"))
+            res.send(Main.generateOTP(req["body"].eventId,req["body"].email));
         else 
             res.send("Invalid email");
     else
@@ -144,9 +169,9 @@ app.post('/generateOTP',(req,res) => {
 app.post('/validateOTP',(req,res) => {
 
     
-    if(req.query.eventId != null && req.query.eventId != "")
-        if(req.query.otp != null && req.query.otp != "")
-            Main.validateOTP(req.query.eventId,req.query.otp)
+    if(req["body"].hasOwnProperty("eventId"))
+        if(req["body"].hasOwnProperty("otp"))
+            Main.validateOTP(req["body"].eventId,req["body"].otp)
             .then( entryAllowed => res.send(entryAllowed))
             .catch( entryDenied => res.send(entryDenied));
         else 

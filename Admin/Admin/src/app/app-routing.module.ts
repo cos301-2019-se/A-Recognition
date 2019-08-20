@@ -6,7 +6,7 @@ import { HomeComponent } from './home/home.component';
 import { AddingComponent } from './adding/adding.component';
 import { OTPComponent } from './otp/otp.component';
 import { ReportsComponent } from './reports/reports.component';
-import { RoleGuardService as RoleGuard } from './role-guard.service';
+import { EmployeesComponent } from './employees/employees.component';
 
 // PREVENT ACTIVATION BY USING
 //canLoad instead of canActivate
@@ -16,7 +16,7 @@ const routes: Routes =
     component: LoginComponent 
   },
   { path: 'login',
-  component: LoginComponent 
+    component: LoginComponent 
   },
   { 
     path: 'home',
@@ -26,6 +26,11 @@ const routes: Routes =
   { 
     path: 'adding',
     component: AddingComponent,
+    canActivate: [AuthGuard] 
+  },
+  { 
+    path: 'emp',
+    component: EmployeesComponent,
     canActivate: [AuthGuard] 
   },
   { 

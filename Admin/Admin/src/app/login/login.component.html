@@ -11,8 +11,8 @@
     <div class="jumbotron">
       <div class="row">
         <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-              <ng-container *ngIf="!this.authService.message">
-                     <p class="alert alert-danger">{{this.authService.displayMessage}}</p> 
+              <ng-container *ngIf="authService.displayMessage">
+                     <p class="alert alert-danger">{{authService.displayMessage}}</p> 
               </ng-container>
           <div class="text-center">
               <form [formGroup]="userLogin"  novalidate>

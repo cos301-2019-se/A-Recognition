@@ -1,0 +1,65 @@
+<div class="container">  
+  
+  <mat-card>  
+    <mat-toolbar color="accent">  
+      <div align="center" style="color:white;text-align: right;">  
+        Reports  
+      </div>    
+    </mat-toolbar>  
+  <br><br>  
+    <mat-card-content>  
+      <form [formGroup]="diseaseForm"(ngSubmit)="onFormSubmit(diseaseForm.value)">  
+              <table>  
+                <tr>  
+                  <td class="tbl1">  
+                    <mat-form-field class="demo-full-width">  
+                      <input formControlName="CommonName" matTooltip="Eg: Malaria" matInput placeholder="Search User">  
+                    </mat-form-field>  
+                    <mat-error>  
+                      <span *ngIf="!diseaseForm.get('CommonName').value && diseaseForm.get('CommonName').touched"></span>  
+                    </mat-error>  
+                  </td>   
+                </tr>     
+                <tr>  
+                  <td></td>  
+                  <td  class="content-center">  
+                    <button type="submit" mat-raised-button color="accent"matTooltip="Click Submit Button">Submit</button>      <!--[disabled]="!diseaseForm.valid"-->
+                    <button type="reset" mat-raised-button color="accent"matTooltip="Click Reset Button" (click)="resetForm()">Reset</button>  
+                  </td>  
+                  <td>  
+                    <p *ngIf="dataSaved" style="color:rgb(0, 128, 0);font-size:20px;font-weight:bold" Class="success" align="left">  
+                      {{message}}  
+                    </p>  
+                  </td>  
+                </tr>  
+              </table>  
+  <br><br> 
+        <table class="table" >  
+            <tr ngclass="btn-primary">  
+              <th class="tbl2">Disease ID</th> 
+              <th class="tbl2">Common Name</th> 
+              <th class="tbl2">Scientific Name</th>  
+              <th class="tbl2">Pathogen</th> 
+              <th class="tbl2">Incubation Period</th> 
+              <th class="tbl2">Disease Description</th>   
+            </tr>  
+            <tr *ngFor="let disease of allDiseases | async">  
+              <td class="tbl2">{{disease.DiseaseID}}</td>  
+              <td class="tbl2">{{disease.CommonName}}</td>  
+              <td class="tbl2">{{disease.ScientificName}}</td>
+              <td class="tbl2">{{disease.Pathogen}}</td>
+              <td class="tbl2">{{disease.IncubationPeriod}}</td>
+              <td class="tbl2">{{disease.DiseaseDescription}}</td>
+              <td class="tbl2">  
+                <button type="button" class="btn btn-info"matTooltip="Click Edit Button"(click)="loadDiseaseToEdit(disease)">Edit</button>  
+              </td>  
+              <td class="tbl2">  
+                <button type="button" class="btn btn-danger"matTooltip="Click Delete Button"(click)="deleteDisease(disease.DiseaseID)">Delete</button>  
+              </td>  
+            </tr>  
+    
+          </table>  
+      </form>  
+    </mat-card-content>  
+  </mat-card>  
+  </div>
