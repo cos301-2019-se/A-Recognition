@@ -4,7 +4,7 @@
   "description": "A facial recognition access control system",
   "main": "Central_Interface/mainREST.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ts-node node_modules/jasmine/bin/jasmine"
   },
   "repository": {
     "type": "git",
