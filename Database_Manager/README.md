@@ -117,20 +117,22 @@ Function used to create a new event in the DB. The request:
 Example:
 ```
 {
-    "eventId" : "38173",
-    "location" : "Rome",
-    "startTime" : "20/04/2019 15:30",
-    "endTime" : "20/04/2019 16:30",
+    "eventId"   : "yourEvent ID",
+    "summary"   : "Your summary",
+    "location"  : "Your location",
+    "startTime" : "01/01/2000 00:00",
+    "endTime"   : "02/01/2000 00:00",
     "attendeeOTPpairs" : [
         {
-            "email" : "john@some.domain",
-            "otp" : "12345"
+            "email" : "email@some.domain",
+            "otp" : "123456"
         },
         {
-            "email" : "jane@some.domain",
-            "otp" : "67890"
+            "email" : "other@some.domain",
+            "otp" : "654321"
         }
-    ]
+    ],
+    "eventOTP"  : ""
 }
 ```
 
@@ -242,7 +244,7 @@ Succsess response example:
     "attendeeOTPpairs" : [
         {
             "email" : "attendee@email.here",
-            "OTP" : "12345"
+            "otp" : "12345"
         },
         {
             "email" : "attendee2@email.here",

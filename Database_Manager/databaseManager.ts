@@ -75,12 +75,12 @@ export default class dbManager {
         
         return new Promise ( (resolve, reject) =>
         {    
-            //Check for body object
+            //Check for body field
             if(!this.checkBody(request, "body"))
             {
                 reject({
                     "status" : "Failure",
-                    "message" : '\'body\' object was not specified!'
+                    "message" : '\'body\' field was not specified!'
                 });
             }
             
@@ -199,6 +199,15 @@ export default class dbManager {
     async update(request) : Promise<any> {
         return new Promise( (resolve, reject) =>
         {
+            //Check for body field
+            if(!this.checkBody(request, "body"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'body\' field was not specified!'
+                });
+            }
+            
             //Check for email field
             if(!this.checkBody(request.body, "email"))
             {
@@ -223,7 +232,7 @@ export default class dbManager {
             {
                 reject({
                     "status" : "Failure",
-                    "message" : '\'surnname\' field was not specified!'
+                    "message" : '\'surname\' field was not specified!'
                 });
             }
 
@@ -254,7 +263,7 @@ export default class dbManager {
                 });
             }
 
-            if(request.body.active != 'false' && request.body.active != 'true')
+            if(request.body.active != false && request.body.active != true)
             {
                 reject({
                     "status" : "Failure",
@@ -307,6 +316,14 @@ export default class dbManager {
     **/
     async retrieveUser(request) : Promise<any> {
         return new Promise( (resolve, reject) => {
+            if(!this.checkBody(request, "body"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'body\' field was not specified!'
+                });
+            }
+            
             //Check for email field
             if(!this.checkBody(request.body, "email"))
             {
@@ -359,90 +376,101 @@ export default class dbManager {
     async addEvent(request) : Promise<any> {
         
         return new Promise( (resolve, reject) => {
-        //Check for eventId field
-        if(!this.checkBody(request.body, "eventId"))
-        {
-            reject({
-                "status" : "Failure",
-                "message" : '\'eventId\' field was not specified!'
-            });
-        }
+            if(!this.checkBody(request, "body"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'body\' field was not specified!'
+                });
+            }
+            
+            //Check for eventId field
+            if(!this.checkBody(request.body, "eventId"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'eventId\' field was not specified!'
+                });
+            }
 
-        //Check for location field
-        if(!this.checkBody(request.body, "location"))
-        {
-            reject({
-                "status" : "Failure",
-                "message" : '\'location\' field was not specified!'
-            });
-        }
+            //Check for summary field
+            if(!this.checkBody(request.body, "summary"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'summary\' field was not specified!'
+                });
+            }
 
-        //Check for startTime field
-        if(!this.checkBody(request.body, "startTime"))
-        {
-            reject({
-                "status" : "Failure",
-                "message" : '\'startTime\' field was not specified!'
-            });
-        }
+            //Check for location field
+            if(!this.checkBody(request.body, "location"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'location\' field was not specified!'
+                });
+            }
 
-        //Check for endTime field
-        if(!this.checkBody(request.body, "endTime"))
-        {
-            reject({
-                "status" : "Failure",
-                "message" : '\'endTime\' field was not specified!'
-            });
-        }
+            //Check for startTime field
+            if(!this.checkBody(request.body, "startTime"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'startTime\' field was not specified!'
+                });
+            }
 
-        //Check for attendeeOTPpairs field
-        if(!this.checkBody(request.body, "attendeeOTPpairs"))
-        {
-            reject({
-                "status" : "Failure",
-                "message" : '\'attendeeOTPpairs\' field was not specified!'
-            });
-        }
+            //Check for endTime field
+            if(!this.checkBody(request.body, "endTime"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'endTime\' field was not specified!'
+                });
+            }
 
-        //Check if event exists
-        var eventsRef = this.db.collection('events').doc(request.body.eventId);
-        var getDoc = eventsRef.get()
-            .then(doc => {
-                if (doc.exists) //Event exists 
-                {
-                    reject({
-                        "status" : "Failure",
-                        "message" : "Specified event already exists!"
-                    });
-                } 
-                else //Event does not exist
-                {
-                    //Update DB event
-                    let newEvent = {
-                        "eventId"  : request.body.eventId,
-                        "summary"  : request.body.summary,
-                        "location" : request.body.location,
-                        "startTime" : request.body.startTime,
-                        "endTime" : request.body.endTime,
-                        "attendees" : request.body.attendeeOTPpairs,
-                        "eventOTP"  : ""
-                    }
+            //Check for attendeeOTPpairs field
+            if(!this.checkBody(request.body, "attendeeOTPpairs"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'attendeeOTPpairs\' field was not specified!'
+                });
+            }
 
-                    let updateDoc = this.db.collection('events').doc(request.body.eventId).set(
-                        newEvent)
-                    .then(ref => {
-                        console.log('Updated Event: ' + request.body.eventId);
-                        resolve({
-                            "status" : "Success"
+            //Check if event exists
+            var eventsRef = this.db.collection('events').doc(request.body.eventId);
+            var getDoc = eventsRef.get().then(doc => {
+                    if (doc.exists) //Event exists 
+                    {
+                        reject({
+                            "status" : "Failure",
+                            "message" : "Specified event already exists!"
                         });
-                    });
-                }
-            })
-            .catch(err => {
+                    } 
+                    else //Event does not exist
+                    {
+                        let updateDoc = this.db.collection('events').doc(request.body.eventId).set(
+                            {
+                                "eventId"  : request.body.eventId,
+                                "summary"  : request.body.summary,
+                                "location" : request.body.location,
+                                "startTime" : request.body.startTime,
+                                "endTime" : request.body.endTime,
+                                "attendees" : request.body.attendeeOTPpairs,
+                                "eventOTP"  : ""
+                            }).then(ref => {
+                                console.log('Added Event: ' + request.body.eventId);
+                                resolve({
+                                    "status" : "Success"
+                                });
+                        });
+                    }
+            }).catch(err => {
                 console.log("Firebase could not add event");
                 reject({
                     "status" : "Failure",
-                    "message" : "Specified event does not exist!"
+                    "message" : "Firebase could not add the event"
                 });
             });
         });
@@ -450,10 +478,18 @@ export default class dbManager {
 
     /** 
      * @description: Function that retrieves an event
-     * @param eventId: The eventId toidentify event
+     * @param eventId: The eventId to identify event
     **/
     async retrieveEvent(request) : Promise<any> {
         return new Promise( (resolve, reject) => {
+            if(!this.checkBody(request, "body"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'body\' field was not specified!'
+                });
+            }
+            
             //Check for eventId field
             if(!this.checkBody(request.body, "eventId"))
             {
@@ -529,6 +565,15 @@ export default class dbManager {
     **/
     async updateEvent(request) : Promise<any> {
         return new Promise( (resolve, reject) => {
+            //Check for body field
+            if(!this.checkBody(request, "body"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'body\' field was not specified!'
+                });
+            }
+            
             //Check for eventId field
             if(!this.checkBody(request.body, "eventId"))
             {
@@ -632,6 +677,15 @@ export default class dbManager {
     **/
     async deleteEvent(request) : Promise<any> {
         return new Promise( (resolve, reject) => {
+            //Check for body field
+            if(!this.checkBody(request, "body"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'body\' field was not specified!'
+                });
+            }
+            
             //Check for eventId field
             if(!this.checkBody(request.body, "eventId"))
             {
@@ -679,6 +733,15 @@ export default class dbManager {
     **/
     async addAttendee(request) : Promise<any> {
         return new Promise( (resolve, reject) => {
+            //Check for body field
+            if(!this.checkBody(request, "body"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'body\' field was not specified!'
+                });
+            }
+            
             //Check for eventId field
             if(!this.checkBody(request.body, "eventId"))
             {
@@ -716,18 +779,19 @@ export default class dbManager {
                         var emails = [];
                         var otps = [];
 
+                        let alreadyExists = false;
+
                         doc.get("attendees").forEach(person => {
                             //Check if email already exists
                             if(person.email == request.body.email)
                             {
-                                resolve({
-                                    "status" : "Failure",
-                                    "message" : "Provided email is already registered in event!"
-                                });
+                                alreadyExists = true;
                             }
-                
-                            emails.push(person.email);
-                            otps.push(person.otp);
+                            else
+                            {
+                                emails.push(person.email);
+                                otps.push(person.otp);
+                            }
                         });
 
                         //Add the OTP to the event
@@ -740,23 +804,30 @@ export default class dbManager {
                             attendeesArray.push({"email" : emails[a], "otp" : otps[a]});
                         }
 
-                        var objectToSend =
-                        {
-                            "location" : doc.get('location'),
-                            "startTime" : doc.get("startTime"),
-                            "endTime" : doc.get("endTime"),
-                            "attendees" : attendeesArray
-                        };
+
 
                         //Save updated event to DB
-                        let updateDoc = this.db.collection('events').doc(request.body.eventId).set(
-                            objectToSend
-                            )
-                        .then(ref => {
-                            console.log('Added \' ' + request.body.email + '\' to event: ' + request.body.eventId);
-                            resolve({
-                                "status" : "Success"
-                            });
+                        let updateDoc = this.db.collection('events').doc(request.body.eventId).set({
+                                "location" : doc.get('location'),
+                                "startTime" : doc.get("startTime"),
+                                "endTime" : doc.get("endTime"),
+                                "attendees" : attendeesArray
+                            }).finally(ref => {
+                                if(alreadyExists)
+                                {
+                                    reject({
+                                        "status" : "Failure",
+                                        "message" : "Provided email is already registered in event!"
+                                    })
+                                }
+                                else
+                                {
+                                    console.log('Added \' ' + request.body.email + '\' to event: ' + request.body.eventId);
+                                    resolve({
+                                        "status" : "Success"
+        
+                                    })
+                                }
                         });
                     } 
                     else //Event does not exist
@@ -782,6 +853,15 @@ export default class dbManager {
     **/
     async getEventAttendees(request) : Promise<any> {
         return new Promise( (resolve, reject) => {
+            //Check for body field
+            if(!this.checkBody(request, "body"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'body\' field was not specified!'
+                });
+            }
+            
             //Check for eventId field
             if(!this.checkBody(request.body, "eventId"))
             {
@@ -826,6 +906,8 @@ export default class dbManager {
 
 };//dbManager class
 
+module.exports = dbManager;
+
 //Make this a singleton class
 //var databaseManager = new dbManager();
 //Object.freeze(databaseManager);
@@ -834,25 +916,9 @@ export default class dbManager {
 //export default databaseManager;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-console.debug(exports.addEvent({ "body" : {
-                                "eventId" : "functionTestEvent",
-                                "location" : "functionLocation",
-                                "startTime" : "1/1/2001 01:01",
-                                "endTime" : "1/1/2001 02:02",
-                                "attendeeOTPpairs" : [
-                                                        {
-                                                            "email" : "functionEmail@gmail.com",
-                                                            "otp" : "1111"
-                                                        },
-                                                        {
-                                                            "email" : "functionEmail2@gmail.com",
-                                                            "otp" : "2222"
-                                                        }
-                                                     ]
-                            }
-                }));
-*/
+
+
+
 /*
 let result = this.retrieveEncodings({}, {}).then( (res) => {
     console.debug(res);
@@ -903,29 +969,56 @@ let result = this.update({ "body" :   {
 console.debug(res);
 });
 */
-
 /*
-let result = this.addEvent({ "body" :   {
-    "eventId" : "addEventFunction@gmail.com",
-    "location" : "addEventFunction",
-    "startTime" : "16:20",
-    "endTime" : "17:20",
+let dbmanager = new dbManager();
+let result = dbmanager.addEvent({ "body" :   
+{
+    "eventId" : "unitTestingEvent",
+    "summary" : "unit",
+    "location" : "test",
+    "startTime" : "01/01/2000 00:00",
+    "endTime" : "02/01/2000 00:00",
     "attendeeOTPpairs" : [
         {
-            "email" : "email1@gmal",
-            "otp" : "6969"
+            "email" : "email@some.domain",
+            "otp" : "123456"
         },
         {
-            "email" : "blahBah",
-            "otp" : "2468"
+            "email" : "other@some.domain",
+            "otp" : "654321"
         }
-    ]
-    }
-}, {}).then( (res) => {
+    ],
+    "eventOTP"  : ""
+}
+}).then( (res) => {
 console.debug(res);
 });
 */
-
+/*
+let dbmanager = new dbManager();
+dbmanager.addEvent({ "body" :   
+            {
+                "eventId" : "unitTestingEvent",
+                "summary" : "unit",
+                "location" : "test",
+                "startTime" : "01/01/2000 00:00",
+                "endTime" : "02/01/2000 00:00",
+                "attendeeOTPpairs" : [
+                    {
+                        "email" : "email@some.domain",
+                        "otp" : "123456"
+                    },
+                    {
+                        "email" : "other@some.domain",
+                        "otp" : "654321"
+                    }
+                ],
+                "eventOTP"  : ""
+            }
+            }).catch( (reject) => {
+                console.debug(reject);
+            });
+*/
 /*
 let result = this.retrieveEvent({ "body" :   {
     "eventId" : "addEventFunction@gmail.com"
