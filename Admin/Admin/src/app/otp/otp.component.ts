@@ -22,6 +22,7 @@ export class OTPComponent implements OnInit {
     this.otpCall.getList().subscribe( (res)=>
     {
       this.eventList = res;
+      console.log(this.eventList);
     });
     this.otpSub = this.formBuilder.group(
       {

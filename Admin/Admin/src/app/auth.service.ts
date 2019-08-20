@@ -27,7 +27,7 @@ export class AuthService {
 */
   public generateToken()
   {
-    this.http.post("http://localhost:3000/generateToken",{
+    this.http.post("https://a-recognition.herokuapp.com/generateToken",{
       sender: this.email
     },{responseType: 'text'}).subscribe(data=>
     {
@@ -46,7 +46,7 @@ export class AuthService {
 */
 public getEmployees()
 {
-  return this.http.post("http://localhost:3000/getEmployeeList",'');
+  return this.http.post("https://a-recognition.herokuapp.com/getEmployeeList",'');
 }
 /** 
  * Function Name:getTitle
@@ -56,7 +56,7 @@ public getEmployees()
 */
   public getTitle()
   {
-    this.http.post("http://localhost:3000/getTitle",{
+    this.http.post("https://a-recognition.herokuapp.com/getTitle",{
       email:this.email
     }).subscribe(data=>
     {

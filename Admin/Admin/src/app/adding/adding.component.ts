@@ -25,9 +25,7 @@ export class AddingComponent implements OnInit
   uploadImageForm: FormGroup;
   message: any;
   valid: any;
-  constructor(private imageService: ImageService, private formBuilder: FormBuilder) 
-  { 
-   
+  constructor(private imageService: ImageService, private formBuilder: FormBuilder) {
   }
 
   ngOnInit() 
@@ -94,7 +92,7 @@ export class AddingComponent implements OnInit
 
     this.imageService.uploadImageTaken(imageFile,name,surname,title,email).subscribe( res =>
     {
-      if (res === true)
+      if (res == true)
       {
         this.message = 'User registered.';
         this.valid = true;

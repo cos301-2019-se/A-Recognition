@@ -128,8 +128,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 if True in matches:
                     first_match_index = matches.index(True)
                     name = e["Name"]
-                    emails.append(e['Email'])
-                    #print(name)                    
+                    emails.append(e['Email'])                 
 
             #Store the cropped face
             face = frame[y:y+h,x:x+w]

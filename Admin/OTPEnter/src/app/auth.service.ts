@@ -27,7 +27,7 @@ export class AuthService {
   {
     return new Promise((res,rej)=>
     {
-      this.http.post('http://localhost:3000/validateOTP',
+      this.http.post('https://a-recognition.herokuapp.com/validateOTP',
       {
         eventId: eventID,
         otp: otpin
@@ -44,11 +44,10 @@ export class AuthService {
   {
     return new Promise((res, rej) =>
     {
-      return this.http.post('https://testing-ci12.herokuapp.com/getEventList', '').subscribe((response)=>
+      return this.http.post('https://a-recognition.herokuapp.com/getEventList', '').subscribe((response) =>
       {
         res(response);
-      },(err)=>
-      {
+      }, (err) =>{
         rej(err);
       });
     });

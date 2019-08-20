@@ -15,7 +15,7 @@ import express = require("express");
 import fs = require('fs');
 import cors = require('cors');
 import multer = require('multer');
-let upload = multer({ dest: '../Facial_Recogntion/' })
+let upload = multer({ dest: './Facial_Recogntion/' })
 var app = express();
 
 app.use(express.json());       // to support JSON-encoded bodies
@@ -110,11 +110,8 @@ app.get('/isEmployee', (req, res) => {
  * Funtional description: takes in formdata which contains everything
  * needed to add a new user.
 */
-app.post('/addEmployee',upload.single('image'), async(req, res) => {
-
-    // doTheThingWithTheObject();
-    // passItToRichard();
-    await delay(6000);
+app.post('/addEmployee',upload.single('image'), (req, res) => {
+    //await delay(1000);
     res.json(Main.addEmplpoyee(req)); 
 });
 /** 

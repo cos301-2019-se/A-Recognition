@@ -322,7 +322,7 @@ export function addEmplpoyee(req : any)
    
     let options = {
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: '../Facial_Recogntion/',
+        scriptPath: './Facial_Recogntion/',
         args: [nameOfFile ,req.body.name, req.body.surname ,req.body.title, req.body.email ]
       };
 
@@ -343,6 +343,7 @@ export function addEmplpoyee(req : any)
 
         return true;
       });
+      return true;
 }
 /** 
  * Function Name:getTitle
