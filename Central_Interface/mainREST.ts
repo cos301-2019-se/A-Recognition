@@ -85,11 +85,11 @@ app.post('/isEmployee', (req, res) => {
  * Funtional description: takes in formdata which contains everything
  * needed to add a new user.
 */
-app.post('/addEmployee',upload.single('image'), async(req, res) => {
+// app.post('/addEmployee',upload.single('image'), async(req, res) => {
 
-    await delay(6000);
-    res.json(Main.addEmplpoyee(req)); 
-});
+//     await delay(6000);
+//     res.json(Main.addEmplpoyee(req)); 
+// });
 /** 
  * Function Name:getEmployeeList
  * Version: V1.0
