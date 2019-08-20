@@ -12,10 +12,9 @@
 import * as Main from "./main";
 
 import express = require("express");
-import fs = require('fs');
 import cors = require('cors');
-import multer = require('multer');
-let upload = multer({ dest: '../Facial_Recogntion/' })
+//import multer = require('multer');
+//let upload = multer({ dest: '../Facial_Recogntion/' })
 var app = express();
 
 app.use(express.json());       // to support JSON-encoded bodies
@@ -36,7 +35,7 @@ var allowCrossDomain = function(req, res, next) {
 };
 app.use(allowCrossDomain);
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
  console.log("Server running on port 3000");
 });
 
@@ -45,58 +44,34 @@ app.post("/getUsersFromDaysEvents", (req, res) => {
     Main.getUsersFromDaysEvents().then( users => res.json(users)).catch( err => res.send(err));
 });
 
-app.get("/getUsersFromDaysEvents", (req, res) => { 
-    Main.getUsersFromDaysEvents().then( users => res.json(users)).catch( err => res.send(err));
-});
-
 app.post("/validateUserHasBooking", (req, res, next) => {
-
-    let email;
-    let room;
-
     
-    if(req.query.hasOwnProperty("email") && req.query.hasOwnProperty("room")){
+    console.log(req["body"]);
+    
+    if(req["body"].hasOwnProperty("email") && req["body"].hasOwnProperty("room")){
         
-        email = req.query.email;
-        room = req.query.room;
+        let email = req["body"].email;
+        let room = req["body"].room;
 
         Main.validateUserHasBooking(email,room).then( msg => {res.send(msg);console.log(msg)}).catch( err => res.send(err));
     }else{
         res.send("Please send email and room name");
     }    
 });
-app.get("/validateUserHasBooking", (req, res, next) => {
 
-    let email;
-    let room;
-
-    
-    if(req.query.hasOwnProperty("email") && req.query.hasOwnProperty("room")){
-        
-        email = req.query.email;
-        room = req.query.room;
-        Main.validateUserHasBooking(email,room).then( msg => {res.send(msg);console.log(msg)}).catch( err => res.send(err));
-    }else{
-        res.send("Please send email and room name");
-    }    
-});
-
-
-app.get('/getEmails', (req, res) => {
+app.post('/getEmails', (req, res) => {
 
     Main.getEmployeeEmails().then( employees =>{
         res.json(employees);
     }).catch( err => res.send(err));
 });
 
-app.get('/isEmployee', (req, res) => {
-
-    let email = req.query.email;
+app.post('/isEmployee', (req, res) => {
     
-    if(email == undefined || email == "")
+    if(!req["body"].hasOwnProperty("email"))
         res.send("Please send a valid email");
     else
-        Main.isEmployee(email).then( result =>{
+        Main.isEmployee(req["body"].email).then( result =>{
             res.send(result);
         }).catch( result=>{
             res.send(result);
@@ -110,13 +85,11 @@ app.get('/isEmployee', (req, res) => {
  * Funtional description: takes in formdata which contains everything
  * needed to add a new user.
 */
-app.post('/addEmployee',upload.single('image'), async(req, res) => {
+// app.post('/addEmployee',upload.single('image'), async(req, res) => {
 
-    // doTheThingWithTheObject();
-    // passItToRichard();
-    await delay(6000);
-    res.json(Main.addEmplpoyee(req)); 
-});
+//     await delay(6000);
+//     res.json(Main.addEmplpoyee(req)); 
+// });
 /** 
  * Function Name:getEmployeeList
  * Version: V1.0
@@ -135,21 +108,22 @@ app.post('/getEmployeeList',(req,res)=>
 */
 app.post('/getTitle',(req,res)=>
 {
-    if(req.body.hasOwnProperty("email") != true)
+    if(req["body"].hasOwnProperty("email") != true)
     {
         res.send("Invalid email");
     }
     else{
         console.log(req.query.email);
-        console.log(req.body.email);
-        res.send(Main.getTitle(req.body.email));
+        console.log(req["body"].email);
+        res.send(Main.getTitle(req["body"].email));
     }
 });
+
 app.post('/generateToken', (req, res) => {
-    if( req.body.hasOwnProperty("sender") != true)
+    if( req["body"].hasOwnProperty("sender") != true)
     res.send("Invalid sender");
     else
-    res.send(Main.generateToken(req.body.sender));
+    res.send(Main.generateToken(req["body"].sender));
 });
 
 app.post('/verifyToken', (req, res) => {
@@ -175,10 +149,10 @@ app.post('/getEventList',(req,res) => {
 
 app.post('/generateOTP',(req,res) => {
 
-    console.log(req.body.eventId);
-    if(req.body.eventId != null)
-        if(req.body.email != null)
-            res.send(Main.generateOTP(req.body.eventId,req.body.email));
+    console.log(req["body"].eventId);
+    if(req["body"].hasOwnProperty("eventId"))
+        if(req["body"].hasOwnProperty("email"))
+            res.send(Main.generateOTP(req["body"].eventId,req["body"].email));
         else 
             res.send("Invalid email");
     else
@@ -191,9 +165,9 @@ app.post('/generateOTP',(req,res) => {
 app.post('/validateOTP',(req,res) => {
 
     
-    if(req.query.eventId != null && req.query.eventId != "")
-        if(req.query.otp != null && req.query.otp != "")
-            Main.validateOTP(req.query.eventId,req.query.otp)
+    if(req["body"].hasOwnProperty("eventId"))
+        if(req["body"].hasOwnProperty("otp"))
+            Main.validateOTP(req["body"].eventId,req["body"].otp)
             .then( entryAllowed => res.send(entryAllowed))
             .catch( entryDenied => res.send(entryDenied));
         else 
