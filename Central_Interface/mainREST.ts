@@ -12,7 +12,6 @@
 import * as Main from "./main";
 
 import express = require("express");
-import fs = require('fs');
 import cors = require('cors');
 import multer = require('multer');
 let upload = multer({ dest: '../Facial_Recogntion/' })
@@ -64,14 +63,14 @@ app.post("/validateUserHasBooking", (req, res, next) => {
 });
 
 
-app.get('/getEmails', (req, res) => {
+app.post('/getEmails', (req, res) => {
 
     Main.getEmployeeEmails().then( employees =>{
         res.json(employees);
     }).catch( err => res.send(err));
 });
 
-app.get('/isEmployee', (req, res) => {
+app.post('/isEmployee', (req, res) => {
 
     let email = req.query.email;
     
