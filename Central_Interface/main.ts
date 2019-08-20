@@ -78,7 +78,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                 let timeNow = new Date();
                 let entranceAllowedToEvent = new Date(event.startDate + "T"+ event.startTime);
                 entranceAllowedToEvent.setMinutes(entranceAllowedToEvent.getMinutes() - MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED);
-                
+
                 if(room == event.location){
                     
                     

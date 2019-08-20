@@ -67,7 +67,7 @@ def init():
 #@param email: A string containing an email
 #@param room:The room that was booked
 def validate(email,room = "Room 9"):
-    urlToSend = 'http://localhost:3000/validateUserHasBooking?email="'+email+'"'+'&room="Room 9"'
+    urlToSend = 'http://localhost:3000/validateUserHasBooking?email='+email+''+'&room=Room 9'
     allowedResponse = requests.get(url=urlToSend) 
 ##
 #Function that determines if a person has blinked recently

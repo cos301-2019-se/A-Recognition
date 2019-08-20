@@ -30,6 +30,7 @@ export class EmployeesComponent implements OnInit {
     this.auth.getEmployees().subscribe((data)=>
     {
       this.employeeList = data;
+      console.log(this.employeeList);
     });
   }
 

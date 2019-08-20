@@ -45,6 +45,9 @@ app.post("/getUsersFromDaysEvents", (req, res) => {
     Main.getUsersFromDaysEvents().then( users => res.json(users)).catch( err => res.send(err));
 });
 
+app.get("/getUsersFromDaysEvents", (req, res) => { 
+    Main.getUsersFromDaysEvents().then( users => res.json(users)).catch( err => res.send(err));
+});
 
 app.post("/validateUserHasBooking", (req, res, next) => {
 
@@ -57,6 +60,21 @@ app.post("/validateUserHasBooking", (req, res, next) => {
         email = req.query.email;
         room = req.query.room;
 
+        Main.validateUserHasBooking(email,room).then( msg => {res.send(msg);console.log(msg)}).catch( err => res.send(err));
+    }else{
+        res.send("Please send email and room name");
+    }    
+});
+app.get("/validateUserHasBooking", (req, res, next) => {
+
+    let email;
+    let room;
+
+    
+    if(req.query.hasOwnProperty("email") && req.query.hasOwnProperty("room")){
+        
+        email = req.query.email;
+        room = req.query.room;
         Main.validateUserHasBooking(email,room).then( msg => {res.send(msg);console.log(msg)}).catch( err => res.send(err));
     }else{
         res.send("Please send email and room name");
