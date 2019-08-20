@@ -46,16 +46,29 @@
                  </div>
                  <div class="modal-body">
                     <div id="app">
+                     <form [formGroup]="takePictureForm"  novalidate>
+                           <div *ngIf="takePictureForm.controls['name'].invalid && (takePictureForm.controls['name'].dirty || takePictureForm.controls['name'].touched)" class="alert alert-danger">
+                                 <div *ngIf="takePictureForm.controls['name'].errors.required">Name is required.</div>
+                             </div>
+                             <div *ngIf="takePictureForm.controls['surname'].invalid && (takePictureForm.controls['surname'].dirty || takePictureForm.controls['surname'].touched)" class="alert alert-danger">
+                                 <div *ngIf="takePictureForm.controls['surname'].errors.required">Surname  is required.</div>
+                             </div>
+                             <div *ngIf="takePictureForm.controls['email'].invalid && (takePictureForm.controls['email'].dirty || takePictureForm.controls['email'].touched)" class="alert alert-danger">
+                                 <div *ngIf="takePictureForm.controls['email'].errors.required">Email is required.</div>
+                             </div>
+                             <div *ngIf="takePictureForm.controls['title'].invalid && (takePictureForm.controls['title'].dirty || takePictureForm.controls['title'].touched)" class="alert alert-danger">
+                                 <div *ngIf="takePictureForm.controls['title'].errors.required">Title type is required.</div>
+                             </div>
                        <webcam [height]="400" [width]="400" [trigger]="triggerObservable" (imageCapture)="handleImage($event,NameSnap.value,SurnameSnap.value,TitleSnap.value,EmailSnap.value)" *ngIf="showWebcam"
                        [videoOptions]="videoOptions"
                        [imageQuality]="1"
                        (initError)="handleInitError($event)"
                        ></webcam>
                        <div class="mx-auto w-50">
-                          <input #NameSnap  type="text" placeholder="Name" >
-                          <input #SurnameSnap  type="text" placeholder="Surname">
-                          <input #EmailSnap  type="email" placeholder="Email" >
-                          <select class="selectpicker" data-style="btn-primary" #TitleSnap>
+                          <input #NameSnap class="form-control" formControlName="name" type="text" placeholder="Name" >
+                          <input #SurnameSnap  type="text" class="form-control" formControlName="surname" placeholder="Surname">
+                          <input #EmailSnap  type="email" class="form-control" formControlName="email" placeholder="Email" >
+                          <select class="selectpicker" class="form-control" formControlName="title" data-style="btn-primary" #TitleSnap>
                              <option selected disabled>Choose one</option>
                              <option value="Mr">Mr</option>
                              <option value="Mrs">Mrs</option>
@@ -65,6 +78,7 @@
                           <br>
                           <div><button id="snap" class="btn btn-primary" data-dismiss="modal" (click)='this.showWebcam = false;' (click)="triggerSnapshot()">Snap Photo</button></div>
                        </div>
+                       </form>
                     </div>
                  </div>
                  <div class="modal-footer">
@@ -85,11 +99,24 @@
                  </div>
                  <div class="modal-body">
                     <div class="mx-auto w-50">
-                       <input #imageInput  type="file" accept="image/*" >
-                       <input #Name  type="text" placeholder="Name" >
-                       <input #Surname  type="text" placeholder="Surname">
-                       <input #Email  type="email" placeholder="Email" >
-                       <select #Title class="selectpicker" data-style="btn-primary">
+                        <form [formGroup]="uploadImageForm"  novalidate>
+                              <div *ngIf="uploadImageForm.controls['nameA'].invalid && (uploadImageForm.controls['nameA'].dirty || uploadImageForm.controls['nameA'].touched)" class="alert alert-danger">
+                                    <div *ngIf="uploadImageForm.controls['nameA'].errors.required">Name is required.</div>
+                                </div>
+                                <div *ngIf="uploadImageForm.controls['surnameA'].invalid && (uploadImageForm.controls['surnameA'].dirty || uploadImageForm.controls['surnameA'].touched)" class="alert alert-danger">
+                                    <div *ngIf="uploadImageForm.controls['surnameA'].errors.required">Surname  is required.</div>
+                                </div>
+                                <div *ngIf="uploadImageForm.controls['emailA'].invalid && (uploadImageForm.controls['emailA'].dirty || uploadImageForm.controls['emailA'].touched)" class="alert alert-danger">
+                                    <div *ngIf="uploadImageForm.controls['emailA'].errors.required">Email is required.</div>
+                                </div>
+                                <div *ngIf="uploadImageForm.controls['titleA'].invalid && (uploadImageForm.controls['titleA'].dirty || uploadImageForm.controls['titleA'].touched)" class="alert alert-danger">
+                                    <div *ngIf="uploadImageForm.controls['titleA'].errors.required">Title type is required.</div>
+                                </div>
+                       <input #imageInput   type="file" accept="image/*" >
+                       <input #Name class="form-control" formControlName="nameA" type="text" placeholder="Name" >
+                       <input #Surname class="form-control" formControlName="surnameA"  type="text" placeholder="Surname">
+                       <input #Email class="form-control" formControlName="emailA"  type="email" placeholder="Email" >
+                       <select #Title class="form-control" formControlName="titleA" class="selectpicker" data-style="btn-primary">
                           <option selected disabled>Choose one</option>
                           <option value="Mr">Mr</option>
                           <option value="Mrs">Mrs</option>
@@ -98,6 +125,7 @@
                        </select>
                        <br>
                        <input type="submit" class="btn btn-primary" data-dismiss="modal" (click) ="processFile(imageInput,Name.value,Surname.value,Title.value,Email.value)">
+                        </form>
                     </div>
                  </div>
                  <div class="modal-footer">

@@ -18,6 +18,7 @@ import { HttpClientModule , HTTP_INTERCEPTORS} from '@angular/common/http';
 import { TokenInterceptor } from './token.interceptor';
 import { NavComponent } from './nav/nav.component';
 import { WebcamModule } from 'ngx-webcam';
+import { EmployeesComponent } from './employees/employees.component';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBpazWx_m3UGkQAh6zgEMujQ2JtU3OJzEc',
@@ -36,7 +37,8 @@ const firebaseConfig = {
     AddingComponent,
     OTPComponent,
     HomeComponent,
-    NavComponent
+    NavComponent,
+    EmployeesComponent
   ],
   imports: [
     BrowserModule,

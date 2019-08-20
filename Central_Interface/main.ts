@@ -344,10 +344,29 @@ export function addEmplpoyee(req : any)
         return true;
       });
 }
+/** 
+ * Function Name:getTitle
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: sends back the title of the loggedin person
+*/
 export function getTitle(req : any)
 {
     DatabaseManager.retrieveUser({body: {email : req}}).then( user =>{
        return user.title;
+    });
+}
+/** 
+ * Function Name:getEmployeeList
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: list of employees
+*/
+export function getEmployeeList()
+{
+    DatabaseManager.retrieveAllUsers().then( (user) =>
+    {
+        return user.employees;
     });
 }
 

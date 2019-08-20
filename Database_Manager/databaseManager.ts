@@ -328,6 +328,31 @@ export async function retrieveUser(request) : Promise<any> {
             });
     });
 }
+/** 
+ * @description: Function retrieves all users
+**/
+export async function retrieveAllUsers() : Promise<any> {
+    return new Promise( (resolve, reject) => {
+        
+        let emp = [];
+        var userRef = db.collection('users').get().then(snapshot => 
+        {
+            snapshot.forEach(doc => {
+               emp.push(doc);
+            });
+            resolve({
+                "status" : "Success",
+                "employees" : emp
+            });
+        }).catch( err =>
+        {
+            reject({
+                "status" : "Failure",
+                "message" : "Getting all users failed!"
+            });
+        });
+    });
+}
 
 /** 
  * @description: Function that adds a new event

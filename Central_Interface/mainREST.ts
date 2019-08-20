@@ -99,6 +99,22 @@ app.post('/addEmployee',upload.single('image'), async(req, res) => {
     await delay(6000);
     res.json(Main.addEmplpoyee(req)); 
 });
+/** 
+ * Function Name:getEmployeeList
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: list of employees
+*/
+app.post('/getEmployeeList',(req,res)=>
+{
+    res.send(Main.getEmployeeList()); 
+});
+/** 
+ * Function Name:getTitle
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: sends back the title of the loggedin person
+*/
 app.post('/getTitle',(req,res)=>
 {
     if(req.body.hasOwnProperty("email") != true)
