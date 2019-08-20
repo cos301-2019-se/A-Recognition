@@ -85,23 +85,21 @@ app.post('/isEmployee', (req, res) => {
  * Funtional description: takes in formdata which contains everything
  * needed to add a new user.
 */
-// app.post('/addEmployee',upload.single('image'), async(req, res) => {
+app.post('/addEmployee',upload.single('image'), async(req, res) => {
 
-    // doTheThingWithTheObject();
-    // passItToRichard();
-//     await delay(6000);
-//     res.json(Main.addEmplpoyee(req)); 
-// });
+    await delay(6000);
+    res.json(Main.addEmplpoyee(req)); 
+});
 /** 
  * Function Name:getEmployeeList
  * Version: V1.0
  * Author: Richard McFadden
  * Funtional description: list of employees
 */
-// app.post('/getEmployeeList',(req,res)=>
-// {
-//     res.send(Main.getEmployeeList()); 
-// });
+app.post('/getEmployeeList',(req,res)=>
+{
+    res.send(Main.getEmployeeList()); 
+});
 /** 
  * Function Name:getTitle
  * Version: V1.0

@@ -362,13 +362,13 @@ export function getTitle(req : any)
  * Author: Richard McFadden
  * Funtional description: list of employees
 */
-// export function getEmployeeList()
-// {
-//     DatabaseManager.retrieveAllUsers().then( (user) =>
-//     {
-//         return user.employees;
-//     });
-// }
+export function getEmployeeList()
+{
+    DatabaseManager.retrieveAllUsers().then( (user) =>
+    {
+        return user.employees;
+    });
+}
 
 export function getEventList() : Promise<any>{
 
