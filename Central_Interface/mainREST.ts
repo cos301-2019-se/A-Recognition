@@ -13,8 +13,8 @@ import * as Main from "./main";
 
 import express = require("express");
 import cors = require('cors');
-import multer = require('multer');
-let upload = multer({ dest: '../Facial_Recogntion/' })
+//import multer = require('multer');
+//let upload = multer({ dest: '../Facial_Recogntion/' })
 var app = express();
 
 app.use(express.json());       // to support JSON-encoded bodies
@@ -91,13 +91,13 @@ app.post('/isEmployee', (req, res) => {
  * Funtional description: takes in formdata which contains everything
  * needed to add a new user.
 */
-app.post('/addEmployee',upload.single('image'), async(req, res) => {
+// app.post('/addEmployee',upload.single('image'), async(req, res) => {
 
-    // doTheThingWithTheObject();
-    // passItToRichard();
-    await delay(6000);
-    res.json(Main.addEmplpoyee(req)); 
-});
+//     // doTheThingWithTheObject();
+//     // passItToRichard();
+//     await delay(6000);
+//     res.json(Main.addEmplpoyee(req)); 
+// });
 
 app.post('/generateToken', (req, res) => {
     if( req.query.hasOwnProperty("sender") != true)
