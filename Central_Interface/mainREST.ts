@@ -67,8 +67,6 @@ app.post('/getEmails', (req, res) => {
 });
 
 app.post('/isEmployee', (req, res) => {
-
-    
     
     if(!req["body"].hasOwnProperty("email"))
         res.send("Please send a valid email");
