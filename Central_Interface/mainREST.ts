@@ -175,4 +175,15 @@ app.post('/validateOTP',(req,res) => {
     
 });
 
-  
+app.get('/', (req, res) => {
+
+    fs.readFile('index.html', function (err, html) {
+        if (err) 
+            throw err; 
+        
+        res.writeHead(200, {"Content-Type": "text/html"});  // <-- HERE!
+        res.write(html);  // <-- HERE!
+        res.end();  
+        
+    });
+});
