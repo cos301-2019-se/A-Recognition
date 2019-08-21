@@ -10,11 +10,11 @@ import * as Adapter from "../API_Adapter/main";
 import * as Utils from "../Utils/Utils";
 import {PythonShell} from 'python-shell'; //npm install python-shell
 import * as NotificationSystem from "../Database_Manager/notification";
-import * as DatabaseManager from "../Database_Manager/databaseManager"
+import dbManager from "../Database_Manager/databaseManager"
 import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 import * as crypto from 'crypto';
-
+var DatabaseManager = new dbManager();
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
 const ISSUER  = 'Central Interface';         
@@ -256,7 +256,6 @@ export function verifyToken(originalToken : string){
             reject(false);
         
         let userEmail = result.sub;
-
         DatabaseManager.retrieveUser({body: {email : userEmail}}).then( user =>{
             let secret = user.title;
             
