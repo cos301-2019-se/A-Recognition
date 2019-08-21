@@ -85,7 +85,7 @@ public getEmployees()
           setTimeout(()=>
           {
             this.router.navigate(['home']);
-          }, 2000);
+          }, 1000);
           
         }).catch(err =>
           {
