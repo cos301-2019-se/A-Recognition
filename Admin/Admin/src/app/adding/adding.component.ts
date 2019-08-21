@@ -1,6 +1,7 @@
-import { Component, OnInit,ViewChild, ElementRef  } from '@angular/core';
+import { Component, OnInit  } from '@angular/core';
 import {ImageService} from '../image.service';
 import {Subject, Observable} from 'rxjs';
+import { FormControl, FormGroup, FormBuilder, Validators  } from '@angular/forms';
 import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
 @Component({
   selector: 'app-adding',
@@ -20,9 +21,11 @@ export class AddingComponent implements OnInit
     // width: {ideal: 1024},
     // height: {ideal: 576}
   };
-  constructor(private imageService: ImageService) 
-  { 
-   
+  takePictureForm: FormGroup;
+  uploadImageForm: FormGroup;
+  message: any;
+  valid: any;
+  constructor(private imageService: ImageService, private formBuilder: FormBuilder) {
   }
 
   ngOnInit() 
@@ -31,6 +34,21 @@ export class AddingComponent implements OnInit
       .then((mediaDevices: MediaDeviceInfo[]) => {
         this.multipleWebcamsAvailable = mediaDevices && mediaDevices.length > 1;
       });
+    
+    this.takePictureForm = this.formBuilder.group(
+    {
+      name: ['', [Validators.required]],
+      surname: ['', [Validators.required]],
+      email: ['', [Validators.required]],
+      title: ['', [Validators.required]],
+    });
+    this.uploadImageForm = this.formBuilder.group(
+    {
+      nameA: ['', [Validators.required]],
+      surnameA: ['', [Validators.required]],
+      emailA: ['', [Validators.required]],
+      titleA: ['', [Validators.required]],
+    });
   }
   /** 
  * Function Name:triggerSnapshot
@@ -74,7 +92,15 @@ export class AddingComponent implements OnInit
 
     this.imageService.uploadImageTaken(imageFile,name,surname,title,email).subscribe( res =>
     {
-         
+      if (res == true)
+      {
+        this.message = 'User registered.';
+        this.valid = true;
+      }
+      else{
+        this.message = 'An error occured during registration.';
+        this.valid = false;
+      }
     });
   }
     /** 
@@ -107,6 +133,10 @@ export class AddingComponent implements OnInit
 */
   processFile($event,name,surname,title,email) 
   {
+      if(!$event)
+      {
+        console.log("No image was selected");
+      }
       const file: File = $event.files[0];
       const formData: FormData = new FormData();
       formData.append('image', file);
@@ -120,7 +150,12 @@ export class AddingComponent implements OnInit
         console.log(res);
         if (res === true)
         {
-          window.location.reload();
+          this.message = 'User registered.';
+          this.valid = true;
+        }
+        else{
+          this.message = 'An error occured during registration.';
+          this.valid = false;
         }
       });
   }

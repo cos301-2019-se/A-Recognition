@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {AngularFireModule} from '@angular/fire';
+import {AngularFireModule,} from '@angular/fire';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import {AngularFireDatabaseModule} from '@angular/fire/database';
 import {AngularFireAuthModule} from '@angular/fire/auth';
@@ -13,10 +14,11 @@ import { OTPComponent } from './otp/otp.component';
 import { HomeComponent } from './home/home.component';
 import { FirestoreSettingsToken} from '@angular/fire/firestore';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { JwtModule, JwtHelperService} from '@auth0/angular-jwt';
+import { HttpClientModule , HTTP_INTERCEPTORS} from '@angular/common/http';
+import { TokenInterceptor } from './token.interceptor';
 import { NavComponent } from './nav/nav.component';
-import {WebcamModule} from 'ngx-webcam';
+import { WebcamModule } from 'ngx-webcam';
+import { EmployeesComponent } from './employees/employees.component';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBpazWx_m3UGkQAh6zgEMujQ2JtU3OJzEc',
@@ -35,18 +37,25 @@ const firebaseConfig = {
     AddingComponent,
     OTPComponent,
     HomeComponent,
-    NavComponent
+    NavComponent,
+    EmployeesComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    JwtModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule, ReactiveFormsModule, AngularFirestoreModule, AngularFireDatabaseModule,
     HttpClientModule,
     FormsModule,WebcamModule
   ],
-  providers: [{ provide: FirestoreSettingsToken, useValue: {} },{provide: AngularFireModule},{provide: JwtHelperService}],
+  providers: [
+    { provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+    { provide: FirestoreSettingsToken, useValue: {} },
+    {provide: AngularFireModule}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

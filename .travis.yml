@@ -1,10 +1,29 @@
-language: python
-python:
-  - "3.7.3"
-cache: pip
-before_install: cd Facial_Recogntion
-install:
-  - pip install -r requirements.txt
-script:
-  - python3 encUnitTests.py
-  - python3 FacialFeaturesUnitTests.py
+matrix:
+  include:
+    - language: python
+      python:
+        - "3.7.3"
+      cache: pip
+      before_install: cd Facial_Recogntion
+      install:
+        - pip install -r requirements.txt
+      script:
+        - python3 encUnitTests.py
+        - python3 FacialFeaturesUnitTests.py
+
+    - language: node_js
+      node_js:
+        - '10'
+      dist: trusty
+      sudo: true
+      addons:
+            - chrome:stable
+      cache:
+        directories:
+          - ./node_modules
+      before_install: cd Database_Manager
+
+      install:
+        - npm install
+      script:
+        - npm test

@@ -364,6 +364,31 @@ export default class dbManager {
                 });
         });
     }
+     /** 
+     * @description: Function retrieves a all users
+    **/
+   async retrieveAllUsers() : Promise<any> {
+    return new Promise( (resolve, reject) => {
+        var emplArray = [];
+        //Check if user exists
+        var userRef = this.db.collection('users').get().then(snapshot => {
+                for(let doc in snapshot)
+                {
+                    emplArray.push(doc);
+                }
+                resolve({
+                    "status" : "Success",
+                    "employees" : emplArray
+                });
+        })
+        .catch(err => {
+            reject({
+                "status" : "Failure",
+                "message" : "Document could not be retrieved!"
+            });
+        });
+    });
+}
 
     /** 
      * @description: Function that adds a new event

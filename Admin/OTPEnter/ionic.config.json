@@ -1,0 +1,7 @@
+{
+  "name": "OTPEnter",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

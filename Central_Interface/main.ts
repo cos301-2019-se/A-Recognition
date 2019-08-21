@@ -10,11 +10,11 @@ import * as Adapter from "../API_Adapter/main";
 import * as Utils from "../Utils/Utils";
 import {PythonShell} from 'python-shell'; //npm install python-shell
 import * as NotificationSystem from "../Database_Manager/notification";
-import * as DatabaseManager from "../Database_Manager/databaseManager"
+import dbManager from "../Database_Manager/databaseManager"
 import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 import * as crypto from 'crypto';
-
+var DatabaseManager = new dbManager();
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
 const ISSUER  = 'Central Interface';         
@@ -78,7 +78,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                 let timeNow = new Date();
                 let entranceAllowedToEvent = new Date(event.startDate + "T"+ event.startTime);
                 entranceAllowedToEvent.setMinutes(entranceAllowedToEvent.getMinutes() - MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED);
-                
+
                 if(room == event.location){
                     
                     
@@ -256,7 +256,6 @@ export function verifyToken(originalToken : string){
             reject(false);
         
         let userEmail = result.sub;
-
         DatabaseManager.retrieveUser({body: {email : userEmail}}).then( user =>{
             let secret = user.title;
             
@@ -322,7 +321,7 @@ export function addEmplpoyee(req : any)
    
     let options = {
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: '../Facial_Recogntion/',
+        scriptPath: './Facial_Recogntion/',
         args: [nameOfFile ,req.body.name, req.body.surname ,req.body.title, req.body.email ]
       };
 
@@ -343,6 +342,32 @@ export function addEmplpoyee(req : any)
 
         return true;
       });
+      return true;
+}
+/** 
+ * Function Name:getTitle
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: sends back the title of the loggedin person
+*/
+export function getTitle(req : any)
+{
+    DatabaseManager.retrieveUser({body: {email : req}}).then( user =>{
+       return user.title;
+    });
+}
+/** 
+ * Function Name:getEmployeeList
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: list of employees
+*/
+export function getEmployeeList()
+{
+    DatabaseManager.retrieveAllUsers().then( (user) =>
+    {
+        return user.employees;
+    });
 }
 
 export function getEventList() : Promise<any>{
@@ -394,6 +419,12 @@ function compileValidOTPList(event) : Array<string>{
     });
 
     return validOtp;
+}
+export function validateOTPByRoom(roomID: any, otp:string): Promise<boolean>
+{
+    return new Promise( (resolve,reject) => {
+        //Need to implement this 
+    });
 }
 export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
 

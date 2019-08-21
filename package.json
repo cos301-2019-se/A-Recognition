@@ -4,7 +4,8 @@
   "description": "A facial recognition access control system",
   "main": "Central_Interface/mainREST.ts",
   "scripts": {
-    "test": "ts-node node_modules/jasmine-node/bin/jasmine-node --verbose spec"
+    "test": "ts-node node_modules/jasmine-node/bin/jasmine-node --verbose spec",
+    "start": "ts-node Central_Interface/mainREST.ts"
   },
   "repository": {
     "type": "git",

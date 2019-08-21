@@ -1,0 +1,60 @@
+<ion-app>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+     QR-Scanner
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="background: none transparent;">
+    <ion-card class="welcome-card">
+        <div class="jumbotron">
+          <div class="row">
+             <div class="col">
+                <div class="mx-auto w-50 p-3 bg-dark text-white text-center">
+                   <h1>QR-Scanner</h1>
+                </div>
+             </div>
+          </div>
+        </div><div class="container">
+          <div class="mx-auto w-50 text-center">
+             <div class="row">
+                <ng-template [ngIf]='message != "" ' >
+                   <div class="alert alert-success" role="alert" *ngIf="valid==true">
+                      {{message}}<br>
+                   </div>
+                   <div class="alert alert-danger" role="alert" *ngIf="valid==false">
+                      {{message}}<br>
+                   </div>
+                </ng-template>
+             </div>
+          </div>
+        </div>
+        <ion-card-content>
+          <p>Scan QR-code to specify which room you would like to enter</p>
+        </ion-card-content>
+      </ion-card>
+      <!-- <form [formGroup]="otpScan"  novalidate> -->
+          <!-- <div *ngIf="otpScan.controls['otp'].invalid && (otpScan.controls['otp'].dirty || otpScan.controls['otp'].touched)" class="alert alert-danger">
+              <div *ngIf="otpScan.controls['otp'].errors.required">OTP needs to be entered.</div>
+          </div>class="form-control" formControlName="otp" -->
+      <ion-item >        
+        <ion-input type="number"  maxlength="6" clearInput value="123456" #otp></ion-input>
+      </ion-item> 
+      <ion-item >
+        <ion-button (click)="scanCode()">
+          Scan Code
+        </ion-button> 
+      </ion-item >   
+      <ion-item >
+        <button id="snap"   class="btn btn-primary" (click)='validateOTP(otp.value)'>Submit</button>
+      </ion-item >   
+      <div *ngIf="scannedData">
+        <p>
+          Scanned Code Text : <b>{{ scannedData }}</b>
+        </p>
+      </div>
+      <!-- </form> -->
+</ion-content>
+</ion-app>

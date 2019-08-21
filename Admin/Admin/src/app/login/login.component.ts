@@ -8,11 +8,11 @@ import {AuthService} from '../auth.service';
 })
 export class LoginComponent implements OnInit {
 
+
   constructor(public authService: AuthService, private formBuilder: FormBuilder) 
   { 
 
   }
-
   userLogin: FormGroup;
 
   ngOnInit() 

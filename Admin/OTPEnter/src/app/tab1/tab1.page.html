@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      One Time Pin
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card class="welcome-card">
+      <div class="jumbotron">
+        <div class="row">
+           <div class="col">
+              <div class="mx-auto w-50 p-3 bg-dark text-white text-center">
+                 <h1>One Time Pin</h1>
+              </div>
+           </div>
+        </div>
+      </div><div class="container">
+        <div class="mx-auto w-50 text-center">
+           <div class="row">
+              <ng-template [ngIf]='message != "" ' >
+                 <div class="alert alert-success" role="alert" *ngIf="valid==true">
+                    {{message}}<br>
+                 </div>
+                 <div class="alert alert-danger" role="alert" *ngIf="valid==false">
+                    {{message}}<br>
+                 </div>
+              </ng-template>
+           </div>
+        </div>
+      </div>
+      <ion-card-header>
+        <ion-card-title>Entering an OTP</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Begin by selecting the room you want to enter and then insert the One Time Pin you received via email.</p>
+      </ion-card-content>
+    </ion-card>
+      <ion-item >
+        <ion-input type="number" maxlength="6" clearInput value="123456" #otp></ion-input>
+      </ion-item> 
+      <ion-item *ngIf='eventList'>
+        <ion-select placeholder="Select One" (ionChange)="setEventID($event)" >
+            <ion-select-option  *ngFor="let i of eventList"  value="{{i.id}}">
+                {{i.summary}}-{{i.location}} || {{i.startDate}} - {{i.startTime}} ||
+            </ion-select-option>
+        </ion-select>
+      </ion-item>
+          <ion-item >
+            <button id="snap"   class="btn btn-primary" (click)='validateOTP(otp.value)'>Submit</button>
+          </ion-item>
+</ion-content>

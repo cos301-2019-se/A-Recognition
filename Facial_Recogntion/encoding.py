@@ -61,11 +61,12 @@ def encodeImageForDB(images,name,surname,title,email):
             for enc in encoding:
                 arr.append({"encoding":enc})
             user = {
-                u'Name': name,
-                u'Surname': surname,
-                u'Title': title,
-                u'image_vector':arr,
-                u'Email':email
+               u'name': name,
+               u'surname': surname,
+               u'title': title,
+               u'fd':arr,
+               u'email':email,
+               u'active': True
             }
             # Add the new user to the database
             users_ref.document(name).set(user)

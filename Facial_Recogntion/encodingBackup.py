@@ -15,14 +15,15 @@ import cv2
 import sys
 import os
 # Fetch the service account key JSON file contents
-cred = credentials.Certificate('credentials.json')
+path = os.path.dirname(os.path.realpath(__file__))
+cred = credentials.Certificate(path + '/Facial_Recogntion/credentials.json')
 firebase_admin.initialize_app(cred)
 
 #Create the DB object
 db = firestore.client()
 
 #GET the collection Users for Facial Recognition
-users_ref = db.collection(u'Users')
+users_ref = db.collection(u'users')
 
 #docs now contain the data in Users
 docs = users_ref.stream()
@@ -45,7 +46,7 @@ email = sys.argv[5]
 encoding=[]
 print("ENCODING the dataset")
 try:
-    temp = '../Facial_Recogntion/'+imageFileName
+    temp = path +'/Facial_Recogntion/'+imageFileName
     image = cv2.imread(temp)
     # Convert it from BGR to RGB
     #Because opencv uses RGB
@@ -63,11 +64,12 @@ try:
         for enc in encoding:
             arr.append({"encoding":enc})
         user = {
-            u'Name': name,
-            u'Surname': surname,
-            u'Title': title,
+            u'name': name,
+            u'surname': surname,
+            u'title': title,
             u'image_vector':arr,
-            u'Email':email
+            u'email':email,
+            u'active': True
         }
         # Add the new user to the database
         users_ref.document(name).set(user)
@@ -76,7 +78,8 @@ try:
         else: 
             print(False)
     #After this delete the image as if it was never there
-    #os.remove(temp)
+    os.remove(temp)
+    print('File removed')
 
 except TypeError:
     print("An error occured while trying to encode the image or saving to the database")
