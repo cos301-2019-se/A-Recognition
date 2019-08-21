@@ -18,6 +18,8 @@ Create a system which uses facial recognition to allow users access to areas tha
 
 The system will adhere to the **Protection of Personal Information Act (POPI)** as well as the **General Data Protection Regulation (GDPR)** to ensure that the users’ data is protected and may not be tampered with. 
 
+Certain users, administrators, will be given the right to perform CRUD operations involving employees, while the employees themselves will be able to book certain meeting rooms and add the relevant personnel to the meetings. The system will then compare their face as input and compare it to the stored images to determine access to the room or deny access.
+
 ---
 
 ### The Team
