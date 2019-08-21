@@ -22,6 +22,11 @@ Certain users, administrators, will be given the right to perform CRUD operation
 
 Any guests that wish to gain access to the building or to a meeting room will have a One Time Pin (OTP) generated to them to use as an access measure as extra security. The Advance group would like us to produce a quality system that can perform the relevant access control measures needed to perform the facial recognition in a respectable response time to improve efficiency as well as effectiveness.
 
+The **overall requirements** of the system should be:
+- A facial recognition subsystem to allow access to users that are authorized.
+- A subsystem to provide OTP’s to guests that require access to the building or to a meeting room.
+- Comply with GDPR and POPI.
+
 ---
 
 ### The Team
