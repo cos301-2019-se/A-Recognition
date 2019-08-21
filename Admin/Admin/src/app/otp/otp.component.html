@@ -37,8 +37,9 @@
         </option>
     </select>
     <br>
+    <input type="radio" id ="radioBTN" name="gender" #broadCast value="broadCast" > Broadcast OTP<br>
     <div>
-    <button id="snap" class="btn btn-primary" (click)='generateOTP(email.value,EventInfo.value)'>Generate OTP</button>
+    <button id="snap" class="btn btn-primary" (click)='generateOTP(email.value,EventInfo.value,broadCast.value)'>Generate OTP</button>
     </div>
     </form>
 </div>

@@ -12,6 +12,7 @@ export class OTPComponent implements OnInit {
   message: any;
   valid: any;
   otpSub: FormGroup;
+  brdCast :any;
   constructor(public otpCall: OtpCallsService,private formBuilder: FormBuilder) 
   { 
 
@@ -36,9 +37,19 @@ export class OTPComponent implements OnInit {
  * Author: Richard McFadden
  * Funtional description: sends the request to manually generate OTP
 */
-  public generateOTP(email: any, event: any)
+  public generateOTP(email: any, event: any, broadCast: any)
   {
-    this.otpCall.manualOTP(email, event).subscribe( (res)=>
+    console.log(broadCast);
+    if(broadCast == 'broadCast')
+    {
+      this.brdCast = true;
+    }
+    else
+    {
+      this.brdCast = false;
+    }
+    
+    this.otpCall.manualOTP(email, event, this.brdCast).subscribe( (res)=>
     {
       if (res === true)
       {
