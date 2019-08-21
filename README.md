@@ -7,6 +7,10 @@
 
 [SRS Document](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/A_Recognition_SRS.pdf)
 
+[Testing Policy](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/Testing_Policy.pdf)
+
+[Coding Standards](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/CodingStandardsAndGuidlines.pdf)
+
 ---
 
 ### Description 
