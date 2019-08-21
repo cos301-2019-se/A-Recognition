@@ -67,8 +67,11 @@ def init():
 #@param email: A string containing an email
 #@param room:The room that was booked
 def validate(email,room = "Room 9"):
-    urlToSend = 'http://localhost:3000/validateUserHasBooking?email='+email+''+'&room=Room 9'
-    allowedResponse = requests.get(url=urlToSend) 
+    # data to be sent to api 
+    datas = {'email':email,'room':room} 
+
+    urlToSend = 'https://a-recognition.herokuapp.com/validateUserHasBooking'#email='+email+''+'&room=Room 9'
+    allowedResponse = requests.post(url=urlToSend, data = datas) 
 ##
 #Function that determines if a person has blinked recently
 #
@@ -208,8 +211,8 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 #
 #@return: A list of emails expected during current day
 def updateExpectedUsers():
-    endpointURL = "http://localhost:3000/getUsersFromDaysEvents"
-    responseTemp =requests.get(url = endpointURL)
+    endpointURL = "https://a-recognition.herokuapp.com/getUsersFromDaysEvents"
+    responseTemp =requests.post(url = endpointURL, data ='')
     if(responseTemp.json() is None):  
         response = {"test@test.com","Test@TEST.com"}
     else:

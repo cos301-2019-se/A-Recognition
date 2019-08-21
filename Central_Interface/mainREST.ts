@@ -10,7 +10,7 @@
 //pip3 install firebase-admin
 //pip3 install firebase
 import * as Main from "./main";
-
+import * as fs from "fs";
 import express = require("express");
 import cors = require('cors');
 import multer = require('multer');
@@ -174,15 +174,15 @@ app.post('/validateOTP',(req,res) => {
     
 });
 
-// app.get('/', (req, res) => {
+app.get('/', (req, res) => {
 
-//     fs.readFile('index.html', function (err, html) {
-//         if (err) 
-//             throw err; 
+    fs.readFile('index.html', function (err, html) {
+        if (err) 
+            throw err; 
         
-//         res.writeHead(200, {"Content-Type": "text/html"});  // <-- HERE!
-//         res.write(html);  // <-- HERE!
-//         res.end();  
+        res.writeHead(200, {"Content-Type": "text/html"});  // <-- HERE!
+        res.write(html);  // <-- HERE!
+        res.end();  
         
-//     });
-// });
+    });
+});
