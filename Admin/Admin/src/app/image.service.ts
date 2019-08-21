@@ -15,7 +15,7 @@ export class ImageService {
   public uploadImage(body: any): Observable<any> 
   {
     this.tokenClass.incrementNum();
-    return this.http.post('http://localhost:3000/addEmployee', body);
+    return this.http.post('http://a-recognition.herokuapp.com/addEmployee', body);
   }
   public uploadImageTaken(img,name,surname,title,email): Observable<any> 
   {
@@ -26,6 +26,6 @@ export class ImageService {
     formData.append('email', email);
     formData.append('title', title);
     this.tokenClass.incrementNum();
-    return this.http.post('http://localhost:3000/addEmployee', formData);
+    return this.http.post('https://a-recognition.herokuapp.com/addEmployee', formData);
   }
 }
