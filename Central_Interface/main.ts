@@ -365,10 +365,14 @@ export function getTitle(req : any)
 */
 export function getEmployeeList()
 {
-    DatabaseManager.retrieveAllUsers().then( (user) =>
-    {
-        return user.employees;
+    return new Promise( (resolve,reject) => {
+        DatabaseManager.retrieveAllUsers().then( (user) =>
+        {
+            console.log(user.employees);
+            resolve(user.employees);
+        });
     });
+   
 }
 
 export function getEventList() : Promise<any>{
@@ -380,6 +384,7 @@ export function getEventList() : Promise<any>{
     });
     
 }
+getEmployeeList();
 
 export function generateOTP(eventId : number,email : string) : Promise<boolean>{
 

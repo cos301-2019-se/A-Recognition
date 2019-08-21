@@ -372,10 +372,10 @@ export default class dbManager {
         var emplArray = [];
         //Check if user exists
         var userRef = this.db.collection('users').get().then(snapshot => {
-                for(let doc in snapshot)
+                snapshot.forEach(doc =>
                 {
-                    emplArray.push(doc);
-                }
+                    emplArray.push( doc.data());
+                })
                 resolve({
                     "status" : "Success",
                     "employees" : emplArray

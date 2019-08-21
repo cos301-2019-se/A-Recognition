@@ -95,7 +95,7 @@ app.post('/addEmployee',upload.single('image'), (req, res) => {
 */
 app.post('/getEmployeeList',(req,res)=>
 {
-    res.send(Main.getEmployeeList()); 
+    Main.getEmployeeList().then( users => res.json(users)).catch( err => res.send(err));; 
 });
 /** 
  * Function Name:getTitle

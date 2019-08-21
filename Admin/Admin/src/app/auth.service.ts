@@ -46,7 +46,7 @@ export class AuthService {
 */
 public getEmployees()
 {
-  return this.http.post("https://a-recognition.herokuapp.com/getEmployeeList",'');
+  return this.http.post("http://localhost:3000/getEmployeeList",'');
 }
 /** 
  * Function Name:getTitle
