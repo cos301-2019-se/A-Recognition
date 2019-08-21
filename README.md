@@ -16,6 +16,8 @@
 ### Description 
 Create a system which uses facial recognition to allow users access to areas that are prohibited. The system should come with an interface which can be easily used to add new faces and their respective access rights.
 
+The system will adhere to the **Protection of Personal Information Act (POPI)** as well as the **General Data Protection Regulation (GDPR)** to ensure that the users’ data is protected and may not be tampered with. 
+
 ---
 
 ### The Team
