@@ -1,5 +1,5 @@
 cmake==3.13.3
-opencv_python==2.4.9
+opencv_python==3.4.2.17
 Flask_Cors==3.0.8
 requests==2.22.0
 firebase_admin==2.16.0
