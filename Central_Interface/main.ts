@@ -318,6 +318,7 @@ export function addEmplpoyee(req : any)
     // console.log("image",req.file['filename']);
 
     let nameOfFile =req.file['filename'];
+    console.log(nameOfFile)
    
     let options = {
         pythonOptions: ['-u'], // get print results in real-time

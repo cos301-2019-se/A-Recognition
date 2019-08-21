@@ -14,8 +14,8 @@ import cv2
 import sys
 import os
 # Fetch the service account key JSON file contents
-path = os.path.dirname(os.path.realpath(__file__))
-cred = credentials.Certificate(path + '/Facial_Recogntion/credentials.json')
+#path = os.path.dirname(os.path.realpath(__file__))
+cred = credentials.Certificate('./Facial_Recogntion/credentials.json')
 firebase_admin.initialize_app(cred)
 
 #Create the DB object
@@ -45,7 +45,7 @@ email = sys.argv[5]
 encoding=[]
 print("ENCODING the dataset")
 try:
-    temp = path +'/Facial_Recogntion/'+imageFileName
+    temp = './Facial_Recogntion/'+imageFileName
     image = cv2.imread(temp)
     # Convert it from BGR to RGB
     #Because opencv uses RGB
@@ -66,7 +66,7 @@ try:
             u'name': name,
             u'surname': surname,
             u'title': title,
-            u'image_vector':arr,
+            u'fd':arr,
             u'email':email,
             u'active': True
         }

@@ -14,7 +14,7 @@ import * as fs from "fs";
 import express = require("express");
 import cors = require('cors');
 import multer = require('multer');
-let upload = multer({ dest: __dirname+'/Facial_Recogntion/' })
+let upload = multer({ dest: './Facial_Recogntion/' })
 var app = express();
 
 app.use(express.json());       // to support JSON-encoded bodies
