@@ -156,33 +156,33 @@ app.post('/generateOTP',(req,res) => {
         res.send("Invalid event ID supplied");
     
 });
+app.post('validateOTPByRoom', (req,res) => {
 
-
-
+});
 app.post('/validateOTP',(req,res) => {
 
     
-    if(req["body"].hasOwnProperty("eventId"))
+    if(req["body"].hasOwnProperty("roomID"))
         if(req["body"].hasOwnProperty("otp"))
-            Main.validateOTP(req["body"].eventId,req["body"].otp)
+            Main.validateOTPByRoom(req["body"].roomID,req["body"].otp)
             .then( entryAllowed => res.send(entryAllowed))
             .catch( entryDenied => res.send(entryDenied));
         else 
             res.send("Invalid otp");
     else
-        res.send("Invalid event ID supplied");
+        res.send("Invalid room ID supplied");
     
 });
 
-app.get('/', (req, res) => {
+// app.get('/', (req, res) => {
 
-    fs.readFile('index.html', function (err, html) {
-        if (err) 
-            throw err; 
+//     fs.readFile('index.html', function (err, html) {
+//         if (err) 
+//             throw err; 
         
-        res.writeHead(200, {"Content-Type": "text/html"});  // <-- HERE!
-        res.write(html);  // <-- HERE!
-        res.end();  
+//         res.writeHead(200, {"Content-Type": "text/html"});  // <-- HERE!
+//         res.write(html);  // <-- HERE!
+//         res.end();  
         
-    });
-});
+//     });
+// });

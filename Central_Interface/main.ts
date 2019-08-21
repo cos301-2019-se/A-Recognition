@@ -421,6 +421,12 @@ function compileValidOTPList(event) : Array<string>{
 
     return validOtp;
 }
+export function validateOTPByRoom(roomID: any, otp:string): Promise<boolean>
+{
+    return new Promise( (resolve,reject) => {
+        //Need to implement this 
+    });
+}
 export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
 
   return new Promise( (resolve,reject) =>{
