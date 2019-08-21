@@ -11,11 +11,17 @@ export class AuthService {
   { 
 
   }
+/*
+ * Function Name:generateTOken
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: gets a token from CI
+*/
   public generateToken()
   {
     return new Promise((res,rej)=>
     {
-      this.http.get('http://localhost:3000/generateToken').subscribe(data=>
+      this.http.get('https://a-recognition.herokuapp.com/generateToken').subscribe(data=>
       {
         console.log(data);
         localStorage.setItem('token', JSON.stringify(data));
@@ -23,6 +29,12 @@ export class AuthService {
       });
     });   
   }
+/** 
+ * Function Name:validateOneTimePIN
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: returns true or false
+*/
   public validateOneTimePin(eventID: any, otpin: any)
   {
     return new Promise((res,rej)=>
@@ -40,6 +52,12 @@ export class AuthService {
       });
     });
   }
+/** 
+ * Function Name:getList
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: returns an eventLIST
+*/
   public getList()
   {
     return new Promise((res, rej) =>
@@ -52,4 +70,27 @@ export class AuthService {
       });
     });
   }
+  /** 
+ * Function Name:validateOneTimePINByRoom
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: returns true or false
+*/
+public validateOneTimePinByRoom(room: any, otpin: any)
+{
+  return new Promise((res, rej) =>
+  {
+    this.http.post('https://a-recognition.herokuapp.com/validateOTPByRoom',
+    {
+      roomID: room,
+      otp: otpin
+    }).subscribe((response) =>
+    {
+      res(response);
+    }, (err) =>
+    {
+      rej(err);
+    });
+  });
+}
 }

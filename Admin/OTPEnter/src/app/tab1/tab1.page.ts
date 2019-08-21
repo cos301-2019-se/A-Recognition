@@ -27,12 +27,23 @@ export class Tab1Page implements OnInit {
   { 
 
   } 
-
+  /** 
+ * Function Name:setEventID
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: gets the eventID from the selectBOXES
+*/
   public setEventID(eventid: any)
   {
     this.eventID = eventid;
     console.log(this.eventID.detail.value);
-  }
+  }  
+/** 
+  * Function Name:vaidateOTP
+  * Version: V3.5
+  * Author: Richard McFadden
+  * Funtional description: checks whether the otp matches based on the evnt id
+  */
   public validateOTP(otp: any)
   {
     console.log(this.eventID);

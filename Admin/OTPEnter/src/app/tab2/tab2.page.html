@@ -35,17 +35,26 @@
           <p>Scan QR-code to specify which room you would like to enter</p>
         </ion-card-content>
       </ion-card>
-    <ion-button (click)="scanCode()">
-        Scan Code
-      </ion-button>
-     
+      <!-- <form [formGroup]="otpScan"  novalidate> -->
+          <!-- <div *ngIf="otpScan.controls['otp'].invalid && (otpScan.controls['otp'].dirty || otpScan.controls['otp'].touched)" class="alert alert-danger">
+              <div *ngIf="otpScan.controls['otp'].errors.required">OTP needs to be entered.</div>
+          </div>class="form-control" formControlName="otp" -->
+      <ion-item >        
+        <ion-input type="number"  maxlength="6" clearInput value="123456" #otp></ion-input>
+      </ion-item> 
+      <ion-item >
+        <ion-button (click)="scanCode()">
+          Scan Code
+        </ion-button> 
+      </ion-item >   
+      <ion-item >
+        <button id="snap"   class="btn btn-primary" (click)='validateOTP(otp.value)'>Submit</button>
+      </ion-item >   
       <div *ngIf="scannedData">
         <p>
           Scanned Code Text : <b>{{ scannedData }}</b>
         </p>
-        <p>
-          Scanned Code Format : <b>{{ scannedData }}</b>
-        </p>
       </div>
+      <!-- </form> -->
 </ion-content>
 </ion-app>
