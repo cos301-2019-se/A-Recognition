@@ -1,3 +1,4 @@
+cmake==3.13.3
 opencv_python==4.1.0.25
 Flask_Cors==3.0.8
 requests==2.22.0
@@ -6,4 +7,4 @@ imutils==0.5.2
 imageio==2.5.0
 face_recognition==1.2.3
 numpy==1.16.3
-cmake==3.13.3
+
