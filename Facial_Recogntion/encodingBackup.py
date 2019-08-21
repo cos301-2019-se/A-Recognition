@@ -23,7 +23,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 #GET the collection Users for Facial Recognition
-users_ref = db.collection(u'Users')
+users_ref = db.collection(u'users')
 
 #docs now contain the data in Users
 docs = users_ref.stream()
@@ -64,11 +64,11 @@ try:
         for enc in encoding:
             arr.append({"encoding":enc})
         user = {
-            u'Name': name,
+            u'name': name,
             u'surname': surname,
             u'title': title,
             u'image_vector':arr,
-            u'Email':email,
+            u'email':email,
             u'active': True
         }
         # Add the new user to the database
