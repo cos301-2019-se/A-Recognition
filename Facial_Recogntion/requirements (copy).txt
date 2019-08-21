@@ -1,0 +1,13 @@
+imutils==0.5.2
+imageio==2.5.0
+numpy==1.16.3
+tqdm==4.32.2
+firebase_admin==2.16.0
+opencv_python==4.1.0.25
+scipy==1.2.1
+Keras==2.2.4
+face_recognition==1.2.3
+Pillow==6.1.0
+requests==2.22.0
+Flask_RESTful==0.3.7
+Flask==1.0.3

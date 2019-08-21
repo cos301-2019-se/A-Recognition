@@ -1,11 +1,10 @@
 ## 
-# Filename: encoding.py
-# Version: V1.0
+# Filename: encodingBackup.py
+# Version: V25.0
 # Author: Richard McFadden
 # Project name: A-Recognition (Advance)
 # Organization: Singularity
 # Funtional description: Provides ability to add add people to database
-
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
