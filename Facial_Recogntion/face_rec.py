@@ -126,12 +126,12 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 
             #Compare the vector with all known faces encodings
             for e in temp:
-                secondTemp = e['image_vector'][0]['encoding']
+                secondTemp = e['fd'][0]['encoding']
                 matches = face_recognition.compare_faces([secondTemp], encoding)
                 if True in matches:
                     first_match_index = matches.index(True)
-                    name = e["Name"]
-                    emails.append(e['Email'])                 
+                    name = e["name"]
+                    emails.append(e['email'])                 
 
             #Store the cropped face
             face = frame[y:y+h,x:x+w]
