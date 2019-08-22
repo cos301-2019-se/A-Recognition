@@ -407,7 +407,6 @@ async retrieveAllEvents() : Promise<any> {
         this.db.collection('events').get().then(snapshot => {
             
             snapshot.forEach(doc => {
-                console.log(doc.data());
                 
                 events.push(
                     doc.data()

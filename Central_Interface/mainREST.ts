@@ -39,10 +39,10 @@ app.listen(process.env.PORT || 3000, () => {
  console.log("Server running");
 });
 
-var LOCAL = true;
+//var LOCAL = true;
 
 app.post("/getUsersFromDaysEvents", (req, res) => { 
-    Main.getUsersFromDaysEvents(LOCAL).then( users => res.json(users)).catch( err => res.send(err));
+    Main.getUsersFromDaysEvents().then( users => res.json(users)).catch( err => res.send(err));
 });
 
 app.post("/validateUserHasBooking", (req, res, next) => {
