@@ -15,6 +15,8 @@ import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 import * as crypto from 'crypto';
 import { resolve } from "dns";
+import { OtpCallsService } from "../Admin_Backend/Admin/src/app/otp-calls.service";
+import { setInterval } from "timers";
 var DatabaseManager = new dbManager();
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
@@ -521,13 +523,18 @@ export function validateRoomOTP(roomName : string,otp : string) : Promise<boolea
       DatabaseManager.retrieveAllEvents()
       .then( eventsObj => {
         
-        let targetEvent;
+        console.log(eventsObj);
+        
+        let targetEvent = null;
         
         eventsObj.events.forEach(event => {
             if(event.location == roomName)
             targetEvent = event;
         });
         
+        if(targetEvent == null)
+        reject(false);
+
           let otpList = compileValidOTPList(targetEvent);        
           if( Utils.inArray(otp,otpList))
               resolve(true);
@@ -550,7 +557,7 @@ export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
         else 
             reject(false);
      })
-     .catch( err => reject(err.message));
+     .catch( err => reject(false));
   })
 }
 async function clearOutdatedEvents() : Promise<any>{
@@ -568,23 +575,92 @@ async function clearOutdatedEvents() : Promise<any>{
             }).catch( err => console.log(err));
 
 }
+
+function findEvent(array : Array<any>,key : string ,id : string): any{
+
+    
+    
+        for (let index = 0; index < array.length; index++) {
+
+            let item = array[index];
+            
+            if(item[key] == id){
+                return item;
+            }
+        }
+        return null;
+
+}
+
+function updateAttendeeList(local,foreign){
+    let localEmails = local.map( el => el.email);
+    let found = false;
+    
+    for (let index = 0; index < foreign.length; index++) {
+        let attendee = foreign[index];
+
+        if(!Utils.inArray(attendee,localEmails)){        
+            found = true;
+            local.push({
+                email : attendee,
+                otp : NotificationSystem.generateOTP()
+            })
+        }
+        
+    }
+
+    return !found;
+}
+
+function findIndex(array,key,value){
+
+}
 export async function syncEventsToDB() : Promise<any>{
 
-    await clearOutdatedEvents();
-    let promises = [];
-
-        
+    let theTruth = [];
+    let ourTruth = [];
+    let toBeDeleted = [];
+    let toBeCheckedForUpdates = [];
+    let toBeAdded = [];
+    //await clearOutdatedEvents();
+    DatabaseManager.retrieveAllEvents().then(DBevents =>{
         Adapter.getEvents("primary",true,
         {id:true,summary:true,location:true,start:true,end:true,attendees: true})
         
         .then( events =>{
-            
-            events.forEach( event => {
+            DBevents.events.forEach(dbEvent => {
+                ourTruth.push(dbEvent.eventId);
+            });
 
+            events.forEach(event => {
+                theTruth.push(event.id);
+            });
+
+            ourTruth.forEach(ourEvent => {
+                if(!Utils.inArray(ourEvent,theTruth))   //Our event is no longer happening or otherwise doesnt exist
+                    toBeDeleted.push(ourEvent);             //so it must be removed
+                else //we also have the event, check for updates
+                    toBeCheckedForUpdates.push(ourEvent);
+            });
+
+            theTruth.forEach( truthEvent =>{
+                if(!Utils.inArray(truthEvent,toBeCheckedForUpdates))    //This event isnt in our database
+                toBeAdded.push(truthEvent);
+            });
+
+            //Now know what needs to be deleted,updated and added.Lets get to work
+            
+            toBeDeleted.forEach( deleteId =>{
+                DatabaseManager.deleteEvent({body:{eventId :deleteId} })
+                .then(res =>console.log(res))
+                .catch(res => console.log(res));
+            });
+
+            toBeAdded.forEach( addId =>{
+                let event = findEvent(events,"id",addId);
+        
                 let attendees = event.attendees;
-                let otpList = [];
                 let userOtpPair = [];
-                
                 
                 attendees.forEach(attendee => {
                     userOtpPair.push( {
@@ -593,30 +669,79 @@ export async function syncEventsToDB() : Promise<any>{
                     });
                 });
 
-            let request = {
-                body : {
-                    eventId     : event.id,
-                    summary     : event.summary,
-                    location    : event.location,
-                    startTime   : event.startTime,
-                    endTime     : event.endTime,
-                    attendees : userOtpPair
+                let request = {
+                    body : {
+                        eventId     : event.id,
+                        summary     : event.summary,
+                        location    : event.location,
+                        startTime   : event.startTime,
+                        endTime     : event.endTime,
+                        attendees : userOtpPair
+                    }
                 }
-            }
-                
-                promises.push(
-                     DatabaseManager.addEvent(request)   //Event already exists, no action
-                );
-                
-            });
-            
-        }).catch( err =>{
-                console.log(err);  
-        })    
+                    DatabaseManager.addEvent(request)
+                    .then(res =>console.log(res))
+                    .catch( res => console.log(res) );
+                    
+                });
 
-        return Promise.all(promises);
+                toBeCheckedForUpdates.forEach( updateId =>{
+                    let event = findEvent(DBevents.events,"eventId",updateId);
+                    let newEvent = findEvent(events,"id",updateId);
+                    let change = false;
+
+                    if(event.summary != newEvent.summary){
+                        change = true;
+                        event.summary = newEvent.summary;
+                    }
+                        
+                    
+                    if(event.location != newEvent.location){
+                        change = true;
+                        event.location = newEvent.location;
+                    }
+
+                    if(event.startTime != newEvent.startTime){
+                        change = true;
+                        event.startTime = newEvent.startTime;
+                    }
+
+                    if(event.endTime != newEvent.endTime){
+                        change = true;
+                        event.endTime = newEvent.endTime;
+                    }
+                    
+                    if( !updateAttendeeList(event.attendees,newEvent.attendees)){
+                        change = true;
+                    }
+
+                    if( change){    //Only update if there is a difference
+                        let request = {
+                            body : {
+                                eventId     : event.eventId,
+                                summary     : event.summary,
+                                location    : event.location,
+                                startTime   : event.startTime,
+                                endTime     : event.endTime,
+                                attendees : event.attendees
+                            }
+                        }
+                        DatabaseManager.updateEvent(request)
+                        .then(res =>console.log(res))
+                        .catch(res => console.log(res));
+                        change = false;
+                     }
+     
+                });
+            });
+    
+    });
+
 }
 
-syncEventsToDB().then( ()=> console.log("Database synchronized"));
+setInterval(()=>{
+    syncEventsToDB().then( ()=> console.log("Database synchronized"));
+},15000);
 
-checkBookingsForGuests();
+
+//checkBookingsForGuests();
