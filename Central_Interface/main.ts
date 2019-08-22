@@ -71,12 +71,13 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
             let hours = parseInt(time[0]) + 2;//counter for timezone
             let minutes = parseInt(time[1]);
             
+
+
             events.events.forEach(event => {
                 let eventHours = parseInt(event.endTime.split(":")[0]);
                 let eventMinutes = parseInt(event.endTime.split(":")[1]);
-            
                 
-                if(eventHours > hours){
+                if( (eventHours%24) > (hours%24)){
                     currentEvents.push(event);
                 }else if( eventHours == hours){
                     if(eventMinutes > minutes){
@@ -92,8 +93,12 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                 let dateNow = timeNow.toISOString();
                 dateNow = dateNow.substr(0,dateNow.indexOf("T"));
                 
+                //console.log("into",dateNow,event.startTime);
+                
                 let entranceAllowedToEvent = new Date(dateNow+ "T"+ event.startTime);
 
+                //console.log("allowed",entranceAllowedToEvent);
+                
                 entranceAllowedToEvent.setMinutes(entranceAllowedToEvent.getMinutes() - MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED);
 
                 if(room == event.location){
@@ -104,7 +109,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                     message += "User has a booking in that room";
                     else
                     message += "User does not have a booking for that room";
-
+                    
                     if(timeNow.getTime() > entranceAllowedToEvent.getTime())
                     message += ",Room allows access now";
                     else
