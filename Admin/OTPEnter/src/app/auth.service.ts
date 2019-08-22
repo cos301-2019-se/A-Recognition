@@ -39,13 +39,14 @@ export class AuthService {
   {
     return new Promise((res,rej)=>
     {
-      console.log('event',eventID);
-      this.http.post('https://a-recognition.herokuapp.com/validateOTP',
+      // console.log('event',eventID);
+      this.http.post('http://localhost:3000/validateOTP',
       {
         roomID: eventID,
         otp: otpin
       }).subscribe((response) =>
       {
+        console.log("res",response);
         res(response);
       },(err)=>
       {

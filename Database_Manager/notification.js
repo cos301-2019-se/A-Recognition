@@ -120,16 +120,17 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null,otpIN 
             {
                 mailOptions.from = "arecognition.bot@gmail.com",
                 mailOptions.to = recipient.guest,
-                mailOptions.subject = "OTP Access",
-                //mailOptions.generateTextFromHTML = true,
-                mailOptions.html = "Your OTP to gain entrance to specified meeting room at Advance is: " ;               
+                mailOptions.subject = "OTP Access"
+                //mailOptions.generateTextFromHTML = true,      
                 if(otpIN == null)
                 {
+                    mailOptions.html = "Your OTP to gain entrance to specified meeting room at Advance is: " ;  
                     mailOptions.html += generatePlease().otp;
                 }
                 else
                 {
-                    mailOptions.html +=otpIN;
+                    mailOptions.html = "This is an manually generated OTP for the room you booked: " ;  
+                    mailOptions.html += otpIN.otp;
                 }
                 
             }

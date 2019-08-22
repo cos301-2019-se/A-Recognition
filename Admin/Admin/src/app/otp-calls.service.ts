@@ -14,16 +14,15 @@ export class OtpCallsService {
   public getList()
   {
     this.tokenClass.incrementNum();
-    return this.http.post('https://a-recognition.herokuapp.com/getEventList', '');
+    return this.http.post('http://localhost:3000/getEventList', ''); // https://a-recognition.herokuapp.com
   }
-  public manualOTP(emailin: any, eventin: any, broadcastIN: any)
+  public manualOTP( eventin: any, broadcastIN: any)
   {
     // for the secret sauce
     this.tokenClass.incrementNum();
-    return this.http.post('https://a-recognition.herokuapp.com/generateOTP', {
+    return this.http.post('http://localhost:3000/generateOTP', {
       eventId : eventin,
-      email : emailin,
       broadcast: broadcastIN
-    }); 
+    });
   }
 }

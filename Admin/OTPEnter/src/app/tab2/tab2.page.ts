@@ -2,6 +2,7 @@ import { Component,OnInit } from '@angular/core';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { FormControl, FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AuthService} from '../auth.service';
+import { AlertController } from '@ionic/angular';
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
@@ -13,7 +14,7 @@ export class Tab2Page implements OnInit {
   public message: any = '';
   public valid: any;
 
-  constructor(public qrScanner: QRScanner,private formBuilder: FormBuilder, public auth: AuthService){
+  constructor(public qrScanner: QRScanner,private formBuilder: FormBuilder, public auth: AuthService,private alertController: AlertController){
 
   }
   ngOnInit()
@@ -24,6 +25,23 @@ export class Tab2Page implements OnInit {
         scannedText: ['', [Validators.required]],
       });
   }
+      /** 
+ * Function Name:presentAlert
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: showcases the alerts
+*/ 
+async presentAlert() {
+  console.log('here');
+  const alert = await this.alertController.create({
+    header: 'Alert',
+    subHeader: 'Subtitle',
+    message: this.message,
+    buttons: ['OK']
+  });
+
+  await alert.present();
+}
   /** 
  * Function Name:scanCode
  * Version: V3.5
@@ -74,16 +92,17 @@ export class Tab2Page implements OnInit {
     console.log(otp, this.scannedData);
     this.auth.validateOneTimePinByRoom(this.scannedData , otp).then( (data) =>
     {
-        if(data == true)
-        {
-          this.message = 'You are allowed to enter';
-          this.valid = true;
-        }
-        else
-        {
-          this.valid = false;
-          this.message = 'You are not allowed in. Please try again.';
-        }
+      if(data == true){
+        console.log(data);
+        this.message = 'You are allowed access to the room now!';
+        this.valid = true;
+      }
+      else
+      {
+        this.message = 'Either the OTP entered is wrong, expired or you are not allowed in right now.';
+        this.valid = false;
+      }
+      this.presentAlert();
     }).catch( err =>
       {
         console.log('Error: ', err);
