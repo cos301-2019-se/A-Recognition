@@ -364,10 +364,11 @@ export default class dbManager {
                 });
         });
     }
-     /** 
+
+    /** 
      * @description: Function retrieves a all users
-    **/
-   async retrieveAllUsers() : Promise<any> {
+     **/
+    async retrieveAllUsers() : Promise<any> {
     return new Promise( (resolve, reject) => {
         var emplArray = [];
         //Check if user exists
@@ -388,7 +389,60 @@ export default class dbManager {
             });
         });
     });
-}
+    }
+
+    /** 
+     * @description: Function to permanently delete a given user
+     * @param email: Email to identify a user
+    **/
+    async deleteUser(request) : Promise<any> {
+        return new Promise( (resolve, reject) => {
+            if(!this.checkBody(request, "body"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'body\' field was not specified!'
+                });
+            }
+            
+            //Check for email field
+            if(!this.checkBody(request.body, "email"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'email\' field was not specified!'
+                });
+            }
+            
+            //Check if user exists
+            var userRef = this.db.collection('users').doc(request.body.email);
+            var getDoc = userRef.get()
+                .then(doc => {
+                    if (doc.exists) //User exists 
+                    {
+                        //Delete the user
+                        userRef.delete();
+                        console.log("Deleted user: " + request.body.email);
+                        resolve({
+                            "status" : "Success"
+                        })
+                    } 
+                    else //User does not exist
+                    {
+                        reject({
+                            "status" : "Failure",
+                            "message" : "Specified user does not exist!"
+                        });
+                    }
+                })
+                .catch(err => {
+                    reject({
+                        "status" : "Failure",
+                        "message" : "Document could not be retrieved!"
+                    });
+                });
+        });
+    }
 
     /** 
      * @description: Function that adds a new event
@@ -940,174 +994,12 @@ module.exports = dbManager;
 //Make this instance available to other code
 //export default databaseManager;
 
-////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 /*
-let result = this.retrieveEncodings({}, {}).then( (res) => {
-    console.debug(res);
-});
-*/
-/*
-    "email" : request.body.email,
-    "name" : request.body.name,
-    "surname" : request.body.surname,
-    "title" : request.body.title,
-    "fd" : JSON.parse(request.body.fd),
-    "active" : JSON.parse(request.body.active)
-*/
-/*
-let result = this.register({ "body" :   {
-                       let result = this.update({ "body" :   {
-    "email" : "registerFunction@gmail.com",
-    "name" : "newName",
-    "surname" : "newSurname",
-    "title" : "Mr",
-    "fd" : [ 0.1, 0.2, 0.3],
-    "active" : "true"
+let db = new dbManager();
+let result = db.deleteUser({ "body" :   {
+    "email" : "register@unit.test"
     }
-}, {}).then( (res) => {
-console.debug(res);
-});                 "email" : "registerFunction@gmail.com",
-                                        "name" : "register",
-                                        "surname" : "Function",
-                                        "title" : "Mr",
-                                        "fd" : [ 0.1, 0.2, 0.3],
-                                        "active" : "true"
-                                        }
-                            }, {}).then( (res) => {
-    console.debug(res);
-});
-*/
-
-/*
-let result = this.update({ "body" :   {
-    "email" : "registerFunction@gmail.com",
-    "name" : "newName",
-    "surname" : "newSurname",
-    "title" : "Mr",
-    "fd" : [ 0.1, 0.2, 0.3],
-    "active" : "true"
-    }
-}, {}).then( (res) => {
-console.debug(res);
-});
-*/
-/*
-let dbmanager = new dbManager();
-let result = dbmanager.addEvent({ "body" :   
-{
-    "eventId" : "unitTestingEvent",
-    "summary" : "unit",
-    "location" : "test",
-    "startTime" : "01/01/2000 00:00",
-    "endTime" : "02/01/2000 00:00",
-    "attendeeOTPpairs" : [
-        {
-            "email" : "email@some.domain",
-            "otp" : "123456"
-        },
-        {
-            "email" : "other@some.domain",
-            "otp" : "654321"
-        }
-    ],
-    "eventOTP"  : ""
-}
 }).then( (res) => {
-console.debug(res);
-});
-*/
-/*
-let dbmanager = new dbManager();
-dbmanager.addEvent({ "body" :   
-            {
-                "eventId" : "unitTestingEvent",
-                "summary" : "unit",
-                "location" : "test",
-                "startTime" : "01/01/2000 00:00",
-                "endTime" : "02/01/2000 00:00",
-                "attendeeOTPpairs" : [
-                    {
-                        "email" : "email@some.domain",
-                        "otp" : "123456"
-                    },
-                    {
-                        "email" : "other@some.domain",
-                        "otp" : "654321"
-                    }
-                ],
-                "eventOTP"  : ""
-            }
-            }).catch( (reject) => {
-                console.debug(reject);
-            });
-*/
-/*
-let result = this.retrieveEvent({ "body" :   {
-    "eventId" : "addEventFunction@gmail.com"
-    }
-}, {}).then( (res) => {
-console.debug(res);
-});
-*/
-
-/*
-let result = this.retrieveUser({ "body" :   {
-    "email" : "registerFunction@gmail.com"
-    }
-}, {}).then( (res) => {
-console.debug(res);
-});
-*/
-
-/*
-let result = this.updateEvent({ "body" :   {
-    "eventId" : "addEventFunction@gmail.com",
-    "location" : "UPDATED!!!addEventFunction",
-    "startTime" : "16:20",
-    "endTime" : "17:20",
-    "attendeeOTPpairs" : [
-        {
-            "email" : "email1@gmal",
-            "otp" : "6969UPDATE"
-        },
-        {
-            "email" : "blahBah",
-            "otp" : "2468"
-        }
-    ]
-    }
-}, {}).then( (res) => {
-console.debug(res);
-});
-*/
-
-/*
-let result = this.deleteEvent({ "body" :   {
-    "eventId" : "addEventFunction@gmail.com"
-    }
-}, {}).then( (res) => {
-console.debug(res);
-});
-*/
-
-/*
-let result = this.addAttendee({ "body" :   {
-    "eventId" : "functionTestEvent",
-    "email" : "addedATTENDEE",
-    "otp" : "addedOTP"
-    }
-}, {}).then( (res) => {
-console.debug(res);
-});
-*/
-/*
-let result = this.getEventAttendees({ "body" :   {
-    "eventId" : "functionTestEvent"
-    }
-}, {}).then( (res) => {
 console.debug(res);
 });
 */

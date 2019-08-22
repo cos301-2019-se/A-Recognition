@@ -442,6 +442,71 @@ describe('Users', function() {
             })
         });
     });//update()
+
+    describe('deleteUser()', function() {
+        //Configure timeout for async tests
+        beforeEach(function(done) {
+            setTimeout(function() {
+                value = 0;
+                done();
+            }, 5000);
+        });
+        
+        it('should be able to delete a user', function(done) {
+            dbManager.deleteUser({ "body" :
+                { 
+                    "email" : "register@unit.test"
+                }
+            }).then( (res, reject) => {
+                expect(res).toEqual( {
+                    "status" : "Success"
+                });
+                done();
+            })
+        });
+
+        it('should return a error if a user does not exist', function(done) {
+            dbManager.deleteUser({ "body" :
+                    { 
+                        "email" : "doesnotexist@some.domain"
+                    }
+            }).catch( (reject) => {
+                expect(reject).toEqual( {
+                    "status" : "Failure",
+                    "message" : "Specified user does not exist!"
+                });
+                done();
+            })
+        });
+
+        it('should return error when recieving a request with a missing \'body\' field', function(done) {
+            dbManager.deleteUser(
+                {
+                    "email" : "unit@test.test"
+                }
+            ).catch( (reject) => {
+                expect(reject).toEqual( {
+                    "status" : "Failure",
+                    "message" : '\'body\' field was not specified!'
+                });
+                done();
+            })
+        });
+
+        it('should return error when recieving a request with a missing \'email\' field', function(done) {
+            dbManager.update({ "body" :
+                {
+                }
+            }).catch( (reject) => {
+                expect(reject).toEqual( {
+                    "status" : "Failure",
+                    "message" : '\'email\' field was not specified!'
+                });
+                done();
+            })
+        });
+    });//deleteUser()
+
 });//users
 
 describe('Events', function() {

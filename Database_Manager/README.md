@@ -109,6 +109,16 @@ Success response:
     "fd": [123,...,456]
 }
 ```
+
+#### deleteUser
+Function that permanently removes a user based on their email. The request:
+
+Example:
+```
+{
+    "email" : "email@some.domain"
+}
+```
 ---
 ### Event related endpoints
 
