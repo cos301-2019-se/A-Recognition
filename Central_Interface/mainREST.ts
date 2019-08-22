@@ -14,7 +14,7 @@ import * as fs from "fs";
 import express = require("express");
 import cors = require('cors');
 import multer = require('multer');
-let upload = multer({ dest: __dirname+'/Facial_Recogntion/' })
+let upload = multer({ dest: './Facial_Recogntion/' })
 var app = express();
 
 app.use(express.json());       // to support JSON-encoded bodies
@@ -96,7 +96,7 @@ app.post('/addEmployee',upload.single('image'), (req, res) => {
 */
 app.post('/getEmployeeList',(req,res)=>
 {
-    res.send(Main.getEmployeeList()); 
+    Main.getEmployeeList().then( users => res.json(users)).catch( err => res.send(err));; 
 });
 /** 
  * Function Name:getTitle
@@ -150,7 +150,7 @@ app.post('/generateOTP',(req,res) => {
     console.log(req["body"].eventId);
     if(req["body"].hasOwnProperty("eventId"))
         if(req["body"].hasOwnProperty("email"))
-            res.send(Main.generateOTP(req["body"].eventId,req["body"].email));
+            res.send(Main.generateOTP(req["body"].eventId,req["body"].email, req['body'].broadcast));
         else 
             res.send("Invalid email");
     else
@@ -161,7 +161,6 @@ app.post('validateOTPByRoom', (req,res) => {
 
 });
 app.post('/validateOTP',(req,res) => {
-
     
     if(req["body"].hasOwnProperty("roomID"))
         if(req["body"].hasOwnProperty("otp"))

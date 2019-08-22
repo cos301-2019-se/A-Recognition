@@ -328,6 +328,7 @@ export function addEmplpoyee(req : any)
     // console.log("image",req.file['filename']);
 
     let nameOfFile =req.file['filename'];
+    console.log(nameOfFile)
    
     let options = {
         pythonOptions: ['-u'], // get print results in real-time
@@ -374,10 +375,14 @@ export function getTitle(req : any)
 */
 export function getEmployeeList()
 {
-    DatabaseManager.retrieveAllUsers().then( (user) =>
-    {
-        return user.employees;
+    return new Promise( (resolve,reject) => {
+        DatabaseManager.retrieveAllUsers().then( (user) =>
+        {
+            console.log(user.employees);
+            resolve(user.employees);
+        });
     });
+   
 }
 
 export function getEventList() : Promise<any>{
@@ -389,8 +394,9 @@ export function getEventList() : Promise<any>{
     });
     
 }
+getEmployeeList();
 
-export function generateOTP(eventId : number,email : string) : Promise<boolean>{
+export function generateOTP(eventId : number,email : string,broadcast: boolean) : Promise<boolean>{
 
     return new Promise( (resolve,reject) =>{
         let otp = NotificationSystem.generateOTP();
@@ -402,6 +408,25 @@ export function generateOTP(eventId : number,email : string) : Promise<boolean>{
         
         DatabaseManager.updateEvent({ body : event}).then( result =>{
             console.log(result);
+
+            if(broadcast == true)
+            {   
+                result["attendees"].forEach(attendee => {
+                    let notifyViaOTP ={
+                        guest : attendee,
+                        location : event.location,
+                        startDate : event.startDate
+                    }
+
+                    if(event.startTime != null){
+                        notifyViaOTP["startTime"] = event.startTime;
+                    }
+                
+                    NotificationSystem.sendEmail("otp",notifyViaOTP, otp);
+                });
+                              
+            }
+            
             resolve(true);
             
         }).catch( err => {
@@ -512,4 +537,4 @@ export function syncEventsToDB() : void{
 }
 
 syncEventsToDB();
-//checkBookingsForGuests();
+checkBookingsForGuests();

@@ -49,7 +49,9 @@ export class Tab1Page implements OnInit {
     console.log(this.eventID);
     this.auth.validateOneTimePin(this.eventID.detail.value, otp).then( (data) =>
     {
+      console.log("Help");
       if(data == true){
+        console.log(data);
         this.message = 'You are allowed access to the room now!';
         this.valid = true;
       }

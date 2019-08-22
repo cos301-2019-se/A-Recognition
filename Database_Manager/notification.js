@@ -55,7 +55,7 @@ const messages = require('./messages');
  * @param {A string token that is passed to determine the action of the notification to be sent, 
  * determined by the relevant endpoint used} emailToken 
  */
-exports.sendEmail = async function sendEmail(emailToken, recipient = null) {
+exports.sendEmail = async function sendEmail(emailToken, recipient = null,otpIN = null) {
     /**
      * A simple variable array that will hold the relevant details per message that will determine the type
      * of notification to send and whom to send it to.
@@ -123,8 +123,15 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null) {
                 mailOptions.subject = "OTP Access",
                 //mailOptions.generateTextFromHTML = true,
                 mailOptions.html = "Your OTP to gain entrance to specified meeting room at Advance is: " ;               
-    
-                mailOptions.html = generateOTP().otp;
+                if(otpIN == null)
+                {
+                    mailOptions.html += generatePlease().otp;
+                }
+                else
+                {
+                    mailOptions.html +=otpIN;
+                }
+                
             }
         }
 
@@ -145,7 +152,21 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null) {
     *   The function clears the otp value after each generation to allow for different pins to be generated
     *   after every call.
     */
-
+   function generatePlease() {
+        let otpTemp = {
+            "otp": "",
+            "timeCreated": ""
+        };
+        var digits = '0123456789'; 
+        let OTP = ''; 
+        for (let i = 0; i < 6; i++ ) { 
+            OTP += digits[Math.floor(Math.random() * 10)]; 
+        }
+        otpTemp.timeCreated = Date.now();
+        otpTemp.otp = OTP;
+        OTP = '';
+        return otpTemp;
+    }
 exports.generateOTP = function generateOTP() {
         let otpTemp = {
             "otp": "",

@@ -16,20 +16,15 @@
               </div>
            </div>
         </div>
-      </div><div class="container">
-        <div class="mx-auto w-50 text-center">
-           <div class="row">
-              <ng-template [ngIf]='message != "" ' >
-                 <div class="alert alert-success" role="alert" *ngIf="valid==true">
-                    {{message}}<br>
-                 </div>
-                 <div class="alert alert-danger" role="alert" *ngIf="valid==false">
-                    {{message}}<br>
-                 </div>
-              </ng-template>
-           </div>
-        </div>
       </div>
+      <ion-card *ngIf="message != '' ">
+          <ion-card-content class="alert alert-success" role="alert" *ngIf="valid == true">
+              {{message}}<br>
+           </ion-card-content>
+           <ion-card-content class="alert alert-danger" role="alert" *ngIf="valid == false">
+              {{message}}<br>
+           </ion-card-content>
+      </ion-card>
       <ion-card-header>
         <ion-card-title>Entering an OTP</ion-card-title>
       </ion-card-header>

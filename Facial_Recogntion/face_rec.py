@@ -25,7 +25,7 @@ import time
 db = firestore.client()
 
 #GET the collection Users for Facial Recognition
-users_ref = db.collection(u'Users')
+users_ref = db.collection(u'users')
 
 #docs now contain the data in Users
 docs = users_ref.stream()
@@ -69,8 +69,7 @@ def init():
 def validate(email,room = "Room 9"):
     # data to be sent to api 
     datas = {'email':email,'room':room} 
-
-    urlToSend = 'https://a-recognition.herokuapp.com/validateUserHasBooking'#email='+email+''+'&room=Room 9'
+    urlToSend ='http://localhost:3000/validateUserHasBooking' #'https://a-recognition.herokuapp.com/validateUserHasBooking'#email='+email+''+'&room=Room 9'
     allowedResponse = requests.post(url=urlToSend, data = datas) 
 ##
 #Function that determines if a person has blinked recently
@@ -126,12 +125,12 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 
             #Compare the vector with all known faces encodings
             for e in temp:
-                secondTemp = e['image_vector'][0]['encoding']
+                secondTemp = e['fd'][0]['encoding']
                 matches = face_recognition.compare_faces([secondTemp], encoding)
                 if True in matches:
                     first_match_index = matches.index(True)
-                    name = e["Name"]
-                    emails.append(e['Email'])                 
+                    name = e["name"]
+                    emails.append(e['email'])                 
 
             #Store the cropped face
             face = frame[y:y+h,x:x+w]
@@ -211,12 +210,13 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 #
 #@return: A list of emails expected during current day
 def updateExpectedUsers():
-    endpointURL = "https://a-recognition.herokuapp.com/getUsersFromDaysEvents"
+    endpointURL = 'http://localhost:3000/getUsersFromDaysEvents'#"https://a-recognition.herokuapp.com/getUsersFromDaysEvents"
     responseTemp =requests.post(url = endpointURL, data ='')
+    print(responseTemp.json())
     if(responseTemp.json() is None):  
         response = {"test@test.com","Test@TEST.com"}
     else:
-        response = requests.get(url = endpointURL).json()
+        response = responseTemp.json()
     return response
 
 ##
