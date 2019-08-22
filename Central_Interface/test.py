@@ -13,7 +13,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 #GET the collection Users for Facial Recognition
-users_ref = db.collection(u'Users')
+users_ref = db.collection(u'users')
 
 #docs now contain the data in Users
 docs = users_ref.stream()
@@ -24,6 +24,6 @@ encoding=[]
 for doc in docs:
     knownEncoding.append(doc.to_dict())
 for a in knownEncoding:
-    encoding.append(a["Email"])
+    encoding.append(a["email"])
 
 print(encoding)

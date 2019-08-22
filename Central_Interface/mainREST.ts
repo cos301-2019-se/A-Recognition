@@ -149,7 +149,7 @@ app.post('/generateOTP',(req,res) => {
     console.log(req["body"].eventId);
     if(req["body"].hasOwnProperty("eventId"))
         if(req["body"].hasOwnProperty("email"))
-            res.send(Main.generateOTP(req["body"].eventId,req["body"].email));
+            res.send(Main.generateOTP(req["body"].eventId,req["body"].email, req['body'].broadcast));
         else 
             res.send("Invalid email");
     else
@@ -160,7 +160,6 @@ app.post('validateOTPByRoom', (req,res) => {
 
 });
 app.post('/validateOTP',(req,res) => {
-
     
     if(req["body"].hasOwnProperty("roomID"))
         if(req["body"].hasOwnProperty("otp"))

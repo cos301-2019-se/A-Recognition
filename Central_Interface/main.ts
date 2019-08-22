@@ -386,7 +386,7 @@ export function getEventList() : Promise<any>{
 }
 getEmployeeList();
 
-export function generateOTP(eventId : number,email : string) : Promise<boolean>{
+export function generateOTP(eventId : number,email : string,broadcast: boolean) : Promise<boolean>{
 
     return new Promise( (resolve,reject) =>{
         let otp = NotificationSystem.generateOTP();
@@ -398,6 +398,25 @@ export function generateOTP(eventId : number,email : string) : Promise<boolean>{
         
         DatabaseManager.updateEvent({ body : event}).then( result =>{
             console.log(result);
+
+            if(broadcast == true)
+            {   
+                result["attendees"].forEach(attendee => {
+                    let notifyViaOTP ={
+                        guest : attendee,
+                        location : event.location,
+                        startDate : event.startDate
+                    }
+
+                    if(event.startTime != null){
+                        notifyViaOTP["startTime"] = event.startTime;
+                    }
+                
+                    NotificationSystem.sendEmail("otp",notifyViaOTP, otp);
+                });
+                              
+            }
+            
             resolve(true);
             
         }).catch( err => {
@@ -508,4 +527,4 @@ export function syncEventsToDB() : void{
 }
 
 syncEventsToDB();
-//checkBookingsForGuests();
+checkBookingsForGuests();
