@@ -234,51 +234,6 @@ export function isEmployee(email : string) : Promise<boolean>{
     });
 }
 
- /**
- * Polls events and checks if a user assinged to an event is a guest, sending them an OTP
- * @returns {void}
- */
-export function checkBookingsForGuests(){ //TODO : MAke it work for the same user across multiple events
-// TODO: ENTIRE REWRITE
-    let markedAsGuest = [];
-
-    setInterval( ()=>{
-        getEmployeeEmails().then( emails =>{
-
-            Adapter.getEvents("primary",true,{location:true,start:true,attendees:true}).then( events =>{
-                events.forEach(event => {
-                    event.attendees.forEach(attendee => {
-                        if(!Utils.inArray(attendee,markedAsGuest) && !Utils.inArray(attendee,emails)){
-                            markedAsGuest.push(attendee);
-                            
-                            //console.log(event);
-                            
-                            let notifyViaOTP ={
-                                guest : attendee,
-                                location : event.location,
-                                startDate : event.startDate
-                            }
-
-                            if(event.startTime != null){
-                                notifyViaOTP["startTime"] = event.startTime;
-                            }
-                        
-                            NotificationSystem.sendEmail("otp",notifyViaOTP);
-                            
-                        }
-                    });
-                });
-                
-            }).catch(err =>{
-                console.log(err);
-            })
-    
-        }).catch(err =>{
-            console.log(err);
-        })
-    },15000);    
-}
-
 var tokenBook = {};
 
 export function generateToken(subject : string) : string{
@@ -560,26 +515,9 @@ export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
      .catch( err => reject(false));
   })
 }
-async function clearOutdatedEvents() : Promise<any>{
-    //getAllEvents
-    let promises = [];
-            await DatabaseManager.retrieveEventIds().then( async eventIdList =>{
-
-                await eventIdList.eventIds.forEach(async eventId => {
-                    
-                    promises.push(DatabaseManager.deleteEvent({body:{eventId : eventId}}))
-                    
-                });
-                return Promise.all(promises);
-
-            }).catch( err => console.log(err));
-
-}
 
 function findEvent(array : Array<any>,key : string ,id : string): any{
 
-    
-    
         for (let index = 0; index < array.length; index++) {
 
             let item = array[index];
@@ -589,32 +527,54 @@ function findEvent(array : Array<any>,key : string ,id : string): any{
             }
         }
         return null;
-
 }
 
 function updateAttendeeList(local,foreign){
-    let localEmails = local.map( el => el.email);
+    let localEmails = local.attendees.map( el => el.email);
     let found = false;
     
-    for (let index = 0; index < foreign.length; index++) {
-        let attendee = foreign[index];
+    for (let index = 0; index < foreign.attendees.length; index++) {
+        let attendee = foreign.attendees[index];
 
         if(!Utils.inArray(attendee,localEmails)){        
             found = true;
-            local.push({
+            local.attendees.push({
                 email : attendee,
                 otp : NotificationSystem.generateOTP()
-            })
-        }
-        
+            });
+
+            isEmployee(attendee).then( anEmployee =>{
+                
+                if( !anEmployee){
+
+                    let notifyViaOTP ={
+                        guest : attendee,
+                        location : local.location,
+                        startDate : local.startDate
+                    }
+
+                    if(local.startTime != null){
+                        notifyViaOTP["startTime"] = local.startTime;
+                    }
+                
+                    NotificationSystem.sendEmail("otp",notifyViaOTP);
+                }
+            }).catch(err => console.log(err));            
+            
+        }   
     }
 
+    for (let index = 0; index < localEmails.length; index++) {
+        let attendee = localEmails[index];
+
+        if(!Utils.inArray(attendee,foreign.attendees)){        
+            found = true;
+            local.attendees.splice(index, 1); 
+        }   
+    }
     return !found;
 }
 
-function findIndex(array,key,value){
-
-}
 export async function syncEventsToDB() : Promise<any>{
 
     let theTruth = [];
@@ -711,7 +671,7 @@ export async function syncEventsToDB() : Promise<any>{
                         event.endTime = newEvent.endTime;
                     }
                     
-                    if( !updateAttendeeList(event.attendees,newEvent.attendees)){
+                    if( !updateAttendeeList(event,newEvent)){
                         change = true;
                     }
 
@@ -743,5 +703,3 @@ setInterval(()=>{
     syncEventsToDB().then( ()=> console.log("Database synchronized"));
 },15000);
 
-
-//checkBookingsForGuests();
