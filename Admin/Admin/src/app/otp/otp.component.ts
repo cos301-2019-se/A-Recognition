@@ -12,7 +12,7 @@ export class OTPComponent implements OnInit {
   message: any;
   valid: any;
   otpSub: FormGroup;
-  brdCast :any;
+  brdCast: any = false;
   constructor(public otpCall: OtpCallsService,private formBuilder: FormBuilder) 
   { 
 
@@ -31,29 +31,32 @@ export class OTPComponent implements OnInit {
         event: ['', [Validators.required]],
       });
   }
+  onItemChange(value){
+    console.log('Value is: ', value );
+    this.brdCast = true;
+ }
 /** 
  * Function Name:generateOTP
  * Version: V3.5
  * Author: Richard McFadden
  * Funtional description: sends the request to manually generate OTP
 */
-  public generateOTP(email: any, event: any, broadCast: any)
+  public generateOTP(event: any)
   {
-    console.log(broadCast);
-    if(broadCast == 'broadCast')
-    {
-      this.brdCast = true;
-    }
-    else
-    {
-      this.brdCast = false;
-    }
     
-    this.otpCall.manualOTP(email, event, this.brdCast).subscribe( (res)=>
+    this.otpCall.manualOTP(event, this.brdCast).subscribe( (res)=>
     {
-      if (res === true)
+      console.log(res);
+      if (res == true)
       {
-        this.message = 'OTP was generated. An email will be send.';
+        if(this.brdCast == true)
+        {
+          this.message = 'OTP was generated. An email was sent';
+        }else
+        {
+          this.message = 'OTP was generated.';
+        }
+        
         this.valid = true;
       }
       else{

@@ -17,14 +17,15 @@
            </div>
         </div>
       </div>
-      <ion-card *ngIf="message != '' ">
+      <!-- <ion-card *ngIf="message != '' ">
           <ion-card-content class="alert alert-success" role="alert" *ngIf="valid == true">
               {{message}}<br>
            </ion-card-content>
            <ion-card-content class="alert alert-danger" role="alert" *ngIf="valid == false">
               {{message}}<br>
            </ion-card-content>
-      </ion-card>
+      </ion-card> -->
+     
       <ion-card-header>
         <ion-card-title>Entering an OTP</ion-card-title>
       </ion-card-header>
@@ -45,4 +46,5 @@
           <ion-item >
             <button id="snap"   class="btn btn-primary" (click)='validateOTP(otp.value)'>Submit</button>
           </ion-item>
+          
 </ion-content>

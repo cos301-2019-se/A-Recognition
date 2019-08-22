@@ -164,7 +164,7 @@ export function isEmployee(email : string) : Promise<boolean>{
  * @returns {void}
  */
 export function checkBookingsForGuests(){ //TODO : MAke it work for the same user across multiple events
-
+// TODO: ENTIRE REWRITE
     let markedAsGuest = [];
 
     setInterval( ()=>{
@@ -201,8 +201,7 @@ export function checkBookingsForGuests(){ //TODO : MAke it work for the same use
         }).catch(err =>{
             console.log(err);
         })
-    },15000);
-    
+    },15000);    
 }
 
 var tokenBook = {};
@@ -386,24 +385,24 @@ export function getEventList() : Promise<any>{
 }
 getEmployeeList();
 
-export function generateOTP(eventId : number,email : string,broadcast: boolean) : Promise<boolean>{
+export function generateOTP(eventId : number, broadcast: boolean) : Promise<boolean>{
 
     return new Promise( (resolve,reject) =>{
         let otp = NotificationSystem.generateOTP();
-  
+        
     DatabaseManager.retrieveEvent({ body : {eventId : eventId}})
     .then( event => {
         event.eventId = eventId;
         event.eventOTP = otp;
         
         DatabaseManager.updateEvent({ body : event}).then( result =>{
-            console.log(result);
+            console.log(event);
 
             if(broadcast == true)
             {   
-                result["attendees"].forEach(attendee => {
+                event["attendeeOTPpairs"].forEach(attendee => {
                     let notifyViaOTP ={
-                        guest : attendee,
+                        guest : attendee.email,
                         location : event.location,
                         startDate : event.startDate
                     }
@@ -416,7 +415,6 @@ export function generateOTP(eventId : number,email : string,broadcast: boolean) 
                 });
                               
             }
-            
             resolve(true);
             
         }).catch( err => {
@@ -458,7 +456,6 @@ export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
     .then( event => {
         
         let otpList = compileValidOTPList(event);        
-        
         if( Utils.inArray(otp,otpList))
             resolve(true);
         else 

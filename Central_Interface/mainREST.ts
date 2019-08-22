@@ -148,10 +148,7 @@ app.post('/generateOTP',(req,res) => {
 
     console.log(req["body"].eventId);
     if(req["body"].hasOwnProperty("eventId"))
-        if(req["body"].hasOwnProperty("email"))
-            res.send(Main.generateOTP(req["body"].eventId,req["body"].email, req['body'].broadcast));
-        else 
-            res.send("Invalid email");
+            (Main.generateOTP(req["body"].eventId, req['body'].broadcast)).then(success => { res.send(success)}).catch(err => res.send(err));
     else
         res.send("Invalid event ID supplied");
     
@@ -160,10 +157,9 @@ app.post('validateOTPByRoom', (req,res) => {
 
 });
 app.post('/validateOTP',(req,res) => {
-    
     if(req["body"].hasOwnProperty("roomID"))
         if(req["body"].hasOwnProperty("otp"))
-            Main.validateOTPByRoom(req["body"].roomID,req["body"].otp)
+            Main.validateOTP(req["body"].roomID,req["body"].otp)
             .then( entryAllowed => res.send(entryAllowed))
             .catch( entryDenied => res.send(entryDenied));
         else 

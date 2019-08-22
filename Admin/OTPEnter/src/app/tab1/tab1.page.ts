@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthService} from '../auth.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
@@ -23,10 +24,26 @@ export class Tab1Page implements OnInit {
       console.log('An error has occurred', err);
     });
   }
-  constructor(public auth: AuthService)
+  constructor(public auth: AuthService, private alertController: AlertController)
   { 
+  }
+    /** 
+ * Function Name:presentAlert
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: showcases the alerts
+*/ 
+  async presentAlert() {
+    console.log('here');
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      subHeader: 'Subtitle',
+      message: this.message,
+      buttons: ['OK']
+    });
 
-  } 
+    await alert.present();
+  }
   /** 
  * Function Name:setEventID
  * Version: V3.5
@@ -36,7 +53,7 @@ export class Tab1Page implements OnInit {
   public setEventID(eventid: any)
   {
     this.eventID = eventid;
-    console.log(this.eventID.detail.value);
+   // console.log(this.eventID.detail.value);
   }  
 /** 
   * Function Name:vaidateOTP
@@ -46,12 +63,11 @@ export class Tab1Page implements OnInit {
   */
   public validateOTP(otp: any)
   {
-    console.log(this.eventID);
     this.auth.validateOneTimePin(this.eventID.detail.value, otp).then( (data) =>
     {
-      console.log("Help");
+      console.log(data);
       if(data == true){
-        console.log(data);
+        
         this.message = 'You are allowed access to the room now!';
         this.valid = true;
       }
@@ -60,6 +76,7 @@ export class Tab1Page implements OnInit {
         this.message = 'Either the OTP entered is wrong, expired or you are not allowed in right now.';
         this.valid = false;
       }
+      this.presentAlert();
     });
   }
 
