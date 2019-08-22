@@ -372,10 +372,17 @@ export default class dbManager {
         var emplArray = [];
         //Check if user exists
         var userRef = this.db.collection('users').get().then(snapshot => {
-                for(let doc in snapshot)
-                {
-                    emplArray.push(doc);
-                }
+            
+            snapshot.forEach(doc => {
+                emplArray.push({
+                    "email" : doc.get("email"),
+                    "name" : doc.get("name"),
+                    "surname" : doc.get("surname"),
+                    "title" : doc.get("title"),
+                    "fd" : doc.get("fd")
+                });
+            });
+                
                 resolve({
                     "status" : "Success",
                     "employees" : emplArray
@@ -390,6 +397,37 @@ export default class dbManager {
     });
 }
 
+/** 
+    * @description: Function retrieves all events
+**/
+async retrieveAllEvents() : Promise<any> {
+    return new Promise( (resolve, reject) => {
+        var events = [];
+        //Check if user exists
+        this.db.collection('events').get().then(snapshot => {
+            
+            snapshot.forEach(doc => {
+                console.log(doc.data());
+                
+                events.push(
+                    doc.data()
+                );
+            });
+                
+                resolve({
+                    "status" : "Success",
+                    "events" : events
+                });
+        })
+        .catch(err => {
+            reject({
+                "status" : "Failure",
+                "message" : "Document could not be retrieved!"
+            });
+        });
+    });
+
+}
     /** 
      * @description: Function that adds a new event
      * @param eventId: The eventId toidentify event

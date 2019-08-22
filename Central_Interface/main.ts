@@ -14,6 +14,7 @@ import dbManager from "../Database_Manager/databaseManager"
 import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 import * as crypto from 'crypto';
+import { resolve } from "dns";
 var DatabaseManager = new dbManager();
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
@@ -24,35 +25,57 @@ const AUDIENCE  = 'A_Recognition';
  * Returns a list of user emails for all users that have bookings on the current day
  * @returns {Promise<Array<string> | null>} an array of emails if there are events for the current day or a null object if there is none or an error occured.
  */
-export function getUsersFromDaysEvents() :Promise<Array<string> | null>{
+export function getUsersFromDaysEvents(LOCAL : boolean) :Promise<Array<string> | null>{
 
-    return new Promise( (resolve,reject)=>{
+    if(LOCAL){
+        return new Promise( (resolve,reject)=>{
+            let daysAttendees = [];
 
-        Adapter.getEvents().then( events =>{
-
-            let attendeesBookedToday = [];
+            DatabaseManager.retrieveAllEvents().then( eventsObj =>{
     
-            if(Array.isArray(events)){
-                events.forEach(event => {
-                    event["attendees"].forEach( person => {
+                eventsObj.events.forEach(event => {
+
+                    Adapter.getEventAttendees(event).forEach(attendee => {
+                        
+                        if( !Utils.inArray(attendee,daysAttendees))
+                            daysAttendees.push(attendee);
+                    });
+                 
+                    
+                });
+                resolve(daysAttendees);
+                
+            }).catch( err => reject(err));
+        });
+    }else{
+        return new Promise( (resolve,reject)=>{
+            Adapter.getEvents().then( events =>{
+    
+                let attendeesBookedToday = [];
+        
+                if(Array.isArray(events)){
+                    events.forEach(event => {
+                        event["attendees"].forEach( person => {
+                            if( !Utils.inArray(person.email,attendeesBookedToday))
+                            attendeesBookedToday.push(person.email);
+                        });
+                    });
+                }else{
+        
+                    events["attendees"].forEach( person => {
                         if( !Utils.inArray(person.email,attendeesBookedToday))
                         attendeesBookedToday.push(person.email);
                     });
-                });
-            }else{
+                }
+               
+                resolve(attendeesBookedToday);
+            }).catch( (err)=>{
+                reject(null);
+            })
+            
+        } );
+    }
     
-                events["attendees"].forEach( person => {
-                    if( !Utils.inArray(person.email,attendeesBookedToday))
-                    attendeesBookedToday.push(person.email);
-                });
-            }
-           
-            resolve(attendeesBookedToday);
-        }).catch( (err)=>{
-            reject(null);
-        })
-        
-    } );
 }
 
  /**
@@ -114,29 +137,16 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
 export function getEmployeeEmails() : Promise<any>{
 
     return new Promise( (resolve,reject) =>{
-        
-        var pyshell = new PythonShell(__dirname+"/test.py");
+        let emails = [];
 
-        pyshell.on('message', function (message) {
-            // received a message sent from the Python script (a simple "print" statement)
-            //Why does python return a string instead of an array
-            let array = message.split(",");
-            array = array.map( el => el.replace(/'|,/g,""));
-            array = array.map( el => el.replace("[",""));
-            array = array.map( el => el.replace("]",""));
-            array = array.map( el => el.trim());
-            resolve(array);
-
-            //DATA CONTAINS THE EMAILS
-        });
-        
-        // end the input stream and allow the process to exit
-        pyshell.end(function (err) {
-            if (err){
-                reject(err);
-            };
-  
-        });
+        DatabaseManager.retrieveAllUsers()
+        .then(usersObj =>{
+            usersObj.employees.forEach(user => {
+                emails.push(user.email);
+            });
+            resolve(emails);
+        })
+        .catch(err =>console.log(err));
     });
 }
 
