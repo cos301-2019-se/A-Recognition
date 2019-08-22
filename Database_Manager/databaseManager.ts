@@ -434,7 +434,7 @@ async retrieveAllEvents() : Promise<any> {
      * @param location: The location of the venue
      * @param startTime: When the event starts
      * @param endTime: When the event stops
-     * @param attendeeOTPpairs: JSON object array containg emails and their respective OTP
+     * @param attendees: JSON object array containg emails and their respective OTP
     **/
     async addEvent(request) : Promise<any> {
         
@@ -492,12 +492,12 @@ async retrieveAllEvents() : Promise<any> {
                 });
             }
 
-            //Check for attendeeOTPpairs field
-            if(!this.checkBody(request.body, "attendeeOTPpairs"))
+            //Check for attendees field
+            if(!this.checkBody(request.body, "attendees"))
             {
                 reject({
                     "status" : "Failure",
-                    "message" : '\'attendeeOTPpairs\' field was not specified!'
+                    "message" : '\'attendees\' field was not specified!'
                 });
             }
 
@@ -520,7 +520,7 @@ async retrieveAllEvents() : Promise<any> {
                                 "location" : request.body.location,
                                 "startTime" : request.body.startTime,
                                 "endTime" : request.body.endTime,
-                                "attendees" : request.body.attendeeOTPpairs,
+                                "attendees" : request.body.attendees,
                                 "eventOTP"  : ""
                             }).then(ref => {
                                 console.log('Added Event: ' + request.body.eventId);
@@ -575,7 +575,7 @@ async retrieveAllEvents() : Promise<any> {
                             "location" : doc.get("location"),
                             "startTime" : doc.get("startTime"),
                             "endTime" : doc.get("endTime"),
-                            "attendeeOTPpairs" : doc.get("attendees"),
+                            "attendees" : doc.get("attendees"),
                             "eventOTP"  : doc.get("eventOTP")
                         });
                     } 
@@ -596,6 +596,7 @@ async retrieveAllEvents() : Promise<any> {
         });
     }
 
+     
     /** 
      * @description: Function that retrieves the eventIds of all stored events
     **/
@@ -624,7 +625,7 @@ async retrieveAllEvents() : Promise<any> {
      * @param location: The location of the venue
      * @param startTime: When the event starts
      * @param endTime: When the event stops
-     * @param attendeeOTPpairs: JSON object array containg emails and their respective OTP
+     * @param attendees: JSON object array containg emails and their respective OTP
     **/
     async updateEvent(request) : Promise<any> {
         return new Promise( (resolve, reject) => {
@@ -681,12 +682,12 @@ async retrieveAllEvents() : Promise<any> {
                 });
             }
 
-            //Check for attendeeOTPpairs field
-            if(!this.checkBody(request.body, "attendeeOTPpairs"))
+            //Check for attendees field
+            if(!this.checkBody(request.body, "attendees"))
             {
                 reject({
                     "status" : "Failure",
-                    "message" : '\'attendeeOTPpairs\' field was not specified!'
+                    "message" : '\'attendees\' field was not specified!'
                 });
             }
 
@@ -707,7 +708,7 @@ async retrieveAllEvents() : Promise<any> {
                                 "location" : request.body.location,
                                 "startTime" : request.body.startTime,
                                 "endTime" : request.body.endTime,
-                                "attendees" : request.body.attendeeOTPpairs,
+                                "attendees" : request.body.attendees,
                                 "eventOTP"  : request.body.eventOTP
                             })
                         .then(ref => {
@@ -947,7 +948,7 @@ async retrieveAllEvents() : Promise<any> {
                         //Return the attendees
                         resolve ({
                             "status" : "Success",
-                            "attendeeOTPpairs" : doc.get("attendees")
+                            "attendees" : doc.get("attendees")
                         });
                     }
                     else

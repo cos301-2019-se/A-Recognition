@@ -393,7 +393,7 @@ export function getEventList() : Promise<any>{
     });
     
 }
-getEmployeeList();
+//getEmployeeList();
 
 export function generateOTP(eventId : number, broadcast: boolean) : Promise<boolean>{
 
@@ -406,11 +406,10 @@ export function generateOTP(eventId : number, broadcast: boolean) : Promise<bool
         event.eventOTP = otp;
         
         DatabaseManager.updateEvent({ body : event}).then( result =>{
-            console.log(event);
 
             if(broadcast == true)
             {   
-                event["attendeeOTPpairs"].forEach(attendee => {
+                event["attendees"].forEach(attendee => {
                     let notifyViaOTP ={
                         guest : attendee.email,
                         location : event.location,
@@ -447,18 +446,35 @@ function compileValidOTPList(event) : Array<string>{
     if(event.eventOTP != "")
         validOtp.push(event.eventOTP.otp);
     
-    event.attendeeOTPpairs.forEach(attendee => {
+    event.attendees.forEach(attendee => {
         validOtp.push( attendee.otp.otp);
     });
 
     return validOtp;
 }
-export function validateOTPByRoom(roomID: any, otp:string): Promise<boolean>
-{
-    return new Promise( (resolve,reject) => {
-        //Need to implement this 
-    });
-}
+export function validateRoomOTP(roomName : string,otp : string) : Promise<boolean>{
+
+    return new Promise( (resolve,reject) =>{
+      DatabaseManager.retrieveAllEvents()
+      .then( eventsObj => {
+        
+        let targetEvent;
+        
+        eventsObj.events.forEach(event => {
+            if(event.location == roomName)
+            targetEvent = event;
+        });
+        
+          let otpList = compileValidOTPList(targetEvent);        
+          if( Utils.inArray(otp,otpList))
+              resolve(true);
+          else 
+              reject(false);
+       })
+       .catch( err => reject(err.message));
+    })
+  }
+  
 export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
 
   return new Promise( (resolve,reject) =>{
@@ -473,8 +489,6 @@ export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
      })
      .catch( err => reject(err.message));
   })
-    
-
 }
 function clearOutdatedEvents() : void{
     //getAllEvents
@@ -514,7 +528,7 @@ export function syncEventsToDB() : void{
                     location    : event.location,
                     startTime   : event.startTime,
                     endTime     : event.endTime,
-                    attendeeOTPpairs : userOtpPair
+                    attendees : userOtpPair
                 }
             }
             
