@@ -74,6 +74,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
             events.events.forEach(event => {
                 let eventHours = parseInt(event.endTime.split(":")[0]);
                 let eventMinutes = parseInt(event.endTime.split(":")[1]);
+            
                 
                 if(eventHours > hours){
                     currentEvents.push(event);
@@ -83,7 +84,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                     }
                 }
             });
-
+            
             for (let i = 0; i < currentEvents.length; i++) {
                 let event = currentEvents[i];
 
@@ -638,5 +639,5 @@ export async function syncEventsToDB() : Promise<any>{
 
 setInterval(()=>{
     syncEventsToDB().then( ()=> console.log("Database synchronized"));
-},15000);
+},1500000);
 
