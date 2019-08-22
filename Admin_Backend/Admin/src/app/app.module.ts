@@ -18,6 +18,9 @@ import { HttpClientModule , HTTP_INTERCEPTORS} from '@angular/common/http';
 import { TokenInterceptor } from './token.interceptor';
 import { NavComponent } from './nav/nav.component';
 import { WebcamModule } from 'ngx-webcam';
+import { MatButtonModule, MatMenuModule, MatDatepickerModule,MatNativeDateModule , MatIconModule, MatCardModule, MatSidenavModule,MatFormFieldModule, MatInputModule, MatTooltipModule, MatToolbarModule } from '@angular/material';  
+import { MatRadioModule } from '@angular/material/radio';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBpazWx_m3UGkQAh6zgEMujQ2JtU3OJzEc',
@@ -44,7 +47,20 @@ const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule, ReactiveFormsModule, AngularFirestoreModule, AngularFireDatabaseModule,
     HttpClientModule,
-    FormsModule,WebcamModule
+    FormsModule,WebcamModule,
+    BrowserAnimationsModule,  
+    MatButtonModule,  
+    MatMenuModule,  
+    MatDatepickerModule,  
+    MatNativeDateModule,  
+    MatIconModule,  
+    MatRadioModule,  
+    MatCardModule,  
+    MatSidenavModule,  
+    MatFormFieldModule,  
+    MatInputModule,  
+    MatTooltipModule,  
+    MatToolbarModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS,
