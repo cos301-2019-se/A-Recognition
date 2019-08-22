@@ -39,6 +39,7 @@ app.listen(process.env.PORT || 3000, () => {
  console.log("Server running");
 });
 
+//var LOCAL = true;
 
 app.post("/getUsersFromDaysEvents", (req, res) => { 
     Main.getUsersFromDaysEvents().then( users => res.json(users)).catch( err => res.send(err));
@@ -153,25 +154,35 @@ app.post('/generateOTP',(req,res) => {
         res.send("Invalid event ID supplied");
     
 });
-app.post('validateOTPByRoom', (req,res) => {
 
-});
-app.post('/validateOTP',(req,res) => {
+app.post('/validateOTPByRoom', (req,res) => {
+
     if(req["body"].hasOwnProperty("roomID"))
+    if(req["body"].hasOwnProperty("otp"))
+        Main.validateRoomOTP(req["body"].roomID,req["body"].otp)
+        .then( entryAllowed => res.send(entryAllowed))
+        .catch( entryDenied => res.send(entryDenied));
+    else 
+        res.send("Invalid otp");
+else
+    res.send("Invalid room ID supplied");
+});
+
+app.post('/validateOTP',(req,res) => {
+    if(req["body"].hasOwnProperty("eventId"))
         if(req["body"].hasOwnProperty("otp"))
-            Main.validateOTP(req["body"].roomID,req["body"].otp)
+            Main.validateOTP(req["body"].eventId,req["body"].otp)
             .then( entryAllowed => res.send(entryAllowed))
             .catch( entryDenied => res.send(entryDenied));
         else 
             res.send("Invalid otp");
     else
-        res.send("Invalid room ID supplied");
-    
+        res.send("Invalid eventId supplied");
 });
 
 app.get('/', (req, res) => {
 
-    fs.readFile('index.html', function (err, html) {
+    fs.readFile(__dirname+'/index.html', function (err, html) {
         if (err) 
             throw err; 
         

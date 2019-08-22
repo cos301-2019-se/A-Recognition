@@ -373,10 +373,17 @@ export default class dbManager {
         var emplArray = [];
         //Check if user exists
         var userRef = this.db.collection('users').get().then(snapshot => {
-                snapshot.forEach(doc =>
-                {
-                    emplArray.push( doc.data());
-                })
+            
+            snapshot.forEach(doc => {
+                emplArray.push({
+                    "email" : doc.get("email"),
+                    "name" : doc.get("name"),
+                    "surname" : doc.get("surname"),
+                    "title" : doc.get("title"),
+                    "fd" : doc.get("fd")
+                });
+            });
+                
                 resolve({
                     "status" : "Success",
                     "employees" : emplArray
@@ -444,13 +451,43 @@ export default class dbManager {
         });
     }
 
+/** 
+    * @description: Function retrieves all events
+**/
+async retrieveAllEvents() : Promise<any> {
+    return new Promise( (resolve, reject) => {
+        var events = [];
+        //Check if user exists
+        this.db.collection('events').get().then(snapshot => {
+            
+            snapshot.forEach(doc => {
+                
+                events.push(
+                    doc.data()
+                );
+            });
+                
+                resolve({
+                    "status" : "Success",
+                    "events" : events
+                });
+        })
+        .catch(err => {
+            reject({
+                "status" : "Failure",
+                "message" : "Document could not be retrieved!"
+            });
+        });
+    });
+
+}
     /** 
      * @description: Function that adds a new event
      * @param eventId: The eventId toidentify event
      * @param location: The location of the venue
      * @param startTime: When the event starts
      * @param endTime: When the event stops
-     * @param attendeeOTPpairs: JSON object array containg emails and their respective OTP
+     * @param attendees: JSON object array containg emails and their respective OTP
     **/
     async addEvent(request) : Promise<any> {
         
@@ -508,12 +545,12 @@ export default class dbManager {
                 });
             }
 
-            //Check for attendeeOTPpairs field
-            if(!this.checkBody(request.body, "attendeeOTPpairs"))
+            //Check for attendees field
+            if(!this.checkBody(request.body, "attendees"))
             {
                 reject({
                     "status" : "Failure",
-                    "message" : '\'attendeeOTPpairs\' field was not specified!'
+                    "message" : '\'attendees\' field was not specified!'
                 });
             }
 
@@ -536,7 +573,7 @@ export default class dbManager {
                                 "location" : request.body.location,
                                 "startTime" : request.body.startTime,
                                 "endTime" : request.body.endTime,
-                                "attendees" : request.body.attendeeOTPpairs,
+                                "attendees" : request.body.attendees,
                                 "eventOTP"  : ""
                             }).then(ref => {
                                 console.log('Added Event: ' + request.body.eventId);
@@ -591,7 +628,7 @@ export default class dbManager {
                             "location" : doc.get("location"),
                             "startTime" : doc.get("startTime"),
                             "endTime" : doc.get("endTime"),
-                            "attendeeOTPpairs" : doc.get("attendees"),
+                            "attendees" : doc.get("attendees"),
                             "eventOTP"  : doc.get("eventOTP")
                         });
                     } 
@@ -612,6 +649,7 @@ export default class dbManager {
         });
     }
 
+     
     /** 
      * @description: Function that retrieves the eventIds of all stored events
     **/
@@ -640,7 +678,7 @@ export default class dbManager {
      * @param location: The location of the venue
      * @param startTime: When the event starts
      * @param endTime: When the event stops
-     * @param attendeeOTPpairs: JSON object array containg emails and their respective OTP
+     * @param attendees: JSON object array containg emails and their respective OTP
     **/
     async updateEvent(request) : Promise<any> {
         return new Promise( (resolve, reject) => {
@@ -697,12 +735,12 @@ export default class dbManager {
                 });
             }
 
-            //Check for attendeeOTPpairs field
-            if(!this.checkBody(request.body, "attendeeOTPpairs"))
+            //Check for attendees field
+            if(!this.checkBody(request.body, "attendees"))
             {
                 reject({
                     "status" : "Failure",
-                    "message" : '\'attendeeOTPpairs\' field was not specified!'
+                    "message" : '\'attendees\' field was not specified!'
                 });
             }
 
@@ -723,7 +761,7 @@ export default class dbManager {
                                 "location" : request.body.location,
                                 "startTime" : request.body.startTime,
                                 "endTime" : request.body.endTime,
-                                "attendees" : request.body.attendeeOTPpairs,
+                                "attendees" : request.body.attendees,
                                 "eventOTP"  : request.body.eventOTP
                             })
                         .then(ref => {
@@ -963,7 +1001,7 @@ export default class dbManager {
                         //Return the attendees
                         resolve ({
                             "status" : "Success",
-                            "attendeeOTPpairs" : doc.get("attendees")
+                            "attendees" : doc.get("attendees")
                         });
                     }
                     else

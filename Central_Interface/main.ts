@@ -14,6 +14,7 @@ import dbManager from "../Database_Manager/databaseManager"
 import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 import * as crypto from 'crypto';
+import { resolve } from "dns";
 var DatabaseManager = new dbManager();
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
@@ -26,33 +27,53 @@ const AUDIENCE  = 'A_Recognition';
  */
 export function getUsersFromDaysEvents() :Promise<Array<string> | null>{
 
-    return new Promise( (resolve,reject)=>{
-
-        Adapter.getEvents().then( events =>{
-
-            let attendeesBookedToday = [];
     
-            if(Array.isArray(events)){
-                events.forEach(event => {
-                    event["attendees"].forEach( person => {
-                        if( !Utils.inArray(person.email,attendeesBookedToday))
-                        attendeesBookedToday.push(person.email);
+        return new Promise( (resolve,reject)=>{
+            let daysAttendees = [];
+
+            DatabaseManager.retrieveAllEvents().then( eventsObj =>{
+    
+                eventsObj.events.forEach(event => {
+
+                    Adapter.getEventAttendees(event).forEach(attendee => {
+                        
+                        if( !Utils.inArray(attendee,daysAttendees))
+                            daysAttendees.push(attendee);
                     });
+                 
                 });
-            }else{
+                resolve(daysAttendees);
+                
+            }).catch( err => reject(err));
+        });
     
-                events["attendees"].forEach( person => {
-                    if( !Utils.inArray(person.email,attendeesBookedToday))
-                    attendeesBookedToday.push(person.email);
-                });
-            }
-           
-            resolve(attendeesBookedToday);
-        }).catch( (err)=>{
-            reject(null);
-        })
+        // return new Promise( (resolve,reject)=>{
+        //     Adapter.getEvents().then( events =>{
+    
+        //         let attendeesBookedToday = [];
         
-    } );
+        //         if(Array.isArray(events)){
+        //             events.forEach(event => {
+        //                 event["attendees"].forEach( person => {
+        //                     if( !Utils.inArray(person.email,attendeesBookedToday))
+        //                     attendeesBookedToday.push(person.email);
+        //                 });
+        //             });
+        //         }else{
+        
+        //             events["attendees"].forEach( person => {
+        //                 if( !Utils.inArray(person.email,attendeesBookedToday))
+        //                 attendeesBookedToday.push(person.email);
+        //             });
+        //         }
+               
+        //         resolve(attendeesBookedToday);
+        //     }).catch( (err)=>{
+        //         reject(null);
+        //     })
+            
+        // } );
+    
 }
 
  /**
@@ -62,29 +83,49 @@ export function getUsersFromDaysEvents() :Promise<Array<string> | null>{
  * @returns {Promise<any>}
  */
 export function validateUserHasBooking(email : string,room : string) : Promise<any>{
-    
-   return new Promise( (resolve,reject) =>{
+
+    return new Promise( (resolve,reject) =>{
 
         let endTime = new Date();
         endTime.setHours(endTime.getHours() + CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME);
         
-        
-        Adapter.getEvents("primary",true,{attendees : true,location : true,start : true},3,endTime.toISOString()).then( (closestEvents)=>{
+        DatabaseManager.retrieveAllEvents().then(events =>{
+            //console.log(events);
+            let currentEvents = [];
+            let currentTime = new Date().toISOString();
+            let time = currentTime.substring(currentTime.indexOf("T")+1,currentTime.length).split(":");
+            let hours = parseInt(time[0]) + 2;//counter for timezone
+            let minutes = parseInt(time[1]);
             
-            
-            for (let i = 0; i < closestEvents.length; i++) {
-                let event = closestEvents[i];
+            events.events.forEach(event => {
+                let eventHours = parseInt(event.endTime.split(":")[0]);
+                let eventMinutes = parseInt(event.endTime.split(":")[1]);
+                
+                if(eventHours > hours){
+                    currentEvents.push(event);
+                }else if( eventHours == hours){
+                    if(eventMinutes > minutes){
+                        currentEvents.push(event);
+                    }
+                }
+            });
+
+            for (let i = 0; i < currentEvents.length; i++) {
+                let event = currentEvents[i];
 
                 let timeNow = new Date();
-                let entranceAllowedToEvent = new Date(event.startDate + "T"+ event.startTime);
+                let dateNow = timeNow.toISOString();
+                dateNow = dateNow.substr(0,dateNow.indexOf("T"));
+                
+                let entranceAllowedToEvent = new Date(dateNow+ "T"+ event.startTime);
+
                 entranceAllowedToEvent.setMinutes(entranceAllowedToEvent.getMinutes() - MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED);
 
                 if(room == event.location){
                     
-                    
                     let message = "";
 
-                    if( Utils.inArray(email,event.attendees))
+                    if( Utils.inArray(email,Adapter.getEventAttendees(event)))
                     message += "User has a booking in that room";
                     else
                     message += "User does not have a booking for that room";
@@ -104,7 +145,52 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
         }).catch( err =>{
             reject(err);
         });
-   }); 
+
+            
+        });
+            
+//    return new Promise( (resolve,reject) =>{
+
+//         let endTime = new Date();
+//         endTime.setHours(endTime.getHours() + CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME);
+        
+        
+//         Adapter.getEvents("primary",true,{attendees : true,location : true,start : true},3,endTime.toISOString()).then( (closestEvents)=>{
+            
+            
+//             for (let i = 0; i < closestEvents.length; i++) {
+//                 let event = closestEvents[i];
+
+//                 let timeNow = new Date();
+//                 let entranceAllowedToEvent = new Date(event.startDate + "T"+ event.startTime);
+//                 entranceAllowedToEvent.setMinutes(entranceAllowedToEvent.getMinutes() - MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED);
+
+//                 if(room == event.location){
+                    
+                    
+//                     let message = "";
+
+//                     if( Utils.inArray(email,event.attendees))
+//                     message += "User has a booking in that room";
+//                     else
+//                     message += "User does not have a booking for that room";
+
+//                     if(timeNow.getTime() > entranceAllowedToEvent.getTime())
+//                     message += ",Room allows access now";
+//                     else
+//                     message += ",Room does not allow access yet";
+                    
+//                     resolve(message);
+                    
+//                 }
+                
+//             }
+//             resolve("There is no booking for that room now");
+            
+//         }).catch( err =>{
+//             reject(err);
+//         });
+//    }); 
 }
 
  /**
@@ -114,29 +200,16 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
 export function getEmployeeEmails() : Promise<any>{
 
     return new Promise( (resolve,reject) =>{
-        
-        var pyshell = new PythonShell(__dirname+"/test.py");
+        let emails = [];
 
-        pyshell.on('message', function (message) {
-            // received a message sent from the Python script (a simple "print" statement)
-            //Why does python return a string instead of an array
-            let array = message.split(",");
-            array = array.map( el => el.replace(/'|,/g,""));
-            array = array.map( el => el.replace("[",""));
-            array = array.map( el => el.replace("]",""));
-            array = array.map( el => el.trim());
-            resolve(array);
-
-            //DATA CONTAINS THE EMAILS
-        });
-        
-        // end the input stream and allow the process to exit
-        pyshell.end(function (err) {
-            if (err){
-                reject(err);
-            };
-  
-        });
+        DatabaseManager.retrieveAllUsers()
+        .then(usersObj =>{
+            usersObj.employees.forEach(user => {
+                emails.push(user.email);
+            });
+            resolve(emails);
+        })
+        .catch(err =>console.log(err));
     });
 }
 
@@ -176,7 +249,7 @@ export function checkBookingsForGuests(){ //TODO : MAke it work for the same use
                         if(!Utils.inArray(attendee,markedAsGuest) && !Utils.inArray(attendee,emails)){
                             markedAsGuest.push(attendee);
                             
-                            console.log(event);
+                            //console.log(event);
                             
                             let notifyViaOTP ={
                                 guest : attendee,
@@ -367,7 +440,7 @@ export function getEmployeeList()
     return new Promise( (resolve,reject) => {
         DatabaseManager.retrieveAllUsers().then( (user) =>
         {
-            console.log(user.employees);
+            //console.log(user.employees);
             resolve(user.employees);
         });
     });
@@ -383,7 +456,7 @@ export function getEventList() : Promise<any>{
     });
     
 }
-getEmployeeList();
+//getEmployeeList();
 
 export function generateOTP(eventId : number, broadcast: boolean) : Promise<boolean>{
 
@@ -396,11 +469,10 @@ export function generateOTP(eventId : number, broadcast: boolean) : Promise<bool
         event.eventOTP = otp;
         
         DatabaseManager.updateEvent({ body : event}).then( result =>{
-            console.log(event);
 
             if(broadcast == true)
             {   
-                event["attendeeOTPpairs"].forEach(attendee => {
+                event["attendees"].forEach(attendee => {
                     let notifyViaOTP ={
                         guest : attendee.email,
                         location : event.location,
@@ -437,18 +509,35 @@ function compileValidOTPList(event) : Array<string>{
     if(event.eventOTP != "")
         validOtp.push(event.eventOTP.otp);
     
-    event.attendeeOTPpairs.forEach(attendee => {
+    event.attendees.forEach(attendee => {
         validOtp.push( attendee.otp.otp);
     });
 
     return validOtp;
 }
-export function validateOTPByRoom(roomID: any, otp:string): Promise<boolean>
-{
-    return new Promise( (resolve,reject) => {
-        //Need to implement this 
-    });
-}
+export function validateRoomOTP(roomName : string,otp : string) : Promise<boolean>{
+
+    return new Promise( (resolve,reject) =>{
+      DatabaseManager.retrieveAllEvents()
+      .then( eventsObj => {
+        
+        let targetEvent;
+        
+        eventsObj.events.forEach(event => {
+            if(event.location == roomName)
+            targetEvent = event;
+        });
+        
+          let otpList = compileValidOTPList(targetEvent);        
+          if( Utils.inArray(otp,otpList))
+              resolve(true);
+          else 
+              reject(false);
+       })
+       .catch( err => reject(err.message));
+    })
+  }
+  
 export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
 
   return new Promise( (resolve,reject) =>{
@@ -463,39 +552,46 @@ export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
      })
      .catch( err => reject(err.message));
   })
-    
-
 }
-function clearOutdatedEvents() : void{
+async function clearOutdatedEvents() : Promise<any>{
     //getAllEvents
-    // let events;
+    let promises = [];
+            await DatabaseManager.retrieveEventIds().then( async eventIdList =>{
 
-    // events.forEach(event => {
-    //     if(event.endTime < (new Date()).toISOString() )
-    //     DatabaseManager.deleteEvent({body : {eventId : event.eventId}});
-    // });
-}
-export function syncEventsToDB() : void{
-
-    //clearOutdatedEvents();
-    Adapter.getEvents("primary",true,
-    {id:true,summary:true,location:true,start:true,end:true,attendees: true})
-    
-    .then( events =>{
-        
-        events.forEach(event => {
-
-            let attendees = event.attendees;
-            let otpList = [];
-            let userOtpPair = [];
-            
-            
-            attendees.forEach(attendee => {
-                userOtpPair.push( {
-                    email : attendee,
-                    otp : NotificationSystem.generateOTP()
+                await eventIdList.eventIds.forEach(async eventId => {
+                    
+                    promises.push(DatabaseManager.deleteEvent({body:{eventId : eventId}}))
+                    
                 });
-            });
+                return Promise.all(promises);
+
+            }).catch( err => console.log(err));
+
+}
+export async function syncEventsToDB() : Promise<any>{
+
+    await clearOutdatedEvents();
+    let promises = [];
+
+        
+        Adapter.getEvents("primary",true,
+        {id:true,summary:true,location:true,start:true,end:true,attendees: true})
+        
+        .then( events =>{
+            
+            events.forEach( event => {
+
+                let attendees = event.attendees;
+                let otpList = [];
+                let userOtpPair = [];
+                
+                
+                attendees.forEach(attendee => {
+                    userOtpPair.push( {
+                        email : attendee,
+                        otp : NotificationSystem.generateOTP()
+                    });
+                });
 
             let request = {
                 body : {
@@ -504,24 +600,23 @@ export function syncEventsToDB() : void{
                     location    : event.location,
                     startTime   : event.startTime,
                     endTime     : event.endTime,
-                    attendeeOTPpairs : userOtpPair
+                    attendees : userOtpPair
                 }
             }
-            
-            
-            DatabaseManager.addEvent(request).then( response =>{
-                console.log(response);
                 
-            }).catch( err => {} );    //Event already exists, no action
-        });
+                promises.push(
+                     DatabaseManager.addEvent(request)   //Event already exists, no action
+                );
+                
+            });
+            
+        }).catch( err =>{
+                console.log(err);  
+        })    
 
-        console.log("Database synchronized");
-        
-    }).catch( err =>{
-            console.log(err);  
-    })
-
+        return Promise.all(promises);
 }
 
-syncEventsToDB();
+syncEventsToDB().then( ()=> console.log("Database synchronized"));
+
 checkBookingsForGuests();

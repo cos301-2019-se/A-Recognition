@@ -96,19 +96,22 @@ export function run(){
 export  function getEvents(calendarId : string = "primary",filter : boolean = false, options : any = null,size : number = 4,endTime : string = "") : Promise<any>{
     let currentEvents = [];
 
-    return new Promise( (resolve,reject) =>{
-        getCalendarEvents(calendarId,filter, options,size,endTime).then( events =>{
-            events.forEach(event => {
-                currentEvents.push(event);
+
+        return new Promise( (resolve,reject) =>{
+            getCalendarEvents(calendarId,filter, options,size,endTime).then( events =>{
+                events.forEach(event => {
+                    currentEvents.push(event);
+                });
+        
+                resolve(currentEvents);
+            }).catch( err => {
+            
+                reject(err);
             });
-    
-            resolve(currentEvents);
-        }).catch( err => {
-        
-            reject(err);
+            
         });
-        
-    });
+    
+    
 }
 
 

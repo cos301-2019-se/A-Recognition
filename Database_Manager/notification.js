@@ -137,7 +137,7 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null,otpIN 
         }
 
     smtpTransport.sendMail(mailOptions, (error, response) => {
-        error ? console.log(error) : console.log(response);
+        error ? console.log(error) : console.log("Email sent to "+response.accepted[0]);
         smtpTransport.close();
    });}
 
