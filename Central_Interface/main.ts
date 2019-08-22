@@ -14,8 +14,6 @@ import dbManager from "../Database_Manager/databaseManager"
 import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 import * as crypto from 'crypto';
-import { resolve } from "dns";
-import { OtpCallsService } from "../Admin_Backend/Admin/src/app/otp-calls.service";
 import { setInterval } from "timers";
 var DatabaseManager = new dbManager();
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
@@ -49,33 +47,7 @@ export function getUsersFromDaysEvents() :Promise<Array<string> | null>{
             }).catch( err => reject(err));
         });
     
-        // return new Promise( (resolve,reject)=>{
-        //     Adapter.getEvents().then( events =>{
-    
-        //         let attendeesBookedToday = [];
         
-        //         if(Array.isArray(events)){
-        //             events.forEach(event => {
-        //                 event["attendees"].forEach( person => {
-        //                     if( !Utils.inArray(person.email,attendeesBookedToday))
-        //                     attendeesBookedToday.push(person.email);
-        //                 });
-        //             });
-        //         }else{
-        
-        //             events["attendees"].forEach( person => {
-        //                 if( !Utils.inArray(person.email,attendeesBookedToday))
-        //                 attendeesBookedToday.push(person.email);
-        //             });
-        //         }
-               
-        //         resolve(attendeesBookedToday);
-        //     }).catch( (err)=>{
-        //         reject(null);
-        //     })
-            
-        // } );
-    
 }
 
  /**
@@ -151,48 +123,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
             
         });
             
-//    return new Promise( (resolve,reject) =>{
 
-//         let endTime = new Date();
-//         endTime.setHours(endTime.getHours() + CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME);
-        
-        
-//         Adapter.getEvents("primary",true,{attendees : true,location : true,start : true},3,endTime.toISOString()).then( (closestEvents)=>{
-            
-            
-//             for (let i = 0; i < closestEvents.length; i++) {
-//                 let event = closestEvents[i];
-
-//                 let timeNow = new Date();
-//                 let entranceAllowedToEvent = new Date(event.startDate + "T"+ event.startTime);
-//                 entranceAllowedToEvent.setMinutes(entranceAllowedToEvent.getMinutes() - MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED);
-
-//                 if(room == event.location){
-                    
-                    
-//                     let message = "";
-
-//                     if( Utils.inArray(email,event.attendees))
-//                     message += "User has a booking in that room";
-//                     else
-//                     message += "User does not have a booking for that room";
-
-//                     if(timeNow.getTime() > entranceAllowedToEvent.getTime())
-//                     message += ",Room allows access now";
-//                     else
-//                     message += ",Room does not allow access yet";
-                    
-//                     resolve(message);
-                    
-//                 }
-                
-//             }
-//             resolve("There is no booking for that room now");
-            
-//         }).catch( err =>{
-//             reject(err);
-//         });
-//    }); 
 }
 
  /**
@@ -397,7 +328,6 @@ export function getEmployeeList()
     return new Promise( (resolve,reject) => {
         DatabaseManager.retrieveAllUsers().then( (user) =>
         {
-            //console.log(user.employees);
             resolve(user.employees);
         });
     });
@@ -406,11 +336,20 @@ export function getEmployeeList()
 
 export function getEventList() : Promise<any>{
 
-    return new Promise( (resolve,reject)=>{
-        Adapter.getEvents("primary",true,{id:true,summary:true,location:true,start:true,end:true}).then( events =>{
-            resolve(events);
-        }).catch(err => reject(err));
+    // return new Promise( (resolve,reject)=>{
+    //     Adapter.getEvents("primary",true,{id:true,summary:true,location:true,start:true,end:true}).then( events =>{
+    //         resolve(events);
+    //     }).catch(err => reject(err));
+    // });
+
+    return new Promise( (resolve,reject) =>{
+        DatabaseManager.retrieveAllEvents().then( eventsObj =>{
+            resolve(eventsObj.events);
+        }).catch( err =>{
+            reject(err);
+        })
     });
+    
     
 }
 //getEmployeeList();
@@ -477,8 +416,6 @@ export function validateRoomOTP(roomName : string,otp : string) : Promise<boolea
     return new Promise( (resolve,reject) =>{
       DatabaseManager.retrieveAllEvents()
       .then( eventsObj => {
-        
-        console.log(eventsObj);
         
         let targetEvent = null;
         
