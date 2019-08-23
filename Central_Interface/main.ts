@@ -61,26 +61,27 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
     return new Promise( (resolve,reject) =>{
 
         let endTime = new Date();
+        let currentTime = new Date();
+    
         endTime.setHours(endTime.getHours() + CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME);
         
         DatabaseManager.retrieveAllEvents().then(events =>{
             //console.log(events);
             let currentEvents = [];
-            let currentTime = new Date().toISOString();
-            let time = currentTime.substring(currentTime.indexOf("T")+1,currentTime.length).split(":");
-            let hours = parseInt(time[0]) + 2;//counter for timezone
-            let minutes = parseInt(time[1]);
-            
+            let currentTimeString = currentTime.toISOString()
+            .substring(currentTime.toISOString().indexOf("T")+1,currentTime.toISOString().length).split(":");
 
+            let currentHours = parseInt(currentTimeString[0]) + 2;//counter for timezone
+            let currentMinutes = parseInt(currentTimeString[1]);
 
             events.events.forEach(event => {
                 let eventHours = parseInt(event.endTime.split(":")[0]);
                 let eventMinutes = parseInt(event.endTime.split(":")[1]);
                 
-                if( (eventHours%24) > (hours%24)){
+                if( (eventHours%24) > (currentHours%24)){
                     currentEvents.push(event);
-                }else if( eventHours == hours){
-                    if(eventMinutes > minutes){
+                }else if( eventHours == currentHours){
+                    if(eventMinutes > currentMinutes){
                         currentEvents.push(event);
                     }
                 }
@@ -88,16 +89,12 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
             
             for (let i = 0; i < currentEvents.length; i++) {
                 let event = currentEvents[i];
-
-                let timeNow = new Date();
-                let dateNow = timeNow.toISOString();
-                dateNow = dateNow.substr(0,dateNow.indexOf("T"));
-                
-                //console.log("into",dateNow,event.startTime);
+                let dateNow = currentTime.toISOString().substr(0,currentTime.toISOString().indexOf("T"));
                 
                 let entranceAllowedToEvent = new Date(dateNow+ "T"+ event.startTime);
 
-                //console.log("allowed",entranceAllowedToEvent);
+                // console.log("allowed",entranceAllowedToEvent.toISOString());
+                // console.log("current",currentTime.toISOString());
                 
                 entranceAllowedToEvent.setMinutes(entranceAllowedToEvent.getMinutes() - MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED);
 
@@ -110,7 +107,9 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                     else
                     message += "User does not have a booking for that room";
                     
-                    if(timeNow.getTime() > entranceAllowedToEvent.getTime())
+                
+                    
+                    if(currentTime.getTime() > entranceAllowedToEvent.getTime())
                     message += ",Room allows access now";
                     else
                     message += ",Room does not allow access yet";
@@ -342,11 +341,6 @@ export function getEmployeeList()
 
 export function getEventList() : Promise<any>{
 
-    // return new Promise( (resolve,reject)=>{
-    //     Adapter.getEvents("primary",true,{id:true,summary:true,location:true,start:true,end:true}).then( events =>{
-    //         resolve(events);
-    //     }).catch(err => reject(err));
-    // });
 
     return new Promise( (resolve,reject) =>{
         DatabaseManager.retrieveAllEvents().then( eventsObj =>{
@@ -424,11 +418,15 @@ export function validateRoomOTP(roomName : string,otp : string) : Promise<boolea
       .then( eventsObj => {
         
         let targetEvent = null;
-        
+        console.log(eventsObj.events,roomName);
         eventsObj.events.forEach(event => {
+            
+            
             if(event.location == roomName)
             targetEvent = event;
         });
+        
+        console.log(targetEvent);
         
         if(targetEvent == null)
         reject(false);
@@ -531,7 +529,8 @@ export async function syncEventsToDB() : Promise<any>{
         Adapter.getEvents("primary",true,
         {id:true,summary:true,location:true,start:true,end:true,attendees: true})
         
-        .then( events =>{
+        .then( events =>{        
+            
             DBevents.events.forEach(dbEvent => {
                 ourTruth.push(dbEvent.eventId);
             });
@@ -645,5 +644,5 @@ export async function syncEventsToDB() : Promise<any>{
 
 setInterval(()=>{
     syncEventsToDB().then( ()=> console.log("Database synchronized"));
-},1500000);
+},15000);
 
