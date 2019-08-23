@@ -201,7 +201,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 pleaseStopTheScanning = True
 
             else:
-                cv2.putText(frame, "Lizard", (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
+                cv2.putText(frame, "Non-living", (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
 
         return frame
 
