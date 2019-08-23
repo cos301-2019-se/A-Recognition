@@ -1,111 +1,144 @@
-<div class="jumbotron">
-  <div class="row">
-     <div class="col">
-        <div class="mx-auto w-50 p-3 bg-dark text-white text-center">
-           <h1>Registering Employees</h1>
-        </div>
-     </div>
-  </div>
-</div>
-<div class="container">
-  <div class="mx-auto w-50 text-center">
-     <div class="row">
-        <ng-template [ngIf]='message != "" ' >
-           <div class="alert alert-success" role="alert" *ngIf="valid==true">
-              {{message}}<br>
+<body style="background: linear-gradient(to bottom, black 0%,black 50%,#000000 50%,white 50%,white 100%);">
+<!--min-height: 100vh; -->
+   <div class="container" style="padding-top:60px;">  
+       <div class="row">  
+         <div class="col-md-6 mx-auto">  
+           <div class="card-group">  
+             <div class="card p-4">  
+               <div class="card-body">   
+                 <h1 style="text-align:center">Registering Employees</h1>
+                 <ng-template [ngIf]='message != "" ' >
+                     <div class="alert alert-success" role="alert" *ngIf="valid==true">
+                        {{message}}<br>
+                     </div>
+                     <div class="alert alert-danger" role="alert" *ngIf="valid==false">
+                        {{message}}<br>
+                     </div>
+                  </ng-template>
+                  <br/>
+ 
+     <div class="mx-auto w-50 text-center">
+         <div class="input-group mb-3">  
+             <div class="input-group-prepend">  
+               <span class="input-group-text"><i class="fa fa-camera" aria-hidden="true"></i></span>  
+             </div>
+             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#takePicture" data-backdrop="static" (click)='this.showWebcam = true;'>
+                 Take a picture
+                 </button>  
            </div>
-           <div class="alert alert-danger" role="alert" *ngIf="valid==false">
-              {{message}}<br>
-           </div>
-        </ng-template>
-     </div>
-  </div>
-</div>
-<div class="container">
-  <div class="mx-auto w-50 text-center">
-     <div class="row">
-        <div class="col 6">
-           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#takePicture" (click)='this.showWebcam = true;' >
-           Take a picture
-           </button>
-        </div>
-        <div class="col 6">
-           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadImage">
-           Upload an image
-           </button>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="takePicture" tabindex="-1" role="dialog" aria-labelledby="takePicture" aria-hidden="true">
-           <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Take a picture</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+           <div class="input-group mb-4">  
+               <div class="input-group-prepend">  
+                 <span class="input-group-text"><i class="fa fa-upload" aria-hidden="true"></i></span>  
+               </div>
+               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadImage" data-backdrop="static">
+                   Upload an image
+                   </button>  
+             </div>   
+ 
+           
+           <!-- Modal -->
+           <div class="modal fade" id="takePicture" tabindex="-1" role="dialog" aria-labelledby="takePicture" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                 <div class="modal-content">
+                    <div class="modal-header">
+                       <h5 class="modal-title" id="exampleModalLabel">Take a picture</h5>
+                       <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='this.showWebcam = false;'>
+                       <span aria-hidden="true">&times;</span>
+                       </button>
+                    </div>
+                    <div class="modal-body">
+                       <div id="app">
+                        <form [formGroup]="takePictureForm"  novalidate>
+                              <div *ngIf="takePictureForm.controls['name'].invalid && (takePictureForm.controls['name'].dirty || takePictureForm.controls['name'].touched)" class="alert alert-danger">
+                                    <div *ngIf="takePictureForm.controls['name'].errors.required">Name is required.</div>
+                                </div>
+                                <div *ngIf="takePictureForm.controls['surname'].invalid && (takePictureForm.controls['surname'].dirty || takePictureForm.controls['surname'].touched)" class="alert alert-danger">
+                                    <div *ngIf="takePictureForm.controls['surname'].errors.required">Surname  is required.</div>
+                                </div>
+                                <div *ngIf="takePictureForm.controls['email'].invalid && (takePictureForm.controls['email'].dirty || takePictureForm.controls['email'].touched)" class="alert alert-danger">
+                                    <div *ngIf="takePictureForm.controls['email'].errors.required">Email is required.</div>
+                                </div>
+                                <div *ngIf="takePictureForm.controls['title'].invalid && (takePictureForm.controls['title'].dirty || takePictureForm.controls['title'].touched)" class="alert alert-danger">
+                                    <div *ngIf="takePictureForm.controls['title'].errors.required">Title type is required.</div>
+                                </div>
+                          <webcam [height]="400" [width]="400" [trigger]="triggerObservable" (imageCapture)="handleImage($event,NameSnap.value,SurnameSnap.value,TitleSnap.value,EmailSnap.value)" *ngIf="showWebcam"
+                          [videoOptions]="videoOptions"
+                          [imageQuality]="1"
+                          (initError)="handleInitError($event)"
+                          ></webcam>
+                          <div class="mx-auto w-50">
+                             <input style="margin:2px;" #NameSnap class="form-control" formControlName="name" type="text" placeholder="Name" />
+                             <input style="margin:2px;" #SurnameSnap  type="text" class="form-control" formControlName="surname" placeholder="Surname"/>
+                             <input style="margin:2px;" #EmailSnap  type="email" class="form-control" formControlName="email" placeholder="Email" />
+                             <select style="margin:2px;" class="selectpicker" class="form-control" formControlName="title" data-style="btn-primary" #TitleSnap placeholder="Title">
+                                <option selected disabled>Choose one</option>
+                                <option value="Mr">Mr</option>
+                                <option value="Mrs">Mrs</option>
+                                <option value="Ms">Ms</option>>
+                             </select>
+                             <br>
+                             <div><button id="snap" class="btn btn-primary" data-dismiss="modal" (click)='this.showWebcam = false;' (click)="triggerSnapshot()">Snap Photo</button></div>
+                          </div>
+                          </form>
+                       </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
                  </div>
-                 <div class="modal-body">
-                    <div id="app">
-                       <webcam [height]="400" [width]="400" [trigger]="triggerObservable" (imageCapture)="handleImage($event,NameSnap.value,SurnameSnap.value,TitleSnap.value,EmailSnap.value)" *ngIf="showWebcam"
-                       [videoOptions]="videoOptions"
-                       [imageQuality]="1"
-                       (initError)="handleInitError($event)"
-                       ></webcam>
-                       <div class="mx-auto w-50">
-                          <input #NameSnap  type="text" placeholder="Name" >
-                          <input #SurnameSnap  type="text" placeholder="Surname">
-                          <input #EmailSnap  type="email" placeholder="Email" >
-                          <select #TitleSnap>
+              </div>
+           </div>
+           <!-- Modal -->
+           <div class="modal fade" id="uploadImage" tabindex="-1" role="dialog" aria-labelledby="uploadImage" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                 <div class="modal-content">
+                    <div class="modal-header">
+                       <h5 class="modal-title" id="exampleModalLabel">Upload an image</h5>
+                       <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='this.showWebcam = false;'>
+                       <span aria-hidden="true">&times;</span>
+                       </button>
+                    </div>
+                    <div class="modal-body">
+                       
+                           <form [formGroup]="uploadImageForm"  novalidate>
+                                 <div *ngIf="uploadImageForm.controls['nameA'].invalid && (uploadImageForm.controls['nameA'].dirty || uploadImageForm.controls['nameA'].touched)" class="alert alert-danger">
+                                       <div *ngIf="uploadImageForm.controls['nameA'].errors.required">Name is required.</div>
+                                   </div>
+                                   <div *ngIf="uploadImageForm.controls['surnameA'].invalid && (uploadImageForm.controls['surnameA'].dirty || uploadImageForm.controls['surnameA'].touched)" class="alert alert-danger">
+                                       <div *ngIf="uploadImageForm.controls['surnameA'].errors.required">Surname  is required.</div>
+                                   </div>
+                                   <div *ngIf="uploadImageForm.controls['emailA'].invalid && (uploadImageForm.controls['emailA'].dirty || uploadImageForm.controls['emailA'].touched)" class="alert alert-danger">
+                                       <div *ngIf="uploadImageForm.controls['emailA'].errors.required">Email is required.</div>
+                                   </div>
+                                   <div *ngIf="uploadImageForm.controls['titleA'].invalid && (uploadImageForm.controls['titleA'].dirty || uploadImageForm.controls['titleA'].touched)" class="alert alert-danger">
+                                       <div *ngIf="uploadImageForm.controls['titleA'].errors.required">Title type is required.</div>
+                                   </div>
+                                   <div class="mx-auto w-50">
+                          <input style="margin:2px;" #imageInput   type="file" accept="image/*" />
+                          <input style="margin:2px;" #Name class="form-control" formControlName="nameA" type="text" placeholder="Name" />
+                          <input style="margin:2px;" #Surname class="form-control" formControlName="surnameA"  type="text" placeholder="Surname"/>
+                          <input style="margin:2px;" #Email class="form-control" formControlName="emailA"  type="email" placeholder="Email" />
+                          <select style="margin:2px;" #Title class="form-control" formControlName="titleA" class="selectpicker" data-style="btn-primary">
                              <option selected disabled>Choose one</option>
                              <option value="Mr">Mr</option>
                              <option value="Mrs">Mrs</option>
                              <option value="Ms">Ms</option>
-                             <option value="Apache Helicopter">Apache Helicopter</option>
                           </select>
-                          <br>
-                          <div><button id="snap" data-dismiss="modal" (click)='this.showWebcam = false;' (click)="triggerSnapshot()">Snap Photo</button></div>
-                       </div>
+                          <br/><br><br>
+                          <div><input type="submit" class="btn btn-primary" data-dismiss="modal" (click) ="processFile(imageInput,Name.value,Surname.value,Title.value,Email.value)"/></div>
+                         </div>  
+                         </form>
+                       
                     </div>
-                 </div>
-                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)='this.showWebcam = false;'> Close</button>
-                 </div>
-              </div>
-           </div>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="uploadImage" tabindex="-1" role="dialog" aria-labelledby="uploadImage" aria-hidden="true">
-           <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Upload an image</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                 </div>
-                 <div class="modal-body">
-                    <div class="mx-auto w-50">
-                       <input #imageInput  type="file" accept="image/*" >
-                       <input #Name  type="text" placeholder="Name" >
-                       <input #Surname  type="text" placeholder="Surname">
-                       <input #Email  type="email" placeholder="Email" >
-                       <select #Title>
-                          <option selected disabled>Choose one</option>
-                          <option value="Mr">Mr</option>
-                          <option value="Mrs">Mrs</option>
-                          <option value="Ms">Ms</option>
-                          <option value="Apache Helicopter">Apache Helicopter</option>
-                       </select>
-                       <br>
-                       <input type="submit" data-dismiss="modal" (click) ="processFile(imageInput,Name.value,Surname.value,Title.value,Email.value)">
+                    <div class="modal-footer">
                     </div>
-                 </div>
-                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)='this.showWebcam = false;'> Close</button>
                  </div>
               </div>
            </div>
         </div>
      </div>
-  </div>
-</div>
+   </div>
+   </div>
+   </div>
+   </div>
+   </div>
+   </body>

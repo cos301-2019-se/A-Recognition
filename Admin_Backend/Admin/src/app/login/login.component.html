@@ -1,40 +1,46 @@
-<div class="jumbotron">
-  <div class="row">
-      <div class="col">
-          <div class="mx-auto w-50 p-3 bg-dark text-white text-center">
-              <h1>Login</h1>
-          </div>
-      </div>
-  </div>
-</div>
-<div class="container">
-  <div class="jumbotron">
-    <div class="row">
-      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-            <ng-container *ngIf="!this.authService.message">
-                   <p class="alert alert-danger">{{this.authService.displayMessage}}</p> 
-            </ng-container>
-        <div class="text-center">
-            <form [formGroup]="userLogin"  novalidate>
-                <div *ngIf="userLogin.controls['username'].invalid && (userLogin.controls['username'].dirty || userLogin.controls['username'].touched)" class="alert alert-danger">
-                    <div *ngIf="userLogin.controls['username'].errors.required">Email is required.</div>
-                </div>
-                <div *ngIf="userLogin.controls['password'].invalid && (userLogin.controls['password'].dirty || userLogin.controls['password'].touched)" class="alert alert-danger">
-                    <div *ngIf="userLogin.controls['password'].errors.required">Password type is required.</div>
-                </div>
-                <div class="form-group mx-auto">
-                    <label for="username">Email</label>
-                    <input type="text" class="form-control" formControlName="username" #username placeholder="Email.">
-                </div>
-                <div class="form-group mx-auto">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" formControlName="password" #password placeholder="Password">
-                </div>
-                <button type="submit" (click)="this.authService.login(username.value, password.value)" class="btn btn-primary" [disabled]="!userLogin.valid">Login</button> &nbsp;
-            </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
+<body style="background: linear-gradient(to bottom, black 0%,black 50%,#000000 50%,white 50%,white 100%);">
+    <div class="container" style="padding-top:60px;"> 
+        <div class="row">  
+          <div class="col-md-6 mx-auto">  
+            <div class="card-group">  
+              <div class="card p-4">  
+                <div class="card-body"> 
+                  <form [formGroup]="userLogin"  novalidate>   
+                    <h1 style="text-align:center"><img src="assets/Full-Logo.png" style="width:4em;height:2em;"></h1> 
+                  <br/> 
+                     
+                    <div class="input-group mb-3">  
+                      <div class="input-group-prepend">  
+                        <span class="input-group-text"><i class="icon-user"></i></span>  
+                      </div>  
+                      <input formControlName="username" class="form-control sty1" placeholder="Email" #username>
+                      <div *ngIf="userLogin.controls['username'].invalid && (userLogin.controls['username'].dirty || userLogin.controls['username'].touched)" class="alert alert-danger">
+                          <div *ngIf="userLogin.controls['username'].errors.required">Email is required.</div>
+                      </div>
+                    </div>  
+                    <div class="input-group mb-4">  
+                      <div class="input-group-prepend">  
+                        <span class="input-group-text"><i class="icon-lock"></i></span>  
+                      </div>  
+                      <input formControlName="password" class="form-control" placeholder="Password" #password>
+                      <div *ngIf="userLogin.controls['password'].invalid && (userLogin.controls['password'].dirty || userLogin.controls['password'].touched)" class="alert alert-danger">
+                          <div *ngIf="userLogin.controls['password'].errors.required">Password type is required.</div>
+                      </div> 
+                    </div>   
+                    <div class="row">  
+                      <div class="col-6">  
+                        <button type="submit" (click)="this.authService.login(username.value, password.value)" class="btn btn-primary px-4" [disabled]="!userLogin.valid">Login</button>
+                      </div>  
+                      <div class="col-6 text-right">  
+                        <button type="button" class="btn btn-link px-0">Forgot password?</button>  
+                      </div>  
+                    </div>  
+                      
+                  </form>  
+                </div>  
+              </div>  
+            </div>  
+          </div>  
+        </div>  
+      </div>  
+    </body>
