@@ -41,17 +41,6 @@ export class GoogleAdaptee{
  */
     async getUserEvents(identifier : string = "primary",resultSize : number = -1,endTimeISOString : string) : Promise<any>{
 
-    //    return new Promise( (resolve,reject)=>{ 
-    //         this.loadClientSecrets()
-    //         .then( (credentials)=>{ return credentials;})
-    //         .catch( err => reject(err))
-    //     .then( (credentials) =>{ this.authorize(credentials)
-    //     .then( (oAuth2Client)=>{ this.listEvents(oAuth2Client,identifier,resultSize,endTimeISOString)
-    //     .then( (bookings)=>{ resolve(bookings);})
-    //     .catch( (err)=>{ reject(err);})})
-    //     .catch( (err)=>{ reject(err);})})
-    //     .catch( (err)=>{ reject(err);})})
-
             return new Promise( (resolve,reject)=>{
 
                 this.loadClientSecrets().then( (credentials)=>{
