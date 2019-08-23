@@ -33,14 +33,14 @@ namespace AdminAPI.Controllers
             {
                 if (emp.Email == search.Email)
                 {
-                    if (emp.Pass == search.Pass)
+                    if (emp.Password == search.Password)
                     {
                         dynamic dynamicEmployee = new ExpandoObject();
                         dynamicEmployee.EmployeeID = emp.EmployeeID;
                         dynamicEmployee.Name = emp.Name;
                         dynamicEmployee.Surname = emp.Surname;
                         dynamicEmployee.Email = emp.Email;
-                        dynamicEmployee.Password = emp.Pass;
+                        dynamicEmployee.Password = emp.Password;
                         dynamicEmployee.EmpPosition = emp.EmpPosition;
                         dynamicEmployees.Add(dynamicEmployee);
                         return dynamicEmployees;
@@ -69,7 +69,7 @@ namespace AdminAPI.Controllers
                 dynamicEmployee.Name = emp.Name;
                 dynamicEmployee.Surname = emp.Surname;
                 dynamicEmployee.Email = emp.Email;
-                dynamicEmployee.Password = emp.Pass;
+                dynamicEmployee.Password = emp.Password;
                 dynamicEmployee.EmpPosition = emp.EmpPosition;
                 dynamicEmployees.Add(dynamicEmployee);
             }

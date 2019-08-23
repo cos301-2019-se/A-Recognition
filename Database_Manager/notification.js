@@ -9,41 +9,41 @@
  *          - OTP generation for clients (the /otp endpoint)
 */
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
+// const express = require('express');
+// const bodyParser = require('body-parser');
+// const cors = require('cors');
+// const helmet = require('helmet');
+// const morgan = require('morgan');
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
 const messages = require('./messages');
 
 // defining the Express app
-const app = express();
+// const app = express();
 
-// adding Helmet to enhance your API's security
-app.use(helmet());
+// // adding Helmet to enhance your API's security
+// app.use(helmet());
 
-// using bodyParser to parse JSON bodies into JS objects
-app.use(bodyParser.json());
+// // using bodyParser to parse JSON bodies into JS objects
+// app.use(bodyParser.json());
 
-// enabling CORS for all requests
-app.use(cors());
+// // enabling CORS for all requests
+// app.use(cors());
 
-// adding morgan to log HTTP requests
-app.use(morgan('combined'));
+// // adding morgan to log HTTP requests
+// app.use(morgan('combined'));
 
-// Default endpoint to generate an otp with no emails being sent
-app.get('/', (req, res) => {
-  res.send(generateOTP().otp);
-});
+// // Default endpoint to generate an otp with no emails being sent
+// app.get('/', (req, res) => {
+//   res.send(generateOTP().otp);
+// });
 
 
 // starting the server
-app.listen(3000, () => {
-  console.log('listening on port 3000');
-});
+// app.listen(3000, () => {
+//   console.log('listening on port 3000');
+// });
 
 // Determine a way to clean up the details about the email sender as well as determing what timeframe variables
 // will be used. Possibly do only current time in the form of HH:MM
@@ -55,7 +55,7 @@ app.listen(3000, () => {
  * @param {A string token that is passed to determine the action of the notification to be sent, 
  * determined by the relevant endpoint used} emailToken 
  */
-async function sendEmail(emailToken) {
+exports.sendEmail = async function sendEmail(emailToken, recipient = null,otpIN = null) {
     /**
      * A simple variable array that will hold the relevant details per message that will determine the type
      * of notification to send and whom to send it to.
@@ -79,7 +79,7 @@ async function sendEmail(emailToken) {
     )
 
     oauth2client.setCredentials({
-        refresh_token: "1/-b6FCrGDiFQ2nGvGCOpGOCf3nzxMjen7jfR_8J8XH1w"
+        refresh_token: "1/tM8goA8Ammkz318CPXl7VlorjRq_WEVdw9YbGnQ5sto"
     });
     const tokens = await oauth2client.refreshAccessToken();
     const accessToken = tokens.credentials.access_token;
@@ -91,7 +91,7 @@ async function sendEmail(emailToken) {
             user: "arecognition.bot@gmail.com",
             clientId: "680276265540-jr5q5k0kfvp7elsav0jfdf9621c3etai.apps.googleusercontent.com",
             clientSecret: "S-Ka9zoEMPRvDk8ROsyvgYdn",
-            refreshToken: "1/-b6FCrGDiFQ2nGvGCOpGOCf3nzxMjen7jfR_8J8XH1w",
+            refreshToken: "1/tM8goA8Ammkz318CPXl7VlorjRq_WEVdw9YbGnQ5sto",
             accessToken: accessToken
         }
     });
@@ -114,16 +114,30 @@ async function sendEmail(emailToken) {
         }
         else if(emailToken == "otp") 
         {
-            mailOptions = messages.otpClient;
-            mailOptions.html += generateOTP().otp;
-            mailOptions = '';
-            console.log(mailOptions.text);
-            mailOptions = messages.otpClient;
-            console.log(mailOptions.text);
+            if(recipient == null)       //Allowed for your test functionality and normal
+                mailOptions = messages.otpClient;
+            else 
+            {
+                mailOptions.from = "arecognition.bot@gmail.com",
+                mailOptions.to = recipient.guest,
+                mailOptions.subject = "OTP Access"
+                //mailOptions.generateTextFromHTML = true,      
+                if(otpIN == null)
+                {
+                    mailOptions.html = "Your OTP to gain entrance to specified meeting room at Advance is: " ;  
+                    mailOptions.html += generatePlease().otp;
+                }
+                else
+                {
+                    mailOptions.html = "This is an manually generated OTP for the room you booked: " ;  
+                    mailOptions.html += otpIN.otp;
+                }
+                
+            }
         }
 
     smtpTransport.sendMail(mailOptions, (error, response) => {
-        error ? console.log(error) : console.log(response);
+        error ? console.log(error) : console.log("Email sent to "+response.accepted[0]);
         smtpTransport.close();
    });}
 
@@ -139,8 +153,22 @@ async function sendEmail(emailToken) {
     *   The function clears the otp value after each generation to allow for different pins to be generated
     *   after every call.
     */
-
-    function generateOTP() {
+   function generatePlease() {
+        let otpTemp = {
+            "otp": "",
+            "timeCreated": ""
+        };
+        var digits = '0123456789'; 
+        let OTP = ''; 
+        for (let i = 0; i < 6; i++ ) { 
+            OTP += digits[Math.floor(Math.random() * 10)]; 
+        }
+        otpTemp.timeCreated = Date.now();
+        otpTemp.otp = OTP;
+        OTP = '';
+        return otpTemp;
+    }
+exports.generateOTP = function generateOTP() {
         let otpTemp = {
             "otp": "",
             "timeCreated": ""
@@ -157,11 +185,11 @@ async function sendEmail(emailToken) {
     }
 
 
-    app.get('/email', (req, res) => {
-        console.log('OTP value generated: ' + otpValue.otp);
-        console.log('testing');
-        sendEmail('otp');
-})  
+//     app.get('/email', (req, res) => {
+//         console.log('OTP value generated: ' + otpValue.otp);
+//         console.log('testing');
+//         sendEmail('otp');
+// })  
 
     /*
     *   
@@ -170,21 +198,29 @@ async function sendEmail(emailToken) {
     *
     *
     */
-    app.get('/otp', (req, res) => {
+    // app.get('/otp', (req, res) => {
 
-        sendEmail("otp");
-        res.send(generateOTP());
-    })
+    //     sendEmail("otp");
+    //     res.send(generateOTP());
+    // })
+exports.sendOTP = function sendOTP(){
+    sendEmail("otp");
+    return generateOTP();
+}
 
     /**
      * The unauthorized endpoint will be used in cases where the facial recognition detects
      * a person attempting to gain entrance to a room they were not added to or any unauthorized
      * access being attempted. In this case, an admin will be notified to the behaviour.
      */
-    app.get('/unauthorized', (req, res) => {
-        res.send(messages.unauthMessage);
-        sendEmail('unauth');
-    })
+    // app.get('/unauthorized', (req, res) => {
+    //     res.send(messages.unauthMessage);
+    //     sendEmail('unauth');
+    // })
+    exports.sendUnauthorized = function sendUnauthorized(){
+        sendEmail("unauth");
+        return messages.unauthMessage;
+    }
 
     /*
     *
@@ -193,10 +229,14 @@ async function sendEmail(emailToken) {
     *
     *
     */
-    app.get('/tesing', (req, res) => {
-        res.send("testing cases");
-        sendEmail('test');
-    })
+    // app.get('/tesing', (req, res) => {
+    //     res.send("testing cases");
+    //     sendEmail('test');
+    // })
+    exports.sendTest= function sendTest(){
+        sendEmail("test");
+        return "testing cases";
+    }
 
     function formatDate() {
         var dateCurrent = {

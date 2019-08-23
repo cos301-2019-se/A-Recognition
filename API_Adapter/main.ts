@@ -12,26 +12,6 @@ import * as Utils from "../Utils/Utils";
 var adapter = new Adapter();
 
  /**
- * Should not be used in current state
- * @returns {Promise<any>}
- */
-export function getAllEvents() : Promise<any>{
-
-    return adapter.retrieveUserCalendars().then( (calendarList)=>{
-
-        let eventBookings = [];
-    
-        calendarList.forEach(calendar => {
-            eventBookings.push( adapter.retrieveUserEvents(calendar.calendarId,true,null,2,"") );
-        });
-        return Promise.all(eventBookings);
-        
-    }).catch( (err)=>{
-        console.log(err);
-    });
-}
-
- /**
  * Returns a list of events for a specific calendarId
  * @param {string} calendarId The calendar identifier, typically 'primary'
  * @param {boolean} filter Indicates whether you want the events to be filtered
@@ -40,7 +20,7 @@ export function getAllEvents() : Promise<any>{
  * @param {string} endTime ISO string of the time after which no more events should be collected
  * @returns {Promise<any>}
  */
-export function getCalendarEvents(calendarId : string = "primary",filter : boolean = false, options : any = null,size : number = 4,endTime : string = "") : Promise<any>{
+export function getCalendarEvents(calendarId : string = "primary",filter : boolean = false, options : any = null,size : number = -1,endTime : string = "") : Promise<any>{
     return adapter.retrieveUserEvents(calendarId,filter,options,size,endTime);
 }
 
@@ -52,17 +32,24 @@ export function getCalendars() : Promise<any>{
     return adapter.retrieveUserCalendars();
 }
  /**
- * Returns an array of event attendees given an event object
+ * Returns an array of event attendees' emails given an event object
  * @param {any} event The event to pull from
  * @param {any} options The filter that should be applied to the attendees
  * @returns {Promise<any>}
  */
-export function getEventAttendees(event : any,options : any = null) : Array<Object | string> | Object{
+export function getEventAttendees(event : any) : Array<string>{
     
-    if(options != null)
-    return Utils.filter(event.attendees,options);
-    else
-    return event.attendees;
+    if(event.attendees == undefined || event.attendees == null)
+    return null;
+
+    let attendees = [];
+
+    event["attendees"].forEach(attendee => {
+        if( attendee.email != null)
+        attendees.push(attendee.email);
+    });
+
+    return attendees;
 }
  /**
  * Changes the current target API
@@ -109,19 +96,22 @@ export function run(){
 export  function getEvents(calendarId : string = "primary",filter : boolean = false, options : any = null,size : number = 4,endTime : string = "") : Promise<any>{
     let currentEvents = [];
 
-    return new Promise( (resolve,reject) =>{
-        getCalendarEvents(calendarId,filter, options,size,endTime).then( events =>{
-            events.forEach(event => {
-                currentEvents.push(event);
+
+        return new Promise( (resolve,reject) =>{
+            getCalendarEvents(calendarId,filter, options,size,endTime).then( events =>{
+                events.forEach(event => {
+                    currentEvents.push(event);
+                });
+        
+                resolve(currentEvents);
+            }).catch( err => {
+            
+                reject(err);
             });
-    
-            resolve(currentEvents);
-        }).catch( err => {
-        
-            reject(err);
+            
         });
-        
-    });
+    
+    
 }
 
 

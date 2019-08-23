@@ -25,7 +25,7 @@ import time
 db = firestore.client()
 
 #GET the collection Users for Facial Recognition
-users_ref = db.collection(u'Users')
+users_ref = db.collection(u'users')
 
 #docs now contain the data in Users
 docs = users_ref.stream()
@@ -67,8 +67,10 @@ def init():
 #@param email: A string containing an email
 #@param room:The room that was booked
 def validate(email,room = "Room 9"):
-    urlToSend = 'http://localhost:3000/validateUserHasBooking?email="'+email+'"'+'&room="Room 9"'
-    allowedResponse = requests.get(url=urlToSend) 
+    # data to be sent to api 
+    datas = {'email':email,'room':room} 
+    urlToSend ='http://localhost:3000/validateUserHasBooking' #'https://a-recognition.herokuapp.com/validateUserHasBooking'#email='+email+''+'&room=Room 9'
+    allowedResponse = requests.post(url=urlToSend, data = datas) 
 ##
 #Function that determines if a person has blinked recently
 #
@@ -123,13 +125,12 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 
             #Compare the vector with all known faces encodings
             for e in temp:
-                secondTemp = e['image_vector'][0]['encoding']
+                secondTemp = e['fd'][0]['encoding']
                 matches = face_recognition.compare_faces([secondTemp], encoding)
                 if True in matches:
                     first_match_index = matches.index(True)
-                    name = e["Name"]
-                    emails.append(e['Email'])
-                    #print(name)                    
+                    name = e["name"]
+                    emails.append(e['email'])                 
 
             #Store the cropped face
             face = frame[y:y+h,x:x+w]
@@ -200,7 +201,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 pleaseStopTheScanning = True
 
             else:
-                cv2.putText(frame, "Lizard", (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
+                cv2.putText(frame, "Non-living", (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.75, (0, 255, 0), 2)
 
         return frame
 
@@ -209,65 +210,72 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
 #
 #@return: A list of emails expected during current day
 def updateExpectedUsers():
-    endpointURL = "http://localhost:3000/getUsersFromDaysEvents"
-    response = requests.get(url = endpointURL).json()
+    endpointURL = 'http://localhost:3000/getUsersFromDaysEvents'#"https://a-recognition.herokuapp.com/getUsersFromDaysEvents"
+    responseTemp =requests.post(url = endpointURL, data ='')
+    print(responseTemp.json())
+    if(responseTemp.json() is None):  
+        response = {"test@test.com","Test@TEST.com"}
+    else:
+        response = responseTemp.json()
     return response
 
 ##
 #Main function; Continuosly processes stream and recognises people
 #Press 'q' button to stop
 if __name__ == "__main__":
-    #Initialize
-    (model, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, video_capture) = init()
-    
-    
-    data = encodingsOfImages()
-    email ="UNKOWN"
-    pleaseStopTheScanning = False
-    isAllowed = False
-    allowedResponse = "NO"
+    try:       
+        #Initialize
+        (model, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, video_capture) = init()     
+        data = encodingsOfImages()
+        email ="UNKOWN"
+        pleaseStopTheScanning = False
+        isAllowed = False
+        allowedResponse = "NO"
 
-    eyes_detected = defaultdict(str)
+        eyes_detected = defaultdict(str)
 
-    oldRefreshTime = 0
-    lastSendTime = 0
+        oldRefreshTime = 0
+        lastSendTime = 0
+        emailList = updateExpectedUsers()
+        while True:
+            #Clear the history after 30 frames - Go back to non-human mode and wait for blink
+            for x in eyes_detected:
+                if len(eyes_detected[x]) > 30:
+                    eyes_detected = defaultdict(str)
 
-    emailList = updateExpectedUsers()
-    while True:
-        #Clear the history after 30 frames - Go back to non-human mode and wait for blink
-        for x in eyes_detected:
-            if len(eyes_detected[x]) > 30:
-                eyes_detected = defaultdict(str)
-
-        #Run our facial detection
-        frame = detect_and_display(model, video_capture, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, data, eyes_detected)
-        
-        #Show a nice video feed of what is happening
-        cv2.imshow("Face Liveness Detector", frame)
-
-        if (time.time() - oldRefreshTime > 1800):
-            oldRefreshTime = time.time()
-            emailList = updateExpectedUsers()
-
-        if pleaseStopTheScanning == True and (time.time() - lastSendTime > 1): #and counter <= 60:
-            try:
-                #we now need to compare and see if the email that appears the most is in this json object
-                for emailItem in emailList:
-                    if email == emailItem:                         
-                        validate(email,"Room 9")
-                        lastSendTime = time.time()
-                        print(str(emailItem))
-        
-                pleaseStopTheScanning = False 
-                isAllowed = False  
-
-            except json.decoder.JSONDecodeError:
-                print("Non json object returned")
+            #Run our facial detection
+            frame = detect_and_display(model, video_capture, face_detector, open_eyes_detector,left_eye_detector,right_eye_detector, data, eyes_detected)
             
-        #Quit on 'q' button    
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    
-    cv2.destroyAllWindows()
+            #Show a nice video feed of what is happening
+            cv2.imshow("Face Liveness Detector", frame)
+
+            if (time.time() - oldRefreshTime > 1800):
+                print("***************REFRESHED***************")
+                oldRefreshTime = time.time()
+                emailList = updateExpectedUsers()
+
+            if pleaseStopTheScanning == True and (time.time() - lastSendTime > 1): #and counter <= 60:
+                try:
+                    #we now need to compare and see if the email that appears the most is in this json object
+                    for emailItem in emailList:
+                        if email == emailItem:                         
+                            validate(email,"Room 9")
+                            lastSendTime = time.time()
+                            print(str(emailItem))
+            
+                    pleaseStopTheScanning = False 
+                    isAllowed = False  
+
+                except json.decoder.JSONDecodeError:
+                    print("Non json object returned")
+                
+            #Quit on 'q' button    
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        
+        cv2.destroyAllWindows()
+    except Exception as e:
+        print("PROBLEM",e)
+        
 
 
