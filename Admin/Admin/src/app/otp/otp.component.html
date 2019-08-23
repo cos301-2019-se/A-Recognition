@@ -31,8 +31,8 @@
                     </div>
     <!-- <input #email class="form-control" formControlName="email" type="email" placeholder="Email" > -->
     <br>
-    <select class="form-control" formControlName="event" #EventInfo>
-        <option *ngFor="let i of eventList" [value]="i.id">
+    <select class="form-control"  formControlName="event" #EventInfo>
+        <option *ngFor="let i of eventList" [value]="i.eventId">
             {{i.summary}}-{{i.location}} || {{i.startDate}} - {{i.startTime}} ||
         </option>
     </select>

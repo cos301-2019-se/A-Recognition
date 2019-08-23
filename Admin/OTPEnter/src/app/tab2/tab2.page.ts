@@ -13,6 +13,7 @@ export class Tab2Page implements OnInit {
   otpScan: FormGroup;
   public message: any = '';
   public valid: any;
+  otpEntered: any;
 
   constructor(public qrScanner: QRScanner,private formBuilder: FormBuilder, public auth: AuthService,private alertController: AlertController){
 
@@ -32,10 +33,8 @@ export class Tab2Page implements OnInit {
  * Funtional description: showcases the alerts
 */ 
 async presentAlert() {
-  console.log('here');
   const alert = await this.alertController.create({
-    header: 'Alert',
-    subHeader: 'Subtitle',
+    header: 'OTP Access',
     message: this.message,
     buttons: ['OK']
   });
@@ -90,16 +89,18 @@ async presentAlert() {
   public validateOTP(otp: any)
   {
     console.log(otp, this.scannedData);
-    this.auth.validateOneTimePinByRoom(this.scannedData , otp).then( (data) =>
+    this.otpEntered = otp;
+    this.auth.validateOneTimePinByRoom(this.scannedData.toString() , otp).then( (data) =>
     {
       if(data == true){
         console.log(data);
         this.message = 'You are allowed access to the room now!';
         this.valid = true;
       }
-      else
+      else if (data == false)
       {
-        this.message = 'Either the OTP entered is wrong, expired or you are not allowed in right now.';
+        // tslint:disable-next-line: max-line-length
+        this.message = 'Either the OTP entered is wrong, expired or you are not allowed in right now. The room scanned might also not exist.';
         this.valid = false;
       }
       this.presentAlert();

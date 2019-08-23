@@ -34,10 +34,8 @@ export class Tab1Page implements OnInit {
  * Funtional description: showcases the alerts
 */ 
   async presentAlert() {
-    console.log('here');
     const alert = await this.alertController.create({
-      header: 'Alert',
-      subHeader: 'Subtitle',
+      header: 'OTP Access',
       message: this.message,
       buttons: ['OK']
     });

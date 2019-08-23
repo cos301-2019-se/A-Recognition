@@ -43,7 +43,6 @@ export class OTPComponent implements OnInit {
 */
   public generateOTP(event: any)
   {
-    
     this.otpCall.manualOTP(event, this.brdCast).subscribe( (res)=>
     {
       console.log(res);

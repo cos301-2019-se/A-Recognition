@@ -19,6 +19,7 @@ export class OtpCallsService {
   public manualOTP( eventin: any, broadcastIN: any)
   {
     // for the secret sauce
+    console.log(eventin);
     this.tokenClass.incrementNum();
     return this.http.post('http://localhost:3000/generateOTP', {
       eventId : eventin,

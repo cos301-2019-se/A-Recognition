@@ -38,7 +38,7 @@
       </ion-item> 
       <ion-item *ngIf='eventList'>
         <ion-select placeholder="Select One" (ionChange)="setEventID($event)" >
-            <ion-select-option  *ngFor="let i of eventList"  value="{{i.id}}">
+            <ion-select-option  *ngFor="let i of eventList"  value="{{i.eventId}}">
                 {{i.summary}}-{{i.location}} || {{i.startDate}} - {{i.startTime}} ||
             </ion-select-option>
         </ion-select>

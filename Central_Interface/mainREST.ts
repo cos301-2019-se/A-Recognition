@@ -192,3 +192,9 @@ app.get('/', (req, res) => {
         
     });
 });
+
+app.get('/sync', (req, res) => {
+
+    Main.syncEventsToDB().then( ()=>res.send("Syncing database"))
+    .catch( err => res.send("Error syncing database"));
+});

@@ -14,7 +14,7 @@ import dbManager from "../Database_Manager/databaseManager"
 import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 import * as crypto from 'crypto';
-import { resolve } from "dns";
+import { setInterval } from "timers";
 var DatabaseManager = new dbManager();
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
@@ -47,33 +47,7 @@ export function getUsersFromDaysEvents() :Promise<Array<string> | null>{
             }).catch( err => reject(err));
         });
     
-        // return new Promise( (resolve,reject)=>{
-        //     Adapter.getEvents().then( events =>{
-    
-        //         let attendeesBookedToday = [];
         
-        //         if(Array.isArray(events)){
-        //             events.forEach(event => {
-        //                 event["attendees"].forEach( person => {
-        //                     if( !Utils.inArray(person.email,attendeesBookedToday))
-        //                     attendeesBookedToday.push(person.email);
-        //                 });
-        //             });
-        //         }else{
-        
-        //             events["attendees"].forEach( person => {
-        //                 if( !Utils.inArray(person.email,attendeesBookedToday))
-        //                 attendeesBookedToday.push(person.email);
-        //             });
-        //         }
-               
-        //         resolve(attendeesBookedToday);
-        //     }).catch( (err)=>{
-        //         reject(null);
-        //     })
-            
-        // } );
-    
 }
 
  /**
@@ -97,11 +71,13 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
             let hours = parseInt(time[0]) + 2;//counter for timezone
             let minutes = parseInt(time[1]);
             
+
+
             events.events.forEach(event => {
                 let eventHours = parseInt(event.endTime.split(":")[0]);
                 let eventMinutes = parseInt(event.endTime.split(":")[1]);
-                
-                if(eventHours > hours){
+
+                if( (eventHours%24) > (hours%24)){
                     currentEvents.push(event);
                 }else if( eventHours == hours){
                     if(eventMinutes > minutes){
@@ -109,7 +85,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                     }
                 }
             });
-
+            
             for (let i = 0; i < currentEvents.length; i++) {
                 let event = currentEvents[i];
 
@@ -117,8 +93,12 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                 let dateNow = timeNow.toISOString();
                 dateNow = dateNow.substr(0,dateNow.indexOf("T"));
                 
+                //console.log("into",dateNow,event.startTime);
+                
                 let entranceAllowedToEvent = new Date(dateNow+ "T"+ event.startTime);
 
+                //console.log("allowed",entranceAllowedToEvent);
+                
                 entranceAllowedToEvent.setMinutes(entranceAllowedToEvent.getMinutes() - MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED);
 
                 if(room == event.location){
@@ -129,7 +109,8 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                     message += "User has a booking in that room";
                     else
                     message += "User does not have a booking for that room";
-
+                    console.log('Time',timeNow.toISOString());
+                    console.log('Time2',entranceAllowedToEvent.toISOString());
                     if(timeNow.getTime() > entranceAllowedToEvent.getTime())
                     message += ",Room allows access now";
                     else
@@ -149,48 +130,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
             
         });
             
-//    return new Promise( (resolve,reject) =>{
 
-//         let endTime = new Date();
-//         endTime.setHours(endTime.getHours() + CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME);
-        
-        
-//         Adapter.getEvents("primary",true,{attendees : true,location : true,start : true},3,endTime.toISOString()).then( (closestEvents)=>{
-            
-            
-//             for (let i = 0; i < closestEvents.length; i++) {
-//                 let event = closestEvents[i];
-
-//                 let timeNow = new Date();
-//                 let entranceAllowedToEvent = new Date(event.startDate + "T"+ event.startTime);
-//                 entranceAllowedToEvent.setMinutes(entranceAllowedToEvent.getMinutes() - MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED);
-
-//                 if(room == event.location){
-                    
-                    
-//                     let message = "";
-
-//                     if( Utils.inArray(email,event.attendees))
-//                     message += "User has a booking in that room";
-//                     else
-//                     message += "User does not have a booking for that room";
-
-//                     if(timeNow.getTime() > entranceAllowedToEvent.getTime())
-//                     message += ",Room allows access now";
-//                     else
-//                     message += ",Room does not allow access yet";
-                    
-//                     resolve(message);
-                    
-//                 }
-                
-//             }
-//             resolve("There is no booking for that room now");
-            
-//         }).catch( err =>{
-//             reject(err);
-//         });
-//    }); 
 }
 
  /**
@@ -230,51 +170,6 @@ export function isEmployee(email : string) : Promise<boolean>{
             reject(false);
         });
     });
-}
-
- /**
- * Polls events and checks if a user assinged to an event is a guest, sending them an OTP
- * @returns {void}
- */
-export function checkBookingsForGuests(){ //TODO : MAke it work for the same user across multiple events
-// TODO: ENTIRE REWRITE
-    let markedAsGuest = [];
-
-    setInterval( ()=>{
-        getEmployeeEmails().then( emails =>{
-
-            Adapter.getEvents("primary",true,{location:true,start:true,attendees:true}).then( events =>{
-                events.forEach(event => {
-                    event.attendees.forEach(attendee => {
-                        if(!Utils.inArray(attendee,markedAsGuest) && !Utils.inArray(attendee,emails)){
-                            markedAsGuest.push(attendee);
-                            
-                            //console.log(event);
-                            
-                            let notifyViaOTP ={
-                                guest : attendee,
-                                location : event.location,
-                                startDate : event.startDate
-                            }
-
-                            if(event.startTime != null){
-                                notifyViaOTP["startTime"] = event.startTime;
-                            }
-                        
-                            NotificationSystem.sendEmail("otp",notifyViaOTP);
-                            
-                        }
-                    });
-                });
-                
-            }).catch(err =>{
-                console.log(err);
-            })
-    
-        }).catch(err =>{
-            console.log(err);
-        })
-    },15000);    
 }
 
 var tokenBook = {};
@@ -440,7 +335,6 @@ export function getEmployeeList()
     return new Promise( (resolve,reject) => {
         DatabaseManager.retrieveAllUsers().then( (user) =>
         {
-            //console.log(user.employees);
             resolve(user.employees);
         });
     });
@@ -449,11 +343,20 @@ export function getEmployeeList()
 
 export function getEventList() : Promise<any>{
 
-    return new Promise( (resolve,reject)=>{
-        Adapter.getEvents("primary",true,{id:true,summary:true,location:true,start:true,end:true}).then( events =>{
-            resolve(events);
-        }).catch(err => reject(err));
+    // return new Promise( (resolve,reject)=>{
+    //     Adapter.getEvents("primary",true,{id:true,summary:true,location:true,start:true,end:true}).then( events =>{
+    //         resolve(events);
+    //     }).catch(err => reject(err));
+    // });
+
+    return new Promise( (resolve,reject) =>{
+        DatabaseManager.retrieveAllEvents().then( eventsObj =>{
+            resolve(eventsObj.events);
+        }).catch( err =>{
+            reject(err);
+        })
     });
+    
     
 }
 //getEmployeeList();
@@ -521,13 +424,16 @@ export function validateRoomOTP(roomName : string,otp : string) : Promise<boolea
       DatabaseManager.retrieveAllEvents()
       .then( eventsObj => {
         
-        let targetEvent;
+        let targetEvent = null;
         
         eventsObj.events.forEach(event => {
             if(event.location == roomName)
             targetEvent = event;
         });
         
+        if(targetEvent == null)
+        reject(false);
+
           let otpList = compileValidOTPList(targetEvent);        
           if( Utils.inArray(otp,otpList))
               resolve(true);
@@ -550,41 +456,116 @@ export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
         else 
             reject(false);
      })
-     .catch( err => reject(err.message));
+     .catch( err => reject(false));
   })
 }
-async function clearOutdatedEvents() : Promise<any>{
-    //getAllEvents
-    let promises = [];
-            await DatabaseManager.retrieveEventIds().then( async eventIdList =>{
 
-                await eventIdList.eventIds.forEach(async eventId => {
-                    
-                    promises.push(DatabaseManager.deleteEvent({body:{eventId : eventId}}))
-                    
-                });
-                return Promise.all(promises);
+function findEvent(array : Array<any>,key : string ,id : string): any{
 
-            }).catch( err => console.log(err));
+        for (let index = 0; index < array.length; index++) {
 
+            let item = array[index];
+            
+            if(item[key] == id){
+                return item;
+            }
+        }
+        return null;
 }
+
+function updateAttendeeList(local,foreign){
+    let localEmails = local.attendees.map( el => el.email);
+    let found = false;
+    
+    for (let index = 0; index < foreign.attendees.length; index++) {
+        let attendee = foreign.attendees[index];
+
+        if(!Utils.inArray(attendee,localEmails)){        
+            found = true;
+            let newOtp = NotificationSystem.generateOTP();
+            local.attendees.push({
+                email : attendee,
+                otp : newOtp
+            });
+
+            isEmployee(attendee).then( anEmployee =>{
+                
+                if( !anEmployee){
+
+                    let notifyViaOTP ={
+                        guest : attendee,
+                        location : local.location,
+                        startDate : local.startDate
+                    }
+
+                    if(local.startTime != null){
+                        notifyViaOTP["startTime"] = local.startTime;
+                    }
+                
+                    NotificationSystem.sendEmail("otp",notifyViaOTP,newOtp);
+                }
+            }).catch(err => console.log(err));            
+            
+        }   
+    }
+
+    for (let index = 0; index < localEmails.length; index++) {
+        let attendee = localEmails[index];
+
+        if(!Utils.inArray(attendee,foreign.attendees)){        
+            found = true;
+            local.attendees.splice(index, 1); 
+        }   
+    }
+    return !found;
+}
+
 export async function syncEventsToDB() : Promise<any>{
 
-    await clearOutdatedEvents();
-    let promises = [];
-
-        
+    let theTruth = [];
+    let ourTruth = [];
+    let toBeDeleted = [];
+    let toBeCheckedForUpdates = [];
+    let toBeAdded = [];
+    //await clearOutdatedEvents();
+    DatabaseManager.retrieveAllEvents().then(DBevents =>{
         Adapter.getEvents("primary",true,
         {id:true,summary:true,location:true,start:true,end:true,attendees: true})
         
         .then( events =>{
-            
-            events.forEach( event => {
+            DBevents.events.forEach(dbEvent => {
+                ourTruth.push(dbEvent.eventId);
+            });
 
+            events.forEach(event => {
+                theTruth.push(event.id);
+            });
+
+            ourTruth.forEach(ourEvent => {
+                if(!Utils.inArray(ourEvent,theTruth))   //Our event is no longer happening or otherwise doesnt exist
+                    toBeDeleted.push(ourEvent);             //so it must be removed
+                else //we also have the event, check for updates
+                    toBeCheckedForUpdates.push(ourEvent);
+            });
+
+            theTruth.forEach( truthEvent =>{
+                if(!Utils.inArray(truthEvent,toBeCheckedForUpdates))    //This event isnt in our database
+                toBeAdded.push(truthEvent);
+            });
+
+            //Now know what needs to be deleted,updated and added.Lets get to work
+            
+            toBeDeleted.forEach( deleteId =>{
+                DatabaseManager.deleteEvent({body:{eventId :deleteId} })
+                .then(res =>console.log(res))
+                .catch(res => console.log(res));
+            });
+
+            toBeAdded.forEach( addId =>{
+                let event = findEvent(events,"id",addId);
+        
                 let attendees = event.attendees;
-                let otpList = [];
                 let userOtpPair = [];
-                
                 
                 attendees.forEach(attendee => {
                     userOtpPair.push( {
@@ -593,30 +574,76 @@ export async function syncEventsToDB() : Promise<any>{
                     });
                 });
 
-            let request = {
-                body : {
-                    eventId     : event.id,
-                    summary     : event.summary,
-                    location    : event.location,
-                    startTime   : event.startTime,
-                    endTime     : event.endTime,
-                    attendees : userOtpPair
+                let request = {
+                    body : {
+                        eventId     : event.id,
+                        summary     : event.summary,
+                        location    : event.location,
+                        startTime   : event.startTime,
+                        endTime     : event.endTime,
+                        attendees : userOtpPair
+                    }
                 }
-            }
-                
-                promises.push(
-                     DatabaseManager.addEvent(request)   //Event already exists, no action
-                );
-                
-            });
-            
-        }).catch( err =>{
-                console.log(err);  
-        })    
+                    DatabaseManager.addEvent(request)
+                    .then(res =>console.log(res))
+                    .catch( res => console.log(res) );
+                    
+                });
 
-        return Promise.all(promises);
+                toBeCheckedForUpdates.forEach( updateId =>{
+                    let event = findEvent(DBevents.events,"eventId",updateId);
+                    let newEvent = findEvent(events,"id",updateId);
+                    let change = false;
+
+                    if(event.summary != newEvent.summary){
+                        change = true;
+                        event.summary = newEvent.summary;
+                    }
+                        
+                    
+                    if(event.location != newEvent.location){
+                        change = true;
+                        event.location = newEvent.location;
+                    }
+
+                    if(event.startTime != newEvent.startTime){
+                        change = true;
+                        event.startTime = newEvent.startTime;
+                    }
+
+                    if(event.endTime != newEvent.endTime){
+                        change = true;
+                        event.endTime = newEvent.endTime;
+                    }
+                    
+                    if( !updateAttendeeList(event,newEvent)){
+                        change = true;
+                    }
+
+                    if( change){    //Only update if there is a difference
+                        let request = {
+                            body : {
+                                eventId     : event.eventId,
+                                summary     : event.summary,
+                                location    : event.location,
+                                startTime   : event.startTime,
+                                endTime     : event.endTime,
+                                attendees : event.attendees
+                            }
+                        }
+                        DatabaseManager.updateEvent(request)
+                        .then(res =>console.log(res))
+                        .catch(res => console.log(res));
+                        change = false;
+                     }
+     
+                });
+            });
+    
+    });
+
 }
 
-syncEventsToDB().then( ()=> console.log("Database synchronized"));
-
-checkBookingsForGuests();
+setInterval(()=>{
+    syncEventsToDB().then( ()=> console.log("Database synchronized"));
+},15000);
