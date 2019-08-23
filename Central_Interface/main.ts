@@ -479,11 +479,12 @@ function updateAttendeeList(local,foreign){
     for (let index = 0; index < foreign.attendees.length; index++) {
         let attendee = foreign.attendees[index];
 
-        if(!Utils.inArray(attendee,localEmails)){        
+        if(!Utils.inArray(attendee,localEmails)){
+            let newOTP =  NotificationSystem.generateOTP();       
             found = true;
             local.attendees.push({
                 email : attendee,
-                otp : NotificationSystem.generateOTP()
+                otp : newOTP
             });
 
             isEmployee(attendee).then( anEmployee =>{
@@ -500,7 +501,7 @@ function updateAttendeeList(local,foreign){
                         notifyViaOTP["startTime"] = local.startTime;
                     }
                 
-                    NotificationSystem.sendEmail("otp",notifyViaOTP);
+                    NotificationSystem.sendEmail("otp",notifyViaOTP,newOTP);
                 }
             }).catch(err => console.log(err));            
             
