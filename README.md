@@ -5,11 +5,13 @@
 
 [Project Management](https://app.zenhub.com/workspaces/a-recognition-5cc3f20307a4ab52d27abc9b/board?repos=182155877)
 
-[SRS Document](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/A_Recognition_SRS.pdf)
+[SRS Document](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/A_Recognition-23%20August%202019-SRS.pdf)
 
 [Testing Policy](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/Testing_Policy.pdf)
 
 [Coding Standards](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/CodingStandardsAndGuidlines.pdf)
+
+[User Manual](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/A-Recognition-UserManaul(Demo%204).pdf)
 
 ---
 
