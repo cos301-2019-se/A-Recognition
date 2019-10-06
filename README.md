@@ -2,38 +2,6 @@
 ## A-Recognition Access Control
 ### Links 
 
-[SRS Document](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/SRS_Document(23_August2019).pdf)
-
-[Coding Standards](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/CodingStandardsAndGuidlines.pdf)
-
-[Testing Policy](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/Testing_Policy.pdf)
-
-[Project Management](https://app.zenhub.com/workspaces/a-recognition-5cc3f20307a4ab52d27abc9b/board?repos=182155877)
-
-[User Manual](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/A-Recognition-UserManaul(Demo%204).pdf)
-
-[Team Profiles](google.com)
-
-[Informative Presentation](https://docs.google.com/presentation/d/1R2Rll363XIQqKsFinfVS0raQ-YATh57x4ud7AUQ7fiQ/edit?usp=sharing)
-
----
-
-### Description 
-Create a system which uses facial recognition to allow users access to areas that are prohibited. The system should come with an interface which can be easily used to add new faces and their respective access rights.
-
-The system will adhere to the **Protection of Personal Information Act (POPI)** as well as the **General Data Protection Regulation (GDPR)** to ensure that the users’ data is protected and may not be tampered with. 
-
-Certain users, administrators, will be given the right to perform CRUD operations involving employees, while the employees themselves will be able to book certain meeting rooms and add the relevant personnel to the meetings. The system will then compare their face as input and compare it to the stored images to determine access to the room or deny access.
-
-Any guests that wish to gain access to the building or to a meeting room will have a One Time Pin (OTP) generated to them to use as an access measure as extra security. The Advance group would like us to produce a quality system that can perform the relevant access control measures needed to perform the facial recognition in a respectable response time to improve efficiency as well as effectiveness.
-
-The **overall requirements** of the system should be:
-- A facial recognition subsystem to allow access to users that are authorized.
-- A subsystem to provide OTP’s to guests that require access to the building or to a meeting room.
-- Comply with GDPR and POPI.
-
----
-
 ### The Team
 <img src="https://i.imgur.com/y2iKVw1m.jpg" title="source: imgur.com" />
 
@@ -44,12 +12,20 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 - AI Student
 - Unity Experience
 
+[LinkedIn](https://www.linkedin.com/in/jarrod-goschen)
+
+[Git Profile](https://github.com/Wolwe1)
+
 ---
 
 ##### Richard Mcfadden
 - Experience in multiple languages
 - Facial Recognition experience
 - Interest in AI and Computer Networks
+
+[LinkedIn](https://www.linkedin.com/in/richard-mcfadden-822705181/)
+
+[Git Profile](https://github.com/Quantu-Adunati)
 
 ---
 
@@ -70,5 +46,9 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 - Determined learner
 - Motivational member
 - Experienced in a number of programming languages
+
+[LinkedIn](www.linkedin.com/in/alessio-rossi-33b0b3181)
+
+[Git Profile](https://github.com/RossiAlessio04)
 
 ---
