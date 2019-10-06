@@ -34,11 +34,17 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 - Easilty adaptable to programming languages
 - Interested in AI, graphics as well as operating systems
 
+[LinkedIn](https://www.linkedin.com/in/adrian-le-grange/)
+
+[Git Profile](https://github.com/Adrian-le-Grange)
+
 ---
 
 ##### Kyle Olivier
 - Experience in C# and Java
 - User experience focused
+
+[Git Profile](https://github.com/KyleOlivier)
 
 ---
 
