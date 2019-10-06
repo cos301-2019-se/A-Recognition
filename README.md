@@ -19,13 +19,15 @@
 ---
 
 ### Description 
-Create a system which uses facial recognition to allow users access to areas that are prohibited. The system should come with an interface which can be easily used to add new faces and their respective access rights.
+A system which uses **facial recognition** to facilitate access control over locations, with an OTP backup for when facial recognition is not suitable. 
 
-The system will adhere to the **Protection of Personal Information Act (POPI)** as well as the **General Data Protection Regulation (GDPR)** to ensure that the users’ data is protected and may not be tampered with. 
+The system adheres to the **Protection of Personal Information Act (POPI)** as well as the **General Data Protection Regulation (GDPR)** to ensure that the users’ personal data is protected. 
 
-Certain users, administrators, will be given the right to perform CRUD operations involving employees, while the employees themselves will be able to book certain meeting rooms and add the relevant personnel to the meetings. The system will then compare their face as input and compare it to the stored images to determine access to the room or deny access.
+The system is designed to integrate with existing organizational booking systems while administrators use the client to register and manage users, leaving the current booking procedures unchanged.
 
-Any guests that wish to gain access to the building or to a meeting room will have a One Time Pin (OTP) generated to them to use as an access measure as extra security. The Advance group would like us to produce a quality system that can perform the relevant access control measures needed to perform the facial recognition in a respectable response time to improve efficiency as well as effectiveness.
+Guests,or events where the registration of all attendees is deemed unnecessary, can be supplied with a One Time Pin (OTP) to allow access instead.
+
+---
 
 The **overall requirements** of the system should be:
 - A facial recognition subsystem to allow access to users that are authorized.
@@ -40,7 +42,7 @@ The **overall requirements** of the system should be:
 Alessio - Kyle - Richard - Adrian - Jarrod
 
 ##### Jarrod Goschen
-- Software development centric with experience in C++
+- Software development centered degree with experience in multiple languages and frameworks
 - AI Student
 - Unity Experience
 
