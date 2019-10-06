@@ -12,9 +12,9 @@
 
 <img src="https://img.icons8.com/material-outlined/24/000000/document.png"> [User Manual](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/A-Recognition-UserManaul(Demo%204).pdf)
 
-[Team Profiles](https://github.com/cos301-2019-se/A-Recognition/blob/Team_Members/README.md)
+<img src="https://img.icons8.com/material/24/000000/teamwork.png"> [Team Profiles](https://github.com/cos301-2019-se/A-Recognition/blob/Team_Members/README.md)
 
-[Informative Presentation](https://docs.google.com/presentation/d/1R2Rll363XIQqKsFinfVS0raQ-YATh57x4ud7AUQ7fiQ/edit?usp=sharing)
+<img src="https://img.icons8.com/material-sharp/24/000000/presentation.png"> [Informative Presentation](https://docs.google.com/presentation/d/1R2Rll363XIQqKsFinfVS0raQ-YATh57x4ud7AUQ7fiQ/edit?usp=sharing)
 
 ---
 
