@@ -2,15 +2,15 @@
 ## A-Recognition Access Control
 ### Links 
 
-<img src="https://img.icons8.com/dotty/20/000000/document.png"> [SRS Document](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/SRS_Document(23_August2019).pdf)
+<img src="https://img.icons8.com/material-outlined/24/000000/document.png"> [SRS Document](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/SRS_Document(23_August2019).pdf)
 
-[Coding Standards](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/CodingStandardsAndGuidlines.pdf)
+<img src="https://img.icons8.com/material-outlined/24/000000/document.png"> [Coding Standards](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/CodingStandardsAndGuidlines.pdf)
 
-[Testing Policy](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/Testing_Policy.pdf)
+<img src="https://img.icons8.com/material-outlined/24/000000/document.png"> [Testing Policy](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/Testing_Policy.pdf)
 
-[Project Management](https://app.zenhub.com/workspaces/a-recognition-5cc3f20307a4ab52d27abc9b/board?repos=182155877)
+<img src="https://img.icons8.com/material-outlined/24/000000/document.png"> [Project Management](https://app.zenhub.com/workspaces/a-recognition-5cc3f20307a4ab52d27abc9b/board?repos=182155877)
 
-[User Manual](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/A-Recognition-UserManaul(Demo%204).pdf)
+<img src="https://img.icons8.com/material-outlined/24/000000/document.png"> [User Manual](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/A-Recognition-UserManaul(Demo%204).pdf)
 
 [Team Profiles](https://github.com/cos301-2019-se/A-Recognition/blob/Team_Members/README.md)
 
