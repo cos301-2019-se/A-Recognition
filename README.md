@@ -11,7 +11,7 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 - AI Student
 - Unity Experience
 
-[LinkedIn](https://www.linkedin.com/in/jarrod-goschen)
+[LinkedIn](https://www.linkedin.com/in/jarrod-goschen) <img src="https://img.icons8.com/color/48/000000/linkedin.png" style="width:50px;height:50px;">
 
 [Git Profile](https://github.com/Wolwe1) <img src="https://camo.githubusercontent.com/9fc4c1cc526bc7f1afa9b7e120e078795df5225e/68747470733a2f2f692e696d6775722e636f6d2f587179374466482e706e67" alt="Github" data-canonical-src="https://i.imgur.com/Xqy7DfH.png" style="max-width:100%;">
 
