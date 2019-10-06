@@ -44,7 +44,7 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 ##### Jarrod Goschen
 - Software development centered degree with experience in multiple languages and frameworks
 - AI Student
-- Unity Experience
+- Game development experience
 
 ---
 
