@@ -1,6 +1,5 @@
 # Singularity 
 ## A-Recognition Access Control
-### Links 
 
 ### The Team
 <img src="https://i.imgur.com/y2iKVw1m.jpg" title="source: imgur.com" />
