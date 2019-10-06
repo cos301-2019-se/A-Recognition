@@ -198,3 +198,20 @@ app.get('/sync', (req, res) => {
     Main.syncEventsToDB().then( ()=>res.send("Syncing database"))
     .catch( err => res.send("Error syncing database"));
 });
+
+app.post('/log', (req, res)=>
+{
+    if(req["body"].hasOwnProperty("description"))
+        if(req["body"].hasOwnProperty("date"))
+            if(req["body"].hasOwnProperty("user"))
+                if(req["body"].hasOwnProperty("category"))
+                    Main.log(req["body"].description,req["body"].date,req["body"].user,req["body"].category)
+                    .then( entryAllowed => res.send(entryAllowed))
+                    .catch( entryDenied => res.send(entryDenied));
+                else res.send('Invalid category');
+            else res.send('Invalid user');
+        else 
+            res.send("Invalid date");
+    else
+        res.send("Invalid description supplied");
+});

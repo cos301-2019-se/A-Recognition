@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OtpCallsService } from '../otp-calls.service';
 import { FormControl, FormGroup, FormBuilder, Validators  } from '@angular/forms';
+import { LogService } from '../log.service';
 @Component({
   selector: 'app-otp',
   templateUrl: './otp.component.html',
@@ -13,7 +14,7 @@ export class OTPComponent implements OnInit {
   valid: any;
   otpSub: FormGroup;
   brdCast: any = false;
-  constructor(public otpCall: OtpCallsService,private formBuilder: FormBuilder) 
+  constructor(public log: LogService, public otpCall: OtpCallsService,private formBuilder: FormBuilder) 
   { 
 
   }
@@ -62,6 +63,7 @@ export class OTPComponent implements OnInit {
         this.message = 'An error occured during OTP generation.';
         this.valid = false;
       }
+      this.log.log(this.message,'newOTP@test.com','otpGeneration');
     });
   }
 

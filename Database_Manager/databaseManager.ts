@@ -397,6 +397,26 @@ export default class dbManager {
         });
     });
     }
+    /** 
+     * @description: Function that logs
+     **/
+    async log(request) : Promise<any> {
+        return new Promise( (resolve, reject) => {
+            let updateDoc = this.db.collection('logs').doc(request.body.date).set(
+                {
+                    "description" : request.body.description,
+                    "user" : request.body.user,
+                    "category" : request.body.category,
+                    "date" : request.body.date
+                })
+            .then(ref => {
+                console.log('Log added: ', request.body.user);
+                resolve({
+                        "status" : "Success"
+                    });
+            });
+        });
+    }
 
     /** 
      * @description: Function to permanently delete a given user

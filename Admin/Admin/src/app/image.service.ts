@@ -7,7 +7,7 @@ import { TokenClass } from './tokenClass';
 })
 export class ImageService {
 
-  constructor(public tokenClass: TokenClass,private http: HttpClient)
+  constructor( public tokenClass: TokenClass,private http: HttpClient)
   {
 
   }

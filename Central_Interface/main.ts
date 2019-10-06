@@ -516,7 +516,19 @@ function updateAttendeeList(local,foreign){
     }
     return !found;
 }
-
+export function log(msg: string, dateNow:Date,userNow:string,categoryNow:string)
+{
+    return new Promise( (resolve,reject) =>{
+        DatabaseManager.log({ body : { date: dateNow,
+            description: msg,
+            user: userNow,
+            category: categoryNow}})
+        .then( event => {
+            console.log("Logs stored.",event);
+                resolve(true);
+            }).catch( err => reject(false));
+    });
+}
 export async function syncEventsToDB() : Promise<any>{
 
     let theTruth = [];

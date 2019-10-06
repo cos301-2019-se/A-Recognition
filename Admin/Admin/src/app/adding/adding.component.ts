@@ -3,6 +3,7 @@ import {ImageService} from '../image.service';
 import {Subject, Observable} from 'rxjs';
 import { FormControl, FormGroup, FormBuilder, Validators  } from '@angular/forms';
 import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
+import { LogService } from '../log.service';
 @Component({
   selector: 'app-adding',
   templateUrl: './adding.component.html',
@@ -25,7 +26,7 @@ export class AddingComponent implements OnInit
   uploadImageForm: FormGroup;
   message: any;
   valid: any;
-  constructor(private imageService: ImageService, private formBuilder: FormBuilder) {
+  constructor(public log: LogService,private imageService: ImageService, private formBuilder: FormBuilder) {
   }
 
   ngOnInit() 
@@ -101,6 +102,7 @@ export class AddingComponent implements OnInit
         this.message = 'An error occured during registration.';
         this.valid = false;
       }
+      this.log.log(this.message,'newUser@test.com','userRegistration');
     });
   }
     /** 
@@ -157,6 +159,7 @@ export class AddingComponent implements OnInit
           this.message = 'An error occured during registration.';
           this.valid = false;
         }
+        this.log.log(this.message,'newUser@test.com','userRegistration');
       });
   }
   /** 

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import * as crypto from 'crypto-ts';
 import { TokenClass } from './tokenClass';
+import { LogService } from './log.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +16,8 @@ export class AuthService {
   displayMessage: string;
   message: boolean = true;
 
-  constructor(public tokenClass: TokenClass, public  authAf: AngularFireAuth, public router: Router,public http: HttpClient)
+  // tslint:disable-next-line: max-line-length
+  constructor(public log: LogService, public tokenClass: TokenClass, public  authAf: AngularFireAuth, public router: Router, public http: HttpClient)
   {
 
   }
@@ -27,16 +29,49 @@ export class AuthService {
 */
   public generateToken()
   {
-    this.http.post("https://a-recognition.herokuapp.com/generateToken",{
+    this.http.post('https://a-recognition.herokuapp.com/generateToken', {
       sender: this.email
-    },{responseType: 'text'}).subscribe(data=>
+    }, {responseType: 'text'}).subscribe(data =>
     {
-      this.user$ = data;
-      localStorage.setItem('token', data);
-      // Secret Sauce
-      this.tokenClass.setEmail(this.email);
-      this.tokenClass.setTokenBook();
+      if (data == 'null')
+      {
+        this.displayMessage = 'Error generating a token';
+        this.log.log(this.displayMessage,this.email,'token');
+      }
+      else
+      {
+        this.user$ = data;
+        localStorage.setItem('token', data);
+        // Secret Sauce
+        this.tokenClass.setEmail(this.email);
+        this.tokenClass.setTokenBook();
+        this.log.log('Token generated',this.email,'token');
+      }
     });
+
+  }
+/*
+ * Function Name:resetPassword
+ * Version: V1
+ * Author: Richard McFadden
+ * Funtional description: reseting auth password
+ */
+  public resetPassword(email: string)
+  {
+    
+    return this.authAf.auth.sendPasswordResetEmail(email)
+      .then(() => 
+      {
+        this.displayMessage = 'An email has been sent to ' + email + ' to reset your password.';
+        console.log('email sent');
+        this.log.log(this.displayMessage,this.email,'passwordReset');
+      })
+      .catch((error) => 
+      {
+        this.displayMessage = error;
+        this.log.log(this.displayMessage,this.email,'passwordReset');
+        console.log(error)
+      });
   }
 /** 
  * Function Name:getEmployees
@@ -46,7 +81,8 @@ export class AuthService {
 */
 public getEmployees()
 {
-  return this.http.post("http://localhost:3000/getEmployeeList",'');
+  this.log.log('Employee list was retrieved',this.email,'employeeList');
+  return this.http.post('http://localhost:3000/getEmployeeList', '');
 }
 /** 
  * Function Name:getTitle
@@ -56,14 +92,16 @@ public getEmployees()
 */
   public getTitle()
   {
-    this.http.post("https://a-recognition.herokuapp.com/getTitle",{
-      email:this.email
-    }).subscribe(data=>
+    this.http.post('https://a-recognition.herokuapp.com/getTitle', {
+      email: this.email
+    }).subscribe(data =>
     {
       this.title = data;
     });
     // for the secret sauce
     this.tokenClass.incrementNum();
+
+    this.log.log('Employee Title was retrieved',this.email,'employeeList');
   }
 
 /** 
@@ -72,17 +110,19 @@ public getEmployees()
  * Author: Richard McFadden
  * Funtional description: foundation laying
 */
-  async login(email: string,pass: string)
+  async login(email: string, pass: string)
   {
     try
     {
       this.email = email;
-      await this.authAf.auth.signInWithEmailAndPassword(email,pass).then(value =>
+      await this.authAf.auth.signInWithEmailAndPassword(email, pass).then(value =>
         {
           console.log('SUCCESS', value);
           this.getTitle();
           this.generateToken();
-          setTimeout(()=>
+
+          this.log.log('Employee Logged in',this.email,'loggedIn');
+          setTimeout(() =>
           {
             this.router.navigate(['home']);
           }, 1000);
@@ -93,9 +133,11 @@ public getEmployees()
             this.router.navigate(['login']);
             
             this.displayMessage = err.message;
+            this.log.log(this.displayMessage,this.email,'loggedIn');
+
           });
     }
-    catch(e)
+    catch (e)
     {
       this.displayMessage = e.message;
     }
@@ -109,7 +151,7 @@ public getEmployees()
   public getSecret()
   {
     const tokenBook = this.tokenClass.getTokenBook();
-    if(tokenBook == undefined|| tokenBook == null)
+    if (tokenBook == undefined || tokenBook == null)
     {
       return null;
     }
@@ -134,8 +176,8 @@ public getEmployees()
   public isAuthenticated() : boolean
   {
     const token = localStorage.getItem('token');
-    console.log("Token: ",token);
-    if(token)
+    console.log('Token: ', token);
+    if (token)
     {
       return true;
     }
@@ -149,7 +191,8 @@ public getEmployees()
 */
   public logout()
   {
-    console.log("Removing Token");
+    console.log('Removing Token');
+    this.log.log('Employee Logged out',this.email,'loggedOut');
     localStorage.removeItem('token');
   }
 }

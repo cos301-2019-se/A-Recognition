@@ -1,10 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {AngularFireModule,} from '@angular/fire';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireModule,} from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import {AngularFireDatabaseModule} from '@angular/fire/database';
-import {AngularFireAuthModule} from '@angular/fire/auth';
+import { AngularFireDatabaseModule} from '@angular/fire/database';
+import { AngularFireAuthModule} from '@angular/fire/auth';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -19,6 +18,10 @@ import { TokenInterceptor } from './token.interceptor';
 import { NavComponent } from './nav/nav.component';
 import { WebcamModule } from 'ngx-webcam';
 import { EmployeesComponent } from './employees/employees.component';
+// tslint:disable-next-line: max-line-length
+import { MatButtonModule, MatMenuModule, MatDatepickerModule, MatNativeDateModule, MatIconModule, MatCardModule, MatSidenavModule,MatFormFieldModule, MatInputModule, MatTooltipModule, MatToolbarModule } from '@angular/material';
+import { MatRadioModule } from '@angular/material/radio';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBpazWx_m3UGkQAh6zgEMujQ2JtU3OJzEc',
@@ -46,7 +49,20 @@ const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule, ReactiveFormsModule, AngularFirestoreModule, AngularFireDatabaseModule,
     HttpClientModule,
-    FormsModule,WebcamModule
+    FormsModule, WebcamModule,
+    BrowserAnimationsModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatIconModule,
+    MatRadioModule,
+    MatCardModule,
+    MatSidenavModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTooltipModule,
+    MatToolbarModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS,

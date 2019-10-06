@@ -29,9 +29,9 @@
                     <div *ngIf="otpSub.controls['event'].invalid && (otpSub.controls['event'].dirty || otpSub.controls['event'].touched)" class="alert alert-danger">
                         <div *ngIf="otpSub.controls['event'].errors.required">Event  is required.</div>
                     </div>
-    <!-- <input #email class="form-control" formControlName="email" type="email" placeholder="Email" > -->
     <br>
     <select class="form-control"  formControlName="event" #EventInfo>
+
         <option *ngFor="let i of eventList" [value]="i.eventId">
             {{i.summary}}-{{i.location}} || {{i.startDate}} - {{i.startTime}} ||
         </option>
