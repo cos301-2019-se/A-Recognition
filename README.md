@@ -2,7 +2,7 @@
 ## A-Recognition Access Control
 ### Links 
 
-[SRS Document](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/SRS_Document(23_August2019).pdf)
+<img src="https://img.icons8.com/dotty/20/000000/document.png"> [SRS Document](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/SRS_Document(23_August2019).pdf)
 
 [Coding Standards](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/CodingStandardsAndGuidlines.pdf)
 
