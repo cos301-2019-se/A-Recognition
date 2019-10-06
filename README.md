@@ -14,6 +14,8 @@
 
 [Team Profiles](google.com)
 
+[Informative Presentation](https://docs.google.com/presentation/d/1R2Rll363XIQqKsFinfVS0raQ-YATh57x4ud7AUQ7fiQ/edit?usp=sharing)
+
 ---
 
 ### Description 
