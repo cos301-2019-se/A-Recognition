@@ -25,7 +25,7 @@ The system adheres to the **Protection of Personal Information Act (POPI)** as w
 
 The system is designed to integrate with existing organizational booking systems while administrators use the client to register and manage users, leaving the current booking procedures unchanged.
 
-Guests,or events where the registration of all attendees is deemed unnecessary, can be supplied with a One Time Pin (OTP) to allow access instead.
+Guests, or events where the registration of all attendees is deemed unnecessary, can be supplied with a One Time Pin (OTP) to allow access instead.
 
 ---
 
