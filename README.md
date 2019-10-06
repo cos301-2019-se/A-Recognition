@@ -13,7 +13,7 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 
 [LinkedIn](https://www.linkedin.com/in/jarrod-goschen)
 
-[Git Profile](https://github.com/Wolwe1)
+[Git Profile](https://github.com/Wolwe1) <img src="https://camo.githubusercontent.com/9fc4c1cc526bc7f1afa9b7e120e078795df5225e/68747470733a2f2f692e696d6775722e636f6d2f587179374466482e706e67" alt="Github" data-canonical-src="https://i.imgur.com/Xqy7DfH.png" style="max-width:100%;">
 
 ---
 
@@ -24,7 +24,7 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 
 [LinkedIn](https://www.linkedin.com/in/richard-mcfadden-822705181/)
 
-[Git Profile](https://github.com/Quantu-Adunati)
+[Git Profile](https://github.com/Quantu-Adunati) <img src="https://camo.githubusercontent.com/9fc4c1cc526bc7f1afa9b7e120e078795df5225e/68747470733a2f2f692e696d6775722e636f6d2f587179374466482e706e67" alt="Github" data-canonical-src="https://i.imgur.com/Xqy7DfH.png" style="max-width:100%;">
 
 ---
 
@@ -35,7 +35,7 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 
 [LinkedIn](https://www.linkedin.com/in/adrian-le-grange/)
 
-[Git Profile](https://github.com/Adrian-le-Grange)
+[Git Profile](https://github.com/Adrian-le-Grange) <img src="https://camo.githubusercontent.com/9fc4c1cc526bc7f1afa9b7e120e078795df5225e/68747470733a2f2f692e696d6775722e636f6d2f587179374466482e706e67" alt="Github" data-canonical-src="https://i.imgur.com/Xqy7DfH.png" style="max-width:100%;">
 
 ---
 
@@ -43,7 +43,7 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 - Experience in C# and Java
 - User experience focused
 
-[Git Profile](https://github.com/KyleOlivier)
+[Git Profile](https://github.com/KyleOlivier) <img src="https://camo.githubusercontent.com/9fc4c1cc526bc7f1afa9b7e120e078795df5225e/68747470733a2f2f692e696d6775722e636f6d2f587179374466482e706e67" alt="Github" data-canonical-src="https://i.imgur.com/Xqy7DfH.png" style="max-width:100%;">
 
 ---
 
@@ -54,6 +54,6 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 
 [LinkedIn](www.linkedin.com/in/alessio-rossi-33b0b3181)
 
-[Git Profile](https://github.com/RossiAlessio04)
+[Git Profile](https://github.com/RossiAlessio04) <img src="https://camo.githubusercontent.com/9fc4c1cc526bc7f1afa9b7e120e078795df5225e/68747470733a2f2f692e696d6775722e636f6d2f587179374466482e706e67" alt="Github" data-canonical-src="https://i.imgur.com/Xqy7DfH.png" style="max-width:100%;">
 
 ---
