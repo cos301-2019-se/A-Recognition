@@ -45,6 +45,7 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 - Software development centered degree with experience in multiple languages and frameworks
 - AI Student
 - Game development experience
+- If it hasn't been done, then thats a great reason to try
 
 ---
 
