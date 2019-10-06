@@ -12,7 +12,7 @@
 
 [User Manual](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/A-Recognition-UserManaul(Demo%204).pdf)
 
-[Team Profiles](google.com)
+[Team Profiles](https://github.com/cos301-2019-se/A-Recognition/blob/Team_Members/README.md)
 
 [Informative Presentation](https://docs.google.com/presentation/d/1R2Rll363XIQqKsFinfVS0raQ-YATh57x4ud7AUQ7fiQ/edit?usp=sharing)
 
