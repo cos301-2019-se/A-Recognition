@@ -193,8 +193,17 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/sync', (req, res) => {
+app.post('/sync', (req, res) => {
 
     Main.syncEventsToDB().then( ()=>res.send("Syncing database"))
     .catch( err => res.send("Error syncing database"));
+});
+
+app.post('/changeMailSettings', (req, res) => {
+
+    if(req["body"].hasOwnProperty("setting")){
+        res.send(Main.changeMailSetting(req["body"].setting));
+    }else
+        res.send("Invalid mail setting supplied");
+
 });

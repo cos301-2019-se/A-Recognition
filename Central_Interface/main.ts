@@ -20,7 +20,14 @@ const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
 const ISSUER  = 'Central Interface';         
 //const SUBJECT  = 'admin System';        
-const AUDIENCE  = 'A_Recognition'; 
+const AUDIENCE  = 'A_Recognition';
+const MAILSETTING = {
+    SENDALL : "SendAll",
+    SENDGUEST : "SendGuest",
+    SENDNONE : "SendNone"
+} 
+
+var currentMailSetting = MAILSETTING.SENDALL;
 /**
  * Returns a list of user emails for all users that have bookings on the current day
  * @returns {Promise<Array<string> | null>} an array of emails if there are events for the current day or a null object if there is none or an error occured.
@@ -154,7 +161,7 @@ export function getEmployeeEmails() : Promise<any>{
  /**
  * Validates if the provided email belongs to a registered employee
  * @param {string} email The array or single object to filter
- * @returns {Promise<boolean>}
+ * @returns {Promise<boolean>} True if an employee otherwise False
  */
 export function isEmployee(email : string) : Promise<boolean>{
     
@@ -169,6 +176,13 @@ export function isEmployee(email : string) : Promise<boolean>{
         });
     });
 }
+
+
+ /**
+ * Generates the starting token used by the admin system
+ * @param {string} subject The email of the admin who is currently using the system requesting the token
+ * @returns {string} token
+ */
 
 var tokenBook = {};
 
@@ -199,8 +213,13 @@ export function generateToken(subject : string) : string{
     
 }
 
+/**
+ * Verifies the token passed is valid according to the next token expected
+ * @param {string} originalToken The token sent through
+ * @returns {Promise<boolean>} resolves true if the token is valid or rejects false otherwise
+ */
 
-export function verifyToken(originalToken : string){
+export function verifyToken(originalToken : string) : Promise<boolean>{
 
     let publicKEY  = fs.readFileSync(__dirname + '/public.key', 'utf8');
 
@@ -246,8 +265,13 @@ export function verifyToken(originalToken : string){
     
 }
 
-//secret sauce for the tokens
-function calculateKey(reference,secret) : string{
+/**
+ * This generates the secret pad to be used on the currently accepted token
+ * @param {string} reference The admin email associated with the token "chain"
+ * @param {string} secret The secret associated with the reference
+ * @returns {string}  the pad to be appended to the token
+ */
+function calculateKey(reference : string,secret : string) : string{
 
     if(tokenBook[reference] == undefined)
     return null;
@@ -339,6 +363,11 @@ export function getEmployeeList()
    
 }
 
+/**
+ * Returns a list of all currently scheduled events
+ * @returns {Promise<any>}  An array of events or string stating that there are no events
+ */
+
 export function getEventList() : Promise<any>{
 
 
@@ -352,7 +381,13 @@ export function getEventList() : Promise<any>{
     
     
 }
-//getEmployeeList();
+
+/**
+ * A force generation of an 'Event level OTP' that can be used by any number of guests
+ * @param {number} eventId The event ID of the event the OTP should be generated for
+ * @param {boolean} broadcast Whether or not all participants should have an email notification sent 
+ * @returns {Promise<boolean>}  True if successful or False for any fault
+ */
 
 export function generateOTP(eventId : number, broadcast: boolean) : Promise<boolean>{
 
@@ -399,6 +434,11 @@ export function generateOTP(eventId : number, broadcast: boolean) : Promise<bool
 
 }
 
+/**
+ * Compiles a list of all valid OTP's for an event
+ * @param {Object} event The event to search through
+ * @returns {Array<string>}  A list of valid OTP's
+ */
 function compileValidOTPList(event) : Array<string>{
     let validOtp = [];
 
@@ -411,6 +451,14 @@ function compileValidOTPList(event) : Array<string>{
 
     return validOtp;
 }
+
+/**
+ * Checks if the supplied OTP is valid according to room name - used for mobile app
+ * @param {string} roomName Name of target room
+ * @param {string} otp The otp supplied by user 
+ * @returns {Promise<boolean>}  True if OTP is valid or False for any fault
+ */
+
 export function validateRoomOTP(roomName : string,otp : string) : Promise<boolean>{
 
     return new Promise( (resolve,reject) =>{
@@ -441,6 +489,13 @@ export function validateRoomOTP(roomName : string,otp : string) : Promise<boolea
     })
   }
   
+  /**
+ * Checks if the supplied OTP is valid according to event
+ * @param {number} eventId ID of target room
+ * @param {string} otp The otp supplied by user 
+ * @returns {Promise<boolean>}  True if OTP is valid or False for any fault
+ */
+
 export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
 
   return new Promise( (resolve,reject) =>{
@@ -457,6 +512,14 @@ export function validateOTP(eventId : number,otp : string) : Promise<boolean>{
   })
 }
 
+/**
+ * Finds the target event based off any identifier
+ * @param {Array<any>} eventsList Array of events
+ * @param {string} key The field to search against
+ * @param {string} id the value of the target event
+ * @returns {any}  The target event or null if not found
+ */
+
 function findEvent(array : Array<any>,key : string ,id : string): any{
 
         for (let index = 0; index < array.length; index++) {
@@ -470,7 +533,73 @@ function findEvent(array : Array<any>,key : string ,id : string): any{
         return null;
 }
 
-function updateAttendeeList(local,foreign){
+/**
+ * Sends an email to a target recipient
+ * @param {string} recipient Email of recipient
+ * @param {any} event The event that the recipient is receiving an email for
+ * @param {string} otp Optional, if an otp is already created then it gets passed through
+ * @returns {void} 
+ */
+
+function sendEmail(recipient :string,event:any,otp :string = null){
+    
+    if(currentMailSetting == MAILSETTING.SENDNONE)
+        return;
+    
+    let newOTP;
+
+    if(currentMailSetting == MAILSETTING.SENDGUEST){
+        isEmployee(recipient).then( anEmployee =>{
+        
+            if( !anEmployee){
+                if(otp == null)
+                    newOTP =  NotificationSystem.generateOTP();
+                else newOTP = otp;
+
+                let notifyViaOTP ={
+                    guest : recipient,
+                    location : event.location,
+                    startDate : event.startDate
+                }
+
+                if(event.startTime != null){
+                    notifyViaOTP["startTime"] = event.startTime;
+                }
+
+                NotificationSystem.sendEmail("otp",notifyViaOTP,newOTP);
+            }
+                
+            
+        }).catch(err => console.log(err));
+    }else if(currentMailSetting = MAILSETTING.SENDALL){
+
+        if(otp == null)
+            newOTP =  NotificationSystem.generateOTP();
+        else newOTP = otp;
+
+        let notifyViaOTP ={
+            guest : recipient,
+            location : event.location,
+            startDate : event.startDate
+        }
+
+        if(event.startTime != null){
+            notifyViaOTP["startTime"] = event.startTime;
+        }
+
+        NotificationSystem.sendEmail("otp",notifyViaOTP,newOTP);
+    }
+                         
+}
+
+/**
+ * Updates database stored event according to that of booking api
+ * @param {any} local Our database version of the event to be updated
+ * @param {any} foreign The event supplied by the booking API
+ * @returns {boolean}  Whether a change was found
+ */
+
+function updateAttendeeList(local,foreign) : boolean{
     let localEmails = local.attendees.map( el => el.email);
     let found = false;
     
@@ -485,23 +614,7 @@ function updateAttendeeList(local,foreign){
                 otp : newOTP
             });
 
-            isEmployee(attendee).then( anEmployee =>{
-                
-                if( !anEmployee){
-
-                    let notifyViaOTP ={
-                        guest : attendee,
-                        location : local.location,
-                        startDate : local.startDate
-                    }
-
-                    if(local.startTime != null){
-                        notifyViaOTP["startTime"] = local.startTime;
-                    }
-                
-                    NotificationSystem.sendEmail("otp",notifyViaOTP,newOTP);
-                }
-            }).catch(err => console.log(err));            
+                sendEmail(attendee,local,newOTP);
             
         }   
     }
@@ -517,6 +630,27 @@ function updateAttendeeList(local,foreign){
     return !found;
 }
 
+
+/**
+ * Changes the email settings
+ * @param {string} setting An enum
+ * @returns {boolean}  True if the supplied setting was valid otherwise false
+ */
+export function changeMailSetting(setting : string): boolean{
+
+    if(setting == MAILSETTING.SENDALL || setting == MAILSETTING.SENDGUEST || setting == MAILSETTING.SENDNONE){
+        currentMailSetting = setting;
+        return true;
+    }else{
+        return false;
+    }
+}
+
+/**
+ * Synchronizes the database with the information supplied by the booking API
+ * @returns {Promise<any>}  Doesnt really
+ */
+
 export async function syncEventsToDB() : Promise<any>{
 
     let theTruth = [];
@@ -524,7 +658,7 @@ export async function syncEventsToDB() : Promise<any>{
     let toBeDeleted = [];
     let toBeCheckedForUpdates = [];
     let toBeAdded = [];
-    //await clearOutdatedEvents();
+   
     DatabaseManager.retrieveAllEvents().then(DBevents =>{
         Adapter.getEvents("primary",true,
         {id:true,summary:true,location:true,start:true,end:true,attendees: true})
@@ -583,7 +717,14 @@ export async function syncEventsToDB() : Promise<any>{
                     }
                 }
                     DatabaseManager.addEvent(request)
-                    .then(res =>console.log(res))
+                    .then(res =>{
+                        console.log(res);
+                        userOtpPair.forEach(pair => {
+                            //Notify Attendees
+                            sendEmail(pair.email,event,pair.otp); 
+                        });
+                        
+                    })
                     .catch( res => console.log(res) );
                     
                 });
@@ -636,9 +777,28 @@ export async function syncEventsToDB() : Promise<any>{
                      }
      
                 });
+            }).catch( err => {      // There were no events found or an error occured
+
+                if(err == "No upcoming events found."){
+                    
+                    if(DBevents.events.length == 0)
+                        console.log("There are no events scheduled");
+                    else
+                        console.log("Clearing Local DB");
+                    
+                    DBevents.events.forEach(dbEvent => {
+                        DatabaseManager.deleteEvent({body:{eventId :dbEvent.eventId} })
+                        .then(res =>console.log(res))
+                        .catch(res => console.log(res));
+                    });
+                    
+    
+                }else 
+                    console.log(err);
+                     
             });
     
-    });
+    }).catch(err => console.log(err));
 
 }
 
