@@ -1,3 +1,46 @@
+<body style="background: linear-gradient(to bottom, black 0%,black 50%,#000000 50%,white 50%,white 100%);">
+   <div class="container" style="padding-top:60px;"> 
+       <div class="row">  
+         <div class="col-md-6 mx-auto">  
+           <div class="card-group">  
+             <div class="card p-4">  
+               <div class="card-body">    
+                   <h1 style="text-align:center">Manual OTP generation</h1> 
+                   <br>
+                   <form class="col-md-10 mx-auto">    
+                   <br/> 
+                      
+                     <div class="input-group mb-3">  
+                       <div class="input-group-prepend">  
+                         <span class="input-group-text"><i class="fa fa-envelope"></i></span>  
+                       </div>  
+                       <input #email  type="email" placeholder="Email of OTP receiver" class="form-control sty1">
+                     </div>  
+                     <div class="input-group mb-4">  
+                       <div class="input-group-prepend">  
+                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>  
+                       </div>  
+                       <select #EventInfo class="form-control sty1">
+                        <option *ngFor="let i of eventList" [value]="i.id">
+                            {{i.summary}}-{{i.location}} || {{i.startDate}} - {{i.startTime}} ||
+                        </option>
+                        </select>
+                     </div>   
+                     <div class="row">  
+                       <div class="col-6">  
+                        <button id="snap" class="btn btn-primary" (click)='generateOTP(email.value,EventInfo.value)' style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645">Generate OTP</button>
+                       </div>   
+                     </div>  
+                       
+                   </form>   
+             </div>  
+           </div>  
+         </div>  
+       </div>  
+     </div>  
+     </div>
+</body>
+<!--
 <div class="jumbotron">
   <div class="row">
      <div class="col">
@@ -19,4 +62,4 @@
   <div>
   <button id="snap" class="btn btn-primary" (click)='generateOTP(email.value,EventInfo.value)'>Generate OTP</button>
   </div>
-</div>
+</div>-->

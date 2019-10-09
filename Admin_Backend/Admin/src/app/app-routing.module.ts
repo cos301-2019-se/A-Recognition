@@ -6,6 +6,7 @@ import { HomeComponent } from './home/home.component';
 import { AddingComponent } from './adding/adding.component';
 import { OTPComponent } from './otp/otp.component';
 import { ReportsComponent } from './reports/reports.component';
+import { EmployeesComponent } from './employees/employees.component';
 
 // PREVENT ACTIVATION BY USING
 //canLoad instead of canActivate
@@ -30,6 +31,11 @@ const routes: Routes =
   { 
     path: 'otp',
     component: OTPComponent,
+    canActivate: [AuthGuard] 
+  },
+  { 
+    path: 'emp',
+    component: EmployeesComponent,
     canActivate: [AuthGuard] 
   },
   { 

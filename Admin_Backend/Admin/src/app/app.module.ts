@@ -21,6 +21,7 @@ import { WebcamModule } from 'ngx-webcam';
 import { MatButtonModule, MatMenuModule, MatDatepickerModule,MatNativeDateModule , MatIconModule, MatCardModule, MatSidenavModule,MatFormFieldModule, MatInputModule, MatTooltipModule, MatToolbarModule } from '@angular/material';  
 import { MatRadioModule } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EmployeesComponent } from './employees/employees.component';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBpazWx_m3UGkQAh6zgEMujQ2JtU3OJzEc',
@@ -39,7 +40,8 @@ const firebaseConfig = {
     AddingComponent,
     OTPComponent,
     HomeComponent,
-    NavComponent
+    NavComponent,
+    EmployeesComponent
   ],
   imports: [
     BrowserModule,

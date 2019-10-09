@@ -24,15 +24,15 @@
                       </div>  
                       <input formControlName="password" class="form-control" placeholder="Password" #password>
                       <div *ngIf="userLogin.controls['password'].invalid && (userLogin.controls['password'].dirty || userLogin.controls['password'].touched)" class="alert alert-danger">
-                          <div *ngIf="userLogin.controls['password'].errors.required">Password type is required.</div>
+                          <div *ngIf="userLogin.controls['password'].errors.required">Password is required.</div>
                       </div> 
                     </div>   
                     <div class="row">  
                       <div class="col-6">  
-                        <button type="submit" (click)="this.authService.login(username.value, password.value)" class="btn btn-primary px-4" [disabled]="!userLogin.valid">Login</button>
+                        <button type="submit" (click)="this.authService.login(username.value, password.value)" class="btn btn-primary px-4" [disabled]="!userLogin.valid" style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645">Login</button>
                       </div>  
                       <div class="col-6 text-right">  
-                        <button type="button" class="btn btn-link px-0">Forgot password?</button>  
+                        <button type="button" class="btn btn-link px-0" style="color: #001645">Forgot password?</button>  
                       </div>  
                     </div>  
                       

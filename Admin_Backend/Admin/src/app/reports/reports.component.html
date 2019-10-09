@@ -1,63 +1,49 @@
-<div class="container">  
-  
-    <mat-card>  
-      <mat-toolbar color="accent">  
-        <div align="center" style="color:white;text-align: right;">  
-          Reports  
-        </div>    
-      </mat-toolbar>  
-    <br><br>  
-      <mat-card-content>  
-        <form [formGroup]="reportForm"(ngSubmit)="onFormSubmit(reportForm.value)">  
-                <table>  
-                  <tr>  
-                    <td class="tbl1">  
-                      <mat-form-field class="demo-full-width">  
-                        <input formControlName="Search" matTooltip="Eg: Malaria" matInput placeholder="Search User">  
-                      </mat-form-field>  
-                      <mat-error>  
-                        <span *ngIf="!reportForm.get('Search').value && reportForm.get('Search').touched"></span>  
-                      </mat-error>  
-                    </td> 
-                    <td class="tbl1" hidden="true">  
-                      <mat-form-field class="demo-full-width">  
-                        <input formControlName="TimeVal" matTooltip="Eg: Malaria" matInput placeholder="Search User">  
-                      </mat-form-field>   
-                    </td>  
-                    <td class="tbl1" hidden="true">  
-                      <mat-form-field class="demo-full-width">  
-                        <input formControlName="DescriptionVal" matTooltip="Eg: Malaria" matInput placeholder="Search User">  
-                      </mat-form-field>    
-                    </td>  
-                  </tr>     
-                  <tr>  
-                    <td></td>  
-                    <td  class="content-center">  
-                      <button type="submit" mat-raised-button color="accent"matTooltip="Click Search Button">Search</button>      <!--[disabled]="!reportForm.valid"-->
-                      <button type="reset" mat-raised-button color="accent"matTooltip="Click Reset Button" (click)="resetForm()">Reset</button>  
-                    </td>  
-                    <td>  
-                      <p *ngIf="dataSaved" style="color:rgb(0, 128, 0);font-size:20px;font-weight:bold" Class="success" align="left">  
-                        {{message}}  
-                      </p>  
-                    </td>  
+<body style="background: linear-gradient(to bottom, black 0%,black 50%,#000000 50%,white 50%,white 100%);">
+  <div class="container" style="padding-top:60px;"> 
+      <div class="row">  
+        <div class="col-md-10 mx-auto">  
+          <div class="card-group">  
+            <div class="card p-4">  
+              <div class="card-body">    
+                  <h1 style="text-align:center">Reports</h1> 
+                  <br>
+                  <form [formGroup]="reportForm"(ngSubmit)="onFormSubmit(reportForm.value)">  
+                    <div class="input-group mb-3">  
+                      <div class="input-group-prepend">  
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>  
+                      </div>  
+                      <input formControlName="Search" class="form-control sty1" placeholder="Search User" #username>
+                      <div *ngIf="reportForm.controls['username'].invalid && (reportForm.controls['username'].dirty || reportForm.controls['username'].touched)" class="alert alert-danger">
+                          <div *ngIf="reportForm.controls['username'].errors.required">User name is required.</div>
+                      </div>
+                    </div>  
+                    <div class="row">  
+                      <div class="col-6 text-right">  
+                        <button type="submit" class="btn btn-primary px-4" [disabled]="!userLogin.valid" style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645">Search</button>
+                      </div>  
+                      <div class="col-6 text-left">  
+                        <button type="reset" class="btn btn-primary px-4" (click)="resetForm()" style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645">Reset</button>  
+                      </div>  
+                    </div>          
+        <br><br> <br><br>
+              <table class="table" >  
+                  <tr ngclass="btn-primary">  
+                    <th class="tbl2">User Name</th> 
+                    <th class="tbl2">Date of Report</th> 
+                    <th class="tbl2">Description</th>  
                   </tr>  
+                  <tr *ngFor="let report of allReports | async">  
+                    <td class="tbl2">{{report.Name}}</td>  
+                    <td class="tbl2">{{report.Time}}</td>  
+                    <td class="tbl2">{{report.Description}}</td>
+                  </tr>  
+          
                 </table>  
-    <br><br> 
-          <table class="table" >  
-              <tr ngclass="btn-primary">  
-                <th class="tbl2">User Name</th> 
-                <th class="tbl2">Date of Report</th> 
-                <th class="tbl2">Description</th>  
-              </tr>  
-              <tr *ngFor="let report of allReports | async">  
-                <td class="tbl2">{{report.Name}}</td>  
-                <td class="tbl2">{{report.Time}}</td>  
-                <td class="tbl2">{{report.Description}}</td>
-              </tr>  
-      
-            </table>  
-        </form>  
-      </mat-card-content>  
-    </mat-card>  
+            </form>    
+            </div>  
+          </div>  
+        </div>  
+      </div>  
+    </div>  
     </div>
+</body>

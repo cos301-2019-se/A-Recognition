@@ -25,6 +25,17 @@ export class AuthService {
     });
   }
 
+  /** 
+ * Function Name:getEmployees
+ * Version: V3.5
+ * Author: Richard McFadden
+ * Funtional description: retrieves a list of all the employees currently registered.
+*/
+public getEmployees()
+{
+  return this.http.post("http://localhost:3000/getEmployeeList",'');
+}
+
   // Functionality for logging in
   async login(email: string,pass: string)
   {
