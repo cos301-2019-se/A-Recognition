@@ -131,7 +131,7 @@
      </div>
   </div>
 </div> -->
-<body style="background: linear-gradient(to bottom, black 0%,black 50%,#000000 50%,white 50%,white 100%);">
+<body style="background: linear-gradient(to bottom,  lightgrey 0%,grey 50%,lightgrey 50%,white 50%,white 100%);">
    <!--min-height: 100vh; -->
       <div class="container" style="padding-top:60px;">  
           <div class="row">  
@@ -174,7 +174,7 @@
                  <div class="modal-dialog" role="document">
                     <div class="modal-content">
                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Take a picture</h5>
+                          <h5 class="modal-title" style="color: #001645" id="exampleModalLabel">Take a picture</h5>
                           <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='this.showWebcam = false;'>
                           <span aria-hidden="true">&times;</span>
                           </button>
@@ -210,7 +210,7 @@
                                    <option value="Ms">Ms</option>>
                                 </select>
                                 <br>
-                                <div><button id="snap" class="btn btn-primary" data-dismiss="modal" (click)='this.showWebcam = false;' (click)="triggerSnapshot()">Snap Photo</button></div>
+                                <div><button id="snap" class="btn btn-primary" style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645" data-dismiss="modal" (click)='this.showWebcam = false;' (click)="triggerSnapshot()">Snap Photo</button></div>
                              </div>
                              </form>
                           </div>
@@ -224,7 +224,7 @@
               <div class="modal fade" id="uploadImage" tabindex="-1" role="dialog" aria-labelledby="uploadImage" aria-hidden="true">
                  <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                       <div class="modal-header">
+                       <div class="modal-header" style="color: #001645">
                           <h5 class="modal-title" id="exampleModalLabel">Upload an image</h5>
                           <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='this.showWebcam = false;'>
                           <span aria-hidden="true">&times;</span>
@@ -257,7 +257,7 @@
                                 <option value="Ms">Ms</option>
                              </select>
                              <br/><br><br>
-                             <div><input type="submit" class="btn btn-primary" data-dismiss="modal" (click) ="processFile(imageInput,Name.value,Surname.value,Title.value,Email.value)"/></div>
+                             <div><input type="submit" class="btn btn-primary"  style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645" data-dismiss="modal" (click) ="processFile(imageInput,Name.value,Surname.value,Title.value,Email.value)"/></div>
                             </div>  
                             </form>
                           

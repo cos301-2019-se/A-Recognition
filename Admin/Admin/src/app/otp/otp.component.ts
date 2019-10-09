@@ -34,7 +34,15 @@ export class OTPComponent implements OnInit {
   }
   onItemChange(value){
     console.log('Value is: ', value );
-    this.brdCast = true;
+    if(this.brdCast == false)
+    {
+      this.brdCast = true;
+    }
+    else 
+    {
+      this.brdCast = false;
+    }
+   
  }
 /** 
  * Function Name:generateOTP

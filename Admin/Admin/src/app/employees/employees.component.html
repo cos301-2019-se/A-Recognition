@@ -1,4 +1,4 @@
-<div class="jumbotron">
+<!-- <div class="jumbotron">
     <div class="row">
        <div class="col">
           <div class="mx-auto w-50 p-3 bg-dark text-white text-center">
@@ -74,5 +74,88 @@
            </div>
         </div>
      </div>     
-  </div>
-  
+  </div> -->
+  <body style="background: linear-gradient(to bottom, lightgrey 0%,grey 50%,lightgrey 50%,white 50%,white 100%);">
+   <div class="container" style="padding-top:60px;"> 
+       <div class="row">  
+         <div class="col-md-12 mx-auto">  
+           <div class="card-group">  
+             <div class="card p-4">  
+               <div class="card-body">    
+                   <h1 style="text-align:center;color: #001645">Employees</h1> 
+                   <br><br>
+                   <div class="container">
+                        <div class="mx-auto w-50 text-center">
+                           <div class="row">
+                              <ng-template [ngIf]='message != "" ' >
+                                 <div class="alert alert-success" role="alert" *ngIf="valid==true">
+                                    {{message}}<br>
+                                 </div>
+                                 <div class="alert alert-danger" role="alert" *ngIf="valid==false">
+                                    {{message}}<br>
+                                 </div>
+                              </ng-template>
+                           </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                         <div class="col-lg-4 col-sm-6 portfolio-item" *ngFor="let i of employeeList">
+                            <div class="card h-100">
+                               <div class="card-body">
+                                  <h4 class="card-title">
+                                    <p><b style="color: #001645">Title:</b> {{i.title}}.</p> <p><b style="color: #001645">Name:</b> {{i.name}} </p><p><b style="color: #001645">Surname:</b> {{i.surname}}</p><p>{{i.email}}</p>
+                                    <button type="submit" class="btn btn-primary button" (click)='this.showWebcam = true;' data-toggle="modal" [attr.data-target]="'#'+i.name" style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645">Edit</button> &nbsp;
+                                    <div class="modal fade" [attr.id]="i.name" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                         <div class="modal-content">
+                                            <div class="modal-header">
+                                               <h5 class="modal-title" id="exampleModalLabel" style="color: #001645" > Edit Employee</h5>
+                                               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                               <span aria-hidden="true">&times;</span>
+                                               </button>
+                                            </div>
+                                            <div class="modal-body">
+                                               <div id="app">
+                                                <form [formGroup]="editEmployees"  novalidate>
+                                                      <div *ngIf="editEmployees.controls['name'].invalid && (editEmployees.controls['name'].dirty || editEmployees.controls['name'].touched)" class="alert alert-danger">
+                                                            <div *ngIf="editEmployees.controls['name'].errors.required">Name is required.</div>
+                                                        </div>
+                                                        <div *ngIf="editEmployees.controls['surname'].invalid && (editEmployees.controls['surname'].dirty || editEmployees.controls['surname'].touched)" class="alert alert-danger">
+                                                            <div *ngIf="editEmployees.controls['surname'].errors.required">Surname  is required.</div>
+                                                        </div>
+                                                        <div *ngIf="editEmployees.controls['email'].invalid && (editEmployees.controls['email'].dirty || editEmployees.controls['email'].touched)" class="alert alert-danger">
+                                                            <div *ngIf="editEmployees.controls['email'].errors.required">Email is required.</div>
+                                                        </div>
+                                                  
+                                                  <div >
+                                                     <label>Name</label>
+                                                     <input #NameSnap class="form-control" formControlName="name" type="text" value= '{{i.name}}' >
+                                                     <label>Surname</label>
+                                                     <input #SurnameSnap  type="text" class="form-control" formControlName="surname" value= '{{i.surname}}'>
+                                                     <label>Email</label>
+                                                     <input #EmailSnap  type="email" class="form-control" formControlName="email" value= '{{i.email}}'>
+                                                     <br>
+                                                     <div><button id="snap" class="btn btn-primary button" data-dismiss="modal" (click)='this.showWebcam = false;' (click)="triggerSnapshot()" style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645">Snap Photo</button></div>
+                                                  </div>
+                                                  </form>
+                                               </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                               <button type="button" class="btn btn-primary" data-dismiss="modal" (click)='this.showWebcam = false;' style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645"> Close</button>
+                                            </div>
+                                        
+                                         </div>
+                                      </div>
+                                   </div>
+                                  </h4>
+                               </div>
+                            </div>
+                         </div>     
+                      </div>  
+             </div>  
+           </div>  
+         </div>  
+       </div>  
+     </div>  
+     </div>
+</body>

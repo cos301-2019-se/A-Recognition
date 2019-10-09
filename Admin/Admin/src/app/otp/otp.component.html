@@ -1,4 +1,4 @@
-<div class="jumbotron">
+<!-- <div class="jumbotron">
     <div class="row">
        <div class="col">
           <div class="mx-auto w-50 p-3 bg-dark text-white text-center">
@@ -42,4 +42,77 @@
     <button id="snap" class="btn btn-primary" (click)='generateOTP(EventInfo.value)'>Generate OTP</button>
     </div>
     </form>
-</div>
+</div> -->
+<body style="background:  linear-gradient(to bottom, lightgrey 0%,grey 50%,lightgrey 50%,white 50%,white 100%);">
+   <div class="container" style="padding-top:60px;"> 
+       <div class="row">  
+         <div class="col-md-6 mx-auto">  
+           <div class="card-group">  
+             <div class="card p-4">  
+               <div class="card-body">
+                 <!--MODAL-->    
+                 <div class="container">
+                    <div class="mx-auto w-50 text-center">
+                       <div class="row">
+                          <ng-template [ngIf]='message != "" ' >
+                             <div class="alert alert-success" role="alert" *ngIf="valid==true">
+                                {{message}}<br>
+                             </div>
+                             <div class="alert alert-danger" role="alert" *ngIf="valid==false" >
+                                {{message}}<br>
+                             </div>
+                          </ng-template>
+                       </div>
+                    </div>
+                  </div>
+                 <!-- <div class="modal fade" id="display" tabindex="-1" role="dialog" aria-labelledby="display" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                       <div class="modal-content">
+                          <div class="modal-header">
+                             <h5 class="modal-title" id="exampleModalLabel">{{message}}</h5>
+                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                             <span aria-hidden="true">&times;</span>
+                             </button>
+                          </div>
+                       </div>
+                    </div>
+                 </div> -->
+                 <!--MODAL END-->
+
+                   <h1 style="text-align:center">Manual OTP generation</h1> 
+                   <br>
+                   <form class="col-md-10 mx-auto" [formGroup]="otpSub"  novalidate>    
+                   <br/> 
+                   <div *ngIf="otpSub.controls['event'].invalid && (otpSub.controls['event'].dirty || otpSub.controls['event'].touched)" class="alert alert-danger">
+                      <div *ngIf="otpSub.controls['event'].errors.required">Event  is required.</div>
+                    </div>
+                     <div class="input-group mb-3"> 
+                        Select the event you want to create an OTP for:
+                       <div class="input-group-prepend">  
+                         <span class="input-group-text"><i class="fa fa-calendar"></i></span>  
+                       </div>  
+                       <select class="form-control"  formControlName="event" #EventInfo style="cursor: pointer;">
+                        <option *ngFor="let i of eventList" [value]="i.eventId">
+                            {{i.summary}}-{{i.location}} || {{i.startDate}} - {{i.startTime}} ||
+                        </option>
+                    </select>
+                     </div>  
+                     <label class="checkcontainer">&nbsp; Broadcast OTP
+                        <input type="checkbox" id ="radioBTN" name="gender" #broadCast value="broadCast" (change)="onItemChange($event)">
+                        <span class="checkmark"></span>
+                      </label>
+                      <br>
+                     <div class="row">  
+                       <div class="col-12 text-center">  
+                        <button id="snap" class="btn btn-primary button" style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645" (click)='generateOTP(EventInfo.value)'>Generate OTP</button>
+                       </div>   
+                     </div>  
+                       
+                   </form>   
+             </div>  
+           </div>  
+         </div>  
+       </div>  
+     </div>  
+     </div>
+</body>
