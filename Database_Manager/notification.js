@@ -102,6 +102,8 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null,otpIN 
     /**
      * A default test endpoint used when determing the status of emails being sent.
      */
+    
+    
         if(emailToken == "test") {
             mailOptions.from = "arecognition.bot@gmail.com",
             mailOptions.to = "rossimichele04@gmail.com",
@@ -114,26 +116,38 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null,otpIN 
         }
         else if(emailToken == "otp") 
         {
+
             if(recipient == null)       //Allowed for your test functionality and normal
                 mailOptions = messages.otpClient;
             else 
             {
-                mailOptions.from = "arecognition.bot@gmail.com",
-                mailOptions.to = recipient.guest,
-                mailOptions.subject = "OTP Access"
-                //mailOptions.generateTextFromHTML = true,      
-                if(otpIN == null)
-                {
-                    mailOptions.html = "Your OTP to gain entrance to specified meeting room at Advance is: " ;  
-                    mailOptions.html += generatePlease().otp;
-                }
-                else
-                {
-                    mailOptions.html = "This is an manually generated OTP for the room you booked: " ;  
-                    mailOptions.html += otpIN.otp;
-                }
                 
+                mailOptions.from = "arecognition.bot@gmail.com";
+                mailOptions.to = recipient.guest;
+                mailOptions.subject = "OTP Access";
+                //mailOptions.generateTextFromHTML = true,    
+                mailOptions.html = "Here are the details of your booking:";
+                mailOptions.html += "<br><br>";
+                mailOptions.html +="Location: "+ recipient.location;
+                mailOptions.html += "<br>";
+                mailOptions.html +="Date: "+ recipient.startDate;
+                mailOptions.html += "<br>";
+
+                if(recipient.hasOwnProperty("startTime")){
+                    mailOptions.html +="Time: "+ recipient.startTime;
+                    mailOptions.html += "<br>";
+                }
+                    
+                
+                mailOptions.html += "Your OTP to gain entrance is: " ;
+
             }
+
+                if(otpIN == null) 
+                    mailOptions.html += generatePlease().otp;
+                else
+                    mailOptions.html += otpIN.otp;
+                
         }
 
     smtpTransport.sendMail(mailOptions, (error, response) => {
