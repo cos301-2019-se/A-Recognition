@@ -762,7 +762,6 @@ export async function syncEventsToDB() : Promise<any>{
                 let attendees = event.attendees;
                 let userOtpPair = [];
                 
-                console.log(event);
                 
                 attendees.forEach(attendee => {
                     userOtpPair.push( {
@@ -777,6 +776,7 @@ export async function syncEventsToDB() : Promise<any>{
                         summary     : event.summary,
                         location    : event.location,
                         startTime   : event.startTime,
+                        startDate   : event.startDate,
                         endTime     : event.endTime,
                         attendees : userOtpPair
                     }
