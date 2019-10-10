@@ -574,6 +574,14 @@ async retrieveAllEvents() : Promise<any> {
                 });
             }
 
+            if(!this.checkBody(request.body, "startDate"))
+            {
+                reject({
+                    "status" : "Failure",
+                    "message" : '\'startDate\' field was not specified!'
+                });
+            }
+
             //Check if event exists
             var eventsRef = this.db.collection('events').doc(request.body.eventId);
             var getDoc = eventsRef.get().then(doc => {
@@ -594,6 +602,7 @@ async retrieveAllEvents() : Promise<any> {
                                 "startTime" : request.body.startTime,
                                 "endTime" : request.body.endTime,
                                 "attendees" : request.body.attendees,
+                                "startDate" : request.body.startDate,
                                 "eventOTP"  : ""
                             }).then(ref => {
                                 console.log('Added Event: ' + request.body.eventId);
