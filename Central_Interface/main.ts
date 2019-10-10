@@ -451,6 +451,8 @@ export function generateOTP(eventId : number, broadcast: boolean) : Promise<bool
         
     DatabaseManager.retrieveEvent({ body : {eventId : eventId}})
     .then( event => {
+        console.log("event:",event);
+        
         event.eventId = eventId;
         event.eventOTP = otp;
         
@@ -458,7 +460,6 @@ export function generateOTP(eventId : number, broadcast: boolean) : Promise<bool
           
             if(broadcast == true)
             {   
-                console.log(event);
                 event["attendees"].forEach(attendee => {
                     let notifyViaOTP ={
                         guest : attendee.email,
@@ -856,6 +857,7 @@ export async function syncEventsToDB() : Promise<any>{
                                 location    : event.location,
                                 startTime   : event.startTime,
                                 endTime     : event.endTime,
+                                startDate   : event.startDate,
                                 attendees : event.attendees
                             }
                         }
@@ -881,7 +883,6 @@ export async function syncEventsToDB() : Promise<any>{
                         .catch(res => console.log(res));
                     });
                     
-    
                 }else 
                     console.log(err);
                      
