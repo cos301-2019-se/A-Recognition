@@ -36,7 +36,7 @@ export class AuthService {
       if (data == 'null')
       {
         this.displayMessage = 'Error generating a token';
-        this.log.log(this.displayMessage,this.email,'token');
+        //this.log.log(this.displayMessage,this.email,'token');
       }
       else
       {
@@ -45,7 +45,7 @@ export class AuthService {
         // Secret Sauce
         this.tokenClass.setEmail(this.email);
         this.tokenClass.setTokenBook();
-        this.log.log('Token generated',this.email,'token');
+        //this.log.log('Token generated',this.email,'token');
       }
     });
 
@@ -69,7 +69,7 @@ export class AuthService {
       .catch((error) => 
       {
         this.displayMessage = error;
-        this.log.log(this.displayMessage,this.email,'passwordReset');
+        //this.log.log(this.displayMessage,this.email,'passwordReset');
         console.log(error)
       });
   }
@@ -81,7 +81,7 @@ export class AuthService {
 */
 public getEmployees()
 {
-  this.log.log('Employee list was retrieved',this.email,'employeeList');
+  //this.log.log('Employee list was retrieved',this.email,'employeeList');
   return this.http.post('http://localhost:3000/getEmployeeList', '');
 }
 /** 
@@ -101,7 +101,7 @@ public getEmployees()
     // for the secret sauce
     this.tokenClass.incrementNum();
 
-    this.log.log('Employee Title was retrieved',this.email,'employeeList');
+   // this.log.log('Employee Title was retrieved',this.email,'employeeList');
   }
 
 /** 
@@ -133,7 +133,7 @@ public getEmployees()
             this.router.navigate(['login']);
             
             this.displayMessage = err.message;
-            this.log.log(this.displayMessage,this.email,'loggedIn');
+            //this.log.log(this.displayMessage,this.email,'loggedIn');
 
           });
     }
@@ -192,7 +192,7 @@ public getEmployees()
   public logout()
   {
     console.log('Removing Token');
-    this.log.log('Employee Logged out',this.email,'loggedOut');
+    //this.log.log('Employee Logged out',this.email,'loggedOut');
     localStorage.removeItem('token');
   }
 }
