@@ -433,7 +433,7 @@ export function generateOTP(eventId : number, broadcast: boolean) : Promise<bool
         event.eventOTP = otp;
         
         DatabaseManager.updateEvent({ body : event}).then( result =>{
-
+          
             if(broadcast == true)
             {   
                 event["attendees"].forEach(attendee => {
@@ -452,6 +452,7 @@ export function generateOTP(eventId : number, broadcast: boolean) : Promise<bool
                               
             }
             resolve(true);
+            console.log(result);
             
         }).catch( err => {
             console.log(err.message);
@@ -499,7 +500,7 @@ export function validateRoomOTP(roomName : string,otp : string) : Promise<boolea
       .then( eventsObj => {
         
         let targetEvent = null;
-        console.log(eventsObj.events,roomName);
+        //console.log(eventsObj.events,roomName);
         eventsObj.events.forEach(event => {
             
             
