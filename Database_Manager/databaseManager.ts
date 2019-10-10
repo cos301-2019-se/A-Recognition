@@ -402,7 +402,7 @@ export default class dbManager {
      **/
     async log(request) : Promise<any> {
         return new Promise( (resolve, reject) => {
-            let updateDoc = this.db.collection('logs').doc(request.body.date).set(
+            let updateDoc = this.db.collection('logs').doc(request.body.date.toISOString()).set(
                 {
                     "description" : request.body.description,
                     "user" : request.body.user,
@@ -410,11 +410,10 @@ export default class dbManager {
                     "date" : request.body.date
                 })
             .then(ref => {
-                console.log('Log added: ', request.body.user);
                 resolve({
                         "status" : "Success"
                     });
-            });
+            }).catch(err => console.log("DB err:",err));
         });
     }
 
@@ -501,6 +500,38 @@ async retrieveAllEvents() : Promise<any> {
     });
 
 }
+
+/** 
+    * @description: Function retrieves all events
+**/
+async retrieveAllLogs() : Promise<any> {
+    return new Promise( (resolve, reject) => {
+       var logs = [];
+        //Check if user exists
+        this.db.collection('logs').get().then(snapshot => {
+            
+            snapshot.forEach(doc => {
+                
+                logs.push(
+                    doc.data()
+                );
+            });
+                
+                resolve({
+                    "status" : "Success",
+                    "logs" : logs
+                });
+        })
+        .catch(err => {
+            reject({
+                "status" : "Failure",
+                "message" : "Document could not be retrieved!"
+            });
+        });
+    });
+
+}
+
     /** 
      * @description: Function that adds a new event
      * @param eventId: The eventId toidentify event
