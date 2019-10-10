@@ -89,6 +89,28 @@ app.post('/addEmployee',upload.single('image'), (req, res) => {
     res.json(Main.addEmplpoyee(req)); 
 });
 /** 
+ * Function Name:updateEmployee
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: takes in formdata which contains everything
+ * needed to update a  user.
+*/
+app.post('/updateEmployee',upload.single('image'), (req,res) =>
+{
+    res.json(Main.updatingEmployee(req));
+});
+/** 
+ * Function Name:updatingEmployeeWithout
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: takes in formdata which contains everything
+ * needed to update a user without a new photo
+*/
+app.post('/updateEmployeeWithout', (req, res)=>
+{
+    res.json(Main.updatingEmployeeWithout(req));
+});
+/** 
  * Function Name:getEmployeeList
  * Version: V1.0
  * Author: Richard McFadden
@@ -147,7 +169,7 @@ app.post('/getEventList',(req,res) => {
 
 app.post('/generateOTP',(req,res) => {
 
-    console.log(req["body"].eventId);
+    console.log(req["headers"].authorization);
     if(req["body"].hasOwnProperty("eventId"))
             (Main.generateOTP(req["body"].eventId, req['body'].broadcast)).then(success => { res.send(success)}).catch(err => res.send(err));
     else

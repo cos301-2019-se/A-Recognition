@@ -335,6 +335,28 @@ export function addEmplpoyee(req : any)
       return true;
 }
 /** 
+ * Function Name:updatingEmployee
+ * Version: V2.7
+ * Author: Richard McFadden
+ * Funtional description: makes the request to the python file
+ * to update the  employee to the database
+*/
+export function updatingEmployee(req: any)
+{
+
+}
+/** 
+ * Function Name:updatingEmployeeWithout
+ * Version: V2.7
+ * Author: Richard McFadden
+ * Funtional description: makes the request to the python file
+ * to update the  employee to the database without image
+*/
+export function updatingEmployeeWithout(req: any)
+{
+
+}
+/** 
  * Function Name:getTitle
  * Version: V1.0
  * Author: Richard McFadden
@@ -403,6 +425,7 @@ export function generateOTP(eventId : number, broadcast: boolean) : Promise<bool
 
             if(broadcast == true)
             {   
+                console.log(event);
                 event["attendees"].forEach(attendee => {
                     let notifyViaOTP ={
                         guest : attendee.email,

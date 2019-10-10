@@ -102,7 +102,6 @@ export class AddingComponent implements OnInit
         this.message = 'An error occured during registration.';
         this.valid = false;
       }
-      this.log.log(this.message,'newUser@test.com','userRegistration');
     });
   }
     /** 
@@ -159,7 +158,6 @@ export class AddingComponent implements OnInit
           this.message = 'An error occured during registration.';
           this.valid = false;
         }
-        this.log.log(this.message,'newUser@test.com','userRegistration');
       });
   }
   /** 

@@ -19,7 +19,7 @@ export class ImageService {
   }
   public uploadImageTaken(img,name,surname,title,email): Observable<any> 
   {
-    const formData:FormData = new FormData();
+    const formData: FormData = new FormData();
     formData.append('image', img);
     formData.append('name', name);
     formData.append('surname', surname);
@@ -27,5 +27,26 @@ export class ImageService {
     formData.append('title', title);
     this.tokenClass.incrementNum();
     return this.http.post('http://localhost:3000/addEmployee', formData);
+  }
+  public updatingEmployee(img,name,surname,email): Observable<any>
+  {
+    const formData: FormData = new FormData();
+    formData.append('image', img);
+    formData.append('name', name);
+    formData.append('surname', surname);
+    formData.append('email', email);
+    this.tokenClass.incrementNum();
+    return this.http.post('http://localhost:3000/updateEmployee', formData);
+
+  }
+  public updatingEmployeeWithout(name,surname,email): Observable<any>
+  {
+    const formData: FormData = new FormData();
+    formData.append('name', name);
+    formData.append('surname', surname);
+    formData.append('email', email);
+    this.tokenClass.incrementNum();
+    return this.http.post('http://localhost:3000/updateEmployeeWithout', formData);
+
   }
 }

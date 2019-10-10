@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from  '../auth.service';
+import {ImageService} from '../image.service';
 import {Subject, Observable} from 'rxjs';
 import { FormControl, FormGroup, FormBuilder, Validators  } from '@angular/forms';
 import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
@@ -11,7 +12,7 @@ import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
 })
 export class EmployeesComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder, public auth: AuthService)
+  constructor(private formBuilder: FormBuilder, public auth: AuthService,public imageService: ImageService)
   { 
 
   }
@@ -50,32 +51,6 @@ export class EmployeesComponent implements OnInit {
     });
   }  
   /** 
-  * Function Name:handleImage
-  * Version: V3.5
-  * Author: Richard McFadden
-  * Funtional description:gets the imagedata and sends it along
- */
-   public handleImage(webcamImage: WebcamImage,name,surname,title,email): void {
-     console.info('received webcam image', webcamImage);
-     this.webcamImage = webcamImage;
-     let temp = this.webcamImage.imageAsDataUrl;
-    //  let tempTwo:Blob = this.dataURItoBlob(temp);
-    //  const imageFile = new File([tempTwo], name, { type: 'image/jpeg' });
- 
-    //  this.imageService.uploadImageTaken(imageFile,name,surname,title,email).subscribe( res =>
-    //  {
-    //    if (res == true)
-    //    {
-    //      this.message = 'User registered.';
-    //      this.valid = true;
-    //    }
-    //    else{
-    //      this.message = 'An error occured during registration.';
-    //      this.valid = false;
-    //    }
-    //  });
-   }
-  /** 
  * Function Name:triggerSnapshot
  * Version: V3.5
  * Author: Richard McFadden
@@ -102,5 +77,82 @@ public toggleWebcam(): void {
 public handleInitError(error: WebcamInitError): void {
   this.errors.push(error);
 }
+/** 
+* Function Name:handleImage
+* Version: V3.5
+* Author: Richard McFadden
+* Funtional description:gets the imagedata and sends it along
+*/
+public handleImage(webcamImage: WebcamImage,name,surname,email): void {
+  console.info('received webcam image', webcamImage);
+  this.webcamImage = webcamImage;
+  let temp = this.webcamImage.imageAsDataUrl;
+  let tempTwo:Blob = this.dataURItoBlob(temp);
+  const imageFile = new File([tempTwo], name, { type: 'image/jpeg' });
 
+  this.imageService.updatingEmployee(imageFile, name, surname, email).subscribe( res =>
+  {
+    if (res == true)
+    {
+      this.message = 'User Updated.';
+      this.valid = true;
+    }
+    else{
+      this.message = 'An error occured during the updating process.';
+      this.valid = false;
+    }
+  });
+}
+/** 
+* Function Name:handleImage
+* Version: V3.5
+* Author: Richard McFadden
+* Funtional description:gets the imagedata and sends it along
+*/
+public handleWithoutImage(name,surname,email): void {
+
+  this.imageService.updatingEmployeeWithout(name, surname, email).subscribe( res =>
+  {
+    if (res == true)
+    {
+      this.message = 'User Updated.';
+      this.valid = true;
+    }
+    else{
+      this.message = 'An error occured during the updating process.';
+      this.valid = false;
+    }
+  });
+}
+  /** 
+* Function Name:dataURItoBlob
+* Version: V3.5
+* Author: Richard McFadden
+* Funtional description:takes a uri and transforms it into a blob to be
+* saved as a file
+*/
+public dataURItoBlob(dataURI)
+{
+  var byteString = atob(dataURI.split(',')[1]);
+  var ab = new ArrayBuffer(byteString.length);
+  var ia = new Uint8Array(ab);
+  for (var i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: 'image/jpeg' });
+}
+
+public get triggerObservable(): Observable<void> {
+  return this.trigger.asObservable();
+}
+/** 
+* Function Name:close
+* Version: V3.5
+* Author: Richard McFadden
+* Funtional description: Just reloads the page.
+*/
+public close()
+{
+  window.location.reload();
+}
 }
