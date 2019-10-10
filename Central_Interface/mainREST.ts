@@ -34,9 +34,10 @@ var allowCrossDomain = function(req, res, next) {
     }
 };
 app.use(allowCrossDomain);
+let port = process.env.PORT || 3000;
 
-app.listen(process.env.PORT || 3000, () => {
- console.log("Server running");
+app.listen(port, () => {
+ console.log("Server running at ",port);
 });
 
 //var LOCAL = true;
@@ -100,6 +101,28 @@ app.post('/addEmployee',upload.single('image'), (req, res) => {
     Main.log("User added","User",req["headers"]["authorization"],true);
 });
 /** 
+ * Function Name:updateEmployee
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: takes in formdata which contains everything
+ * needed to update a  user.
+*/
+app.post('/updateEmployee',upload.single('image'), (req,res) =>
+{
+    res.json(Main.updatingEmployee(req));
+});
+/** 
+ * Function Name:updatingEmployeeWithout
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: takes in formdata which contains everything
+ * needed to update a user without a new photo
+*/
+app.post('/updateEmployeeWithout', (req, res)=>
+{
+    res.json(Main.updatingEmployeeWithout(req));
+});
+/** 
  * Function Name:getEmployeeList
  * Version: V1.0
  * Author: Richard McFadden
@@ -155,20 +178,23 @@ function delay(ms: number) {
 app.post('/getEventList',(req,res) => {
 
     Main.getEventList().then( events =>{
-        Main.log("Event list retrieved","Admin",req["headers"]["authorization"],true);
+        //Main.log("Event list retrieved","Admin",req["headers"]["authorization"],true);
         res.json(events);
     })
 });
 
 app.post('/generateOTP',(req,res) => {
 
-    console.log(req["body"].eventId);
     if(req["body"].hasOwnProperty("eventId")){
-        Main.log("Event OTP generated","Admin",req["headers"]["authorization"],true);
-        (Main.generateOTP(req["body"].eventId, req['body'].broadcast)).then(success => { res.send(success)}).catch(err => res.send(err));
+        // Main.log("Event OTP generated","Admin",req["headers"]["authorization"],true)
+        // .then(res => console.log("Item logged"))
+        // .catch(res => console.log("Log fail"));
+        
+        Main.generateOTP(req["body"].eventId, req['body'].broadcast).then(success => { res.send(success)}).catch(err => res.send(err));
     }
             
     else
+
         res.send("Invalid event ID supplied");
     
 });

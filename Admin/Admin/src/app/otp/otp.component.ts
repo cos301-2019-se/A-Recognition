@@ -71,7 +71,7 @@ export class OTPComponent implements OnInit {
         this.message = 'An error occured during OTP generation.';
         this.valid = false;
       }
-      this.log.log(this.message,'newOTP@test.com','otpGeneration');
+      //this.log.log(this.message,'newOTP@test.com','otpGeneration');
     });
   }
 

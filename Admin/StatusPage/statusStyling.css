@@ -2,3 +2,30 @@
 {
     color: white;
 }
+
+.popup-fail
+{
+    width: 60%;
+    padding: 70px;
+    margin: auto;
+    border: 3px solid #343a40;
+    text-align: center;
+    background-image: linear-gradient(to right, rgb(207, 51, 12), rgb(223, 156, 140), rgb(207, 51, 12));
+}
+
+.popup-success
+{
+    width: 60%;
+    padding: 70px;
+    margin: auto;
+    border: 3px solid #343a40;
+    text-align: center;
+    background-image: linear-gradient(to right, rgba(16, 173, 16, 1) , rgba(16, 173, 16, 0), rgba(16, 173, 16, 1));
+}
+
+.message
+{
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 40px;
+    font-weight: bold;
+}

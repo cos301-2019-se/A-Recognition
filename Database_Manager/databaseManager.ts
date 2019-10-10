@@ -655,6 +655,7 @@ async retrieveAllEvents() : Promise<any> {
                             "eventId" : doc.get("eventId"),
                             "summary" : doc.get("summary"),
                             "location" : doc.get("location"),
+                            "startDate" : doc.get("startDate"),
                             "startTime" : doc.get("startTime"),
                             "endTime" : doc.get("endTime"),
                             "attendees" : doc.get("attendees"),
@@ -790,6 +791,7 @@ async retrieveAllEvents() : Promise<any> {
                                 "location" : request.body.location,
                                 "startTime" : request.body.startTime,
                                 "endTime" : request.body.endTime,
+                                "startDate" : request.body.startDate,
                                 "attendees" : request.body.attendees,
                                 "eventOTP"  : request.body.eventOTP
                             })

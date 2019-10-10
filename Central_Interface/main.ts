@@ -368,6 +368,28 @@ export function addEmplpoyee(req : any)
       return true;
 }
 /** 
+ * Function Name:updatingEmployee
+ * Version: V2.7
+ * Author: Richard McFadden
+ * Funtional description: makes the request to the python file
+ * to update the  employee to the database
+*/
+export function updatingEmployee(req: any)
+{
+
+}
+/** 
+ * Function Name:updatingEmployeeWithout
+ * Version: V2.7
+ * Author: Richard McFadden
+ * Funtional description: makes the request to the python file
+ * to update the  employee to the database without image
+*/
+export function updatingEmployeeWithout(req: any)
+{
+
+}
+/** 
  * Function Name:getTitle
  * Version: V1.0
  * Author: Richard McFadden
@@ -429,11 +451,13 @@ export function generateOTP(eventId : number, broadcast: boolean) : Promise<bool
         
     DatabaseManager.retrieveEvent({ body : {eventId : eventId}})
     .then( event => {
+        console.log("event:",event);
+        
         event.eventId = eventId;
         event.eventOTP = otp;
         
         DatabaseManager.updateEvent({ body : event}).then( result =>{
-
+          
             if(broadcast == true)
             {   
                 event["attendees"].forEach(attendee => {
@@ -452,6 +476,7 @@ export function generateOTP(eventId : number, broadcast: boolean) : Promise<bool
                               
             }
             resolve(true);
+            console.log(result);
             
         }).catch( err => {
             console.log(err.message);
@@ -499,7 +524,7 @@ export function validateRoomOTP(roomName : string,otp : string) : Promise<boolea
       .then( eventsObj => {
         
         let targetEvent = null;
-        console.log(eventsObj.events,roomName);
+        //console.log(eventsObj.events,roomName);
         eventsObj.events.forEach(event => {
             
             
@@ -832,6 +857,7 @@ export async function syncEventsToDB() : Promise<any>{
                                 location    : event.location,
                                 startTime   : event.startTime,
                                 endTime     : event.endTime,
+                                startDate   : event.startDate,
                                 attendees : event.attendees
                             }
                         }
@@ -857,7 +883,6 @@ export async function syncEventsToDB() : Promise<any>{
                         .catch(res => console.log(res));
                     });
                     
-    
                 }else 
                     console.log(err);
                      
