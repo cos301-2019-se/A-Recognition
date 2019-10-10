@@ -1,6 +1,6 @@
 /** 
  * Filename: main.ts
- * Version: V1.3
+ * Version: V1.5
  * Author: JJ Goschen
  * Project name: A-Recognition (Advance)
  * Organization: Singularity
@@ -15,6 +15,7 @@ import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 import * as crypto from 'crypto';
 import { setInterval } from "timers";
+import { SSL_OP_LEGACY_SERVER_CONNECT } from "constants";
 var DatabaseManager = new dbManager();
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
@@ -210,6 +211,38 @@ export function generateToken(subject : string) : string{
     tokenBook[subject] = 1;
     
     return token;
+    
+}
+
+/**
+ * Returns the subject of a token
+ * @param {string} tokenkey The token sent through
+ * @returns {Promis<string>} subject
+ */
+function simpleVerify(tokenkey : string) : Promise<string>{
+
+    let token = tokenkey.substring(6,tokenkey.length  -3);
+
+    let publicKEY  = fs.readFileSync(__dirname + '/public.key', 'utf8');
+
+    var verifyOptions = {
+        issuer:  ISSUER,
+        audience:  AUDIENCE,
+        expiresIn:  "1h",
+        algorithm:  ["RS256"]
+    };
+
+    return new Promise( (resolve,reject) =>{
+        jwt.verify(token, publicKEY, verifyOptions,(err,result)=>{
+        
+            console.log(result);
+            
+            if( err != null)    //Invalid token,expired etc
+                reject("");
+            else
+                resolve(result.sub);
+        });
+    });
     
 }
 
@@ -629,18 +662,35 @@ function updateAttendeeList(local,foreign) : boolean{
     }
     return !found;
 }
-export function log(msg: string, dateNow:Date,userNow:string,categoryNow:string)
+export function log(msg: string,categoryNow:string,token:string,isToken:boolean)
 {
-    return new Promise( (resolve,reject) =>{
-        DatabaseManager.log({ body : { date: dateNow,
-            description: msg,
-            user: userNow,
-            category: categoryNow}})
-        .then( event => {
-            console.log("Logs stored.",event);
-                resolve(true);
-            }).catch( err => reject(false));
-    });
+    if(isToken){
+        return new Promise( (resolve,reject) =>{
+            simpleVerify(token).then(sender =>{
+                DatabaseManager.log({ body : { date: new Date(),
+                    description: msg,
+                    user: sender,
+                    category: categoryNow}})
+                .then( event => {
+                    console.log("Logs stored.",event);
+                        resolve(true);
+                    }).catch( err => reject(false));
+            });
+        });
+    }else{  //Is not a token 'system call'
+        return new Promise( (resolve,reject) =>{
+            
+                DatabaseManager.log({ body : { date: new Date(),
+                    description: msg,
+                    user: token,
+                    category: categoryNow}})
+                .then( event => {
+                    console.log("Logs stored.",event);
+                        resolve(true);
+                    }).catch( err => reject(false));
+            });
+    }
+    
 }
 
 
@@ -711,6 +761,8 @@ export async function syncEventsToDB() : Promise<any>{
         
                 let attendees = event.attendees;
                 let userOtpPair = [];
+                
+                console.log(event);
                 
                 attendees.forEach(attendee => {
                     userOtpPair.push( {

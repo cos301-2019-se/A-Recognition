@@ -70,6 +70,15 @@ export class Adapter{
 
             this.adaptee.getUserEvents(identifier,resultSize,endTime).then( (bookings)=>{
 
+                bookings.forEach(booking => {
+
+                    if(booking["attendees"] == null){
+                        booking["attendees"] = [];
+                        booking["attendees"].push(booking["creator"]);
+                    }
+                          
+                });
+                
                 if(!filter)
                 resolve(bookings);
                 else 
