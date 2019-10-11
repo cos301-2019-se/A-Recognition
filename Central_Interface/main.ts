@@ -60,17 +60,8 @@ export function getUsersFromDaysEvents() :Promise<Array<string> | null>{
 
 function openAccessPage(type : string){
   
-    https.get('localhost:42069/'+type, (resp) => {
-    let data = '';
-
-    // The whole response has been received. Print out the result.
-    resp.on('end', () => {
-        console.log("Display page opened");
-    });
-
-    }).on("error", (err) => {
-    console.log("Error: " + err.message);
-    });
+    https.get('http://localhost:42069/'+type)
+  
 }
  /**
  * Validates that the given email at the given room has a booking at the current time
@@ -108,7 +99,6 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                     }
                 }
             });
-            
             for (let i = 0; i < currentEvents.length; i++) {
                 let event = currentEvents[i];
                 let dateNow = currentTime.toISOString().substr(0,currentTime.toISOString().indexOf("T"));
@@ -125,7 +115,6 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                 if(room == event.location){
                     
                     let message = "";
-
                     if( Utils.inArray(email,Adapter.getEventAttendees(event))){
 
                         message += "User has a booking in that room";
@@ -142,11 +131,10 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                         message += "User does not have a booking for that room";
                         openAccessPage("deny");
                     }
-                    
+                    console.log(message);
                     resolve(message);
                     
                 }
-                
             }
             resolve("There is no booking for that room now");
             
