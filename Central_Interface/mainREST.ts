@@ -112,13 +112,6 @@ app.post('/addEmployee',upload.single('image'), (req, res) => {
     .then(res => console.log("Item logged"))
     .catch(res => console.log("Log fail"));
 });
-/** 
- * Function Name:updateEmployee
- * Version: V1.0
- * Author: Richard McFadden
- * Funtional description: takes in formdata which contains everything
- * needed to update a  user.
-*/
 app.post('/updateEmployee',upload.single('image'), (req,res) =>
 {
     res.json(Main.updatingEmployee(req));
@@ -133,6 +126,26 @@ app.post('/updateEmployee',upload.single('image'), (req,res) =>
 app.post('/updateEmployeeWithout', (req, res)=>
 {
     res.json(Main.updatingEmployeeWithout(req));
+});
+/** 
+ * Function Name:getEmployeeList
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: list of employees
+*/
+app.post('/getEmployeeList',(req,res)=>
+{
+    Main.getEmployeeList().then( users => res.json(users)).catch( err => res.send(err));; 
+});
+/** 
+ * Function Name:DBUpdateEmployee
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: Updates the User on the DB
+*/
+app.post('/DBUpdateEmployee',(req,res)=>
+{
+    res.json(Main.DBUpdateEmployee(req));
 });
 /** 
  * Function Name:getEmployeeList
@@ -210,7 +223,6 @@ app.post('/generateOTP',(req,res) => {
     }
             
     else
-
         res.send("Invalid event ID supplied");
     
 });

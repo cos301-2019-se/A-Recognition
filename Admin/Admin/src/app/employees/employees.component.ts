@@ -83,14 +83,14 @@ public handleInitError(error: WebcamInitError): void {
 * Author: Richard McFadden
 * Funtional description:gets the imagedata and sends it along
 */
-public handleImage(webcamImage: WebcamImage,name,surname,email): void {
+public handleImage(webcamImage: WebcamImage,title ,name,surname,email): void {
   console.info('received webcam image', webcamImage);
   this.webcamImage = webcamImage;
   let temp = this.webcamImage.imageAsDataUrl;
   let tempTwo:Blob = this.dataURItoBlob(temp);
   const imageFile = new File([tempTwo], name, { type: 'image/jpeg' });
 
-  this.imageService.updatingEmployee(imageFile, name, surname, email).subscribe( res =>
+  this.imageService.updatingEmployee(imageFile, title,name, surname, email).subscribe( res =>
   {
     if (res == true)
     {
@@ -109,9 +109,9 @@ public handleImage(webcamImage: WebcamImage,name,surname,email): void {
 * Author: Richard McFadden
 * Funtional description:gets the imagedata and sends it along
 */
-public handleWithoutImage(name,surname,email): void {
+public handleWithoutImage(title, name, surname, email): void {
 
-  this.imageService.updatingEmployeeWithout(name, surname, email).subscribe( res =>
+  this.imageService.updatingEmployeeWithout(title, name, surname, email).subscribe( res =>
   {
     if (res == true)
     {
