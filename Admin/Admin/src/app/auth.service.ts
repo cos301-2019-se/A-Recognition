@@ -64,7 +64,7 @@ export class AuthService {
       {
         this.displayMessage = 'An email has been sent to ' + email + ' to reset your password.';
         console.log('email sent');
-        this.log.log(this.displayMessage,this.email,'passwordReset');
+        //this.log.log(this.displayMessage,this.email,'passwordReset');
       })
       .catch((error) => 
       {
@@ -121,7 +121,7 @@ public getEmployees()
           this.getTitle();
           this.generateToken();
 
-          this.log.log('Employee Logged in',this.email,'loggedIn');
+          //this.log.log('Employee Logged in',this.email,'loggedIn');
           setTimeout(() =>
           {
             this.router.navigate(['home']);

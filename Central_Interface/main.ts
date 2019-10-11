@@ -221,8 +221,8 @@ export function generateToken(subject : string) : string{
  */
 function simpleVerify(tokenkey : string) : Promise<string>{
 
-    let token = tokenkey.substring(6,tokenkey.length  -3);
-
+    let token = tokenkey.substring(7,tokenkey.length  -3);
+    
     let publicKEY  = fs.readFileSync(__dirname + '/public.key', 'utf8');
 
     var verifyOptions = {
@@ -234,8 +234,6 @@ function simpleVerify(tokenkey : string) : Promise<string>{
 
     return new Promise( (resolve,reject) =>{
         jwt.verify(token, publicKEY, verifyOptions,(err,result)=>{
-        
-            console.log(result);
             
             if( err != null)    //Invalid token,expired etc
                 reject("");
@@ -487,14 +485,14 @@ export function generateOTP(eventId : number, broadcast: boolean) : Promise<bool
         
     DatabaseManager.retrieveEvent({ body : {eventId : eventId}})
     .then( event => {
+        
         event.eventId = eventId;
         event.eventOTP = otp;
         
         DatabaseManager.updateEvent({ body : event}).then( result =>{
-
+          
             if(broadcast == true)
             {   
-                console.log(event);
                 event["attendees"].forEach(attendee => {
                     let notifyViaOTP ={
                         guest : attendee.email,
@@ -558,7 +556,7 @@ export function validateRoomOTP(roomName : string,otp : string) : Promise<boolea
       .then( eventsObj => {
         
         let targetEvent = null;
-        console.log(eventsObj.events,roomName);
+        //console.log(eventsObj.events,roomName);
         eventsObj.events.forEach(event => {
             
             
@@ -723,18 +721,21 @@ function updateAttendeeList(local,foreign) : boolean{
 }
 export function log(msg: string,categoryNow:string,token:string,isToken:boolean)
 {
+    
     if(isToken){
         return new Promise( (resolve,reject) =>{
             simpleVerify(token).then(sender =>{
+                
                 DatabaseManager.log({ body : { date: new Date(),
                     description: msg,
                     user: sender,
                     category: categoryNow}})
                 .then( event => {
-                    console.log("Logs stored.",event);
                         resolve(true);
-                    }).catch( err => reject(false));
-            });
+                    }).catch( err => {
+                        reject(false)
+                    });
+            }).catch(err => console.log("Error parsing token:",err) );
         });
     }else{  //Is not a token 'system call'
         return new Promise( (resolve,reject) =>{
@@ -744,7 +745,6 @@ export function log(msg: string,categoryNow:string,token:string,isToken:boolean)
                     user: token,
                     category: categoryNow}})
                 .then( event => {
-                    console.log("Logs stored.",event);
                         resolve(true);
                     }).catch( err => reject(false));
             });
@@ -891,6 +891,7 @@ export async function syncEventsToDB() : Promise<any>{
                                 location    : event.location,
                                 startTime   : event.startTime,
                                 endTime     : event.endTime,
+                                startDate   : event.startDate,
                                 attendees : event.attendees
                             }
                         }
@@ -916,7 +917,6 @@ export async function syncEventsToDB() : Promise<any>{
                         .catch(res => console.log(res));
                     });
                     
-    
                 }else 
                     console.log(err);
                      
@@ -924,6 +924,19 @@ export async function syncEventsToDB() : Promise<any>{
     
     }).catch(err => console.log(err));
 
+}
+
+export function getReports(){
+    return new Promise( (resolve,reject) =>{
+        DatabaseManager.retrieveAllLogs().then( logsObj =>{
+
+            console.log(logsObj.logs);
+            resolve(logsObj.logs);
+            
+        }).catch( err => console.log(err));
+    });
+  
+    
 }
 
 setInterval(()=>{

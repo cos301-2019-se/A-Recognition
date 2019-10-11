@@ -56,6 +56,7 @@ const messages = require('./messages');
  * determined by the relevant endpoint used} emailToken 
  */
 exports.sendEmail = async function sendEmail(emailToken, recipient = null,otpIN = null) {
+
     /**
      * A simple variable array that will hold the relevant details per message that will determine the type
      * of notification to send and whom to send it to.
@@ -153,7 +154,9 @@ exports.sendEmail = async function sendEmail(emailToken, recipient = null,otpIN 
     smtpTransport.sendMail(mailOptions, (error, response) => {
         error ? console.log(error) : console.log("Email sent to "+response.accepted[0]);
         smtpTransport.close();
-   });}
+   });
+
+}
 
    otpValue = {
        "otp": "",
