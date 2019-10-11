@@ -5,7 +5,7 @@ var fs = require("fs");
 const { exec } = require('child_process');
 
 app.get('/allow', function (req, res) {
-    exec('/usr/lib/firefox/firefox/firefox success.html', (err, stdout, stderr) => {
+    exec('/usr/bin/firefox success.html', (err, stdout, stderr) => {
         if (err)
         {
             console.log("Could not open the browser!");
@@ -16,7 +16,7 @@ app.get('/allow', function (req, res) {
 })
 
 app.get('/deny', function (req, res) {
-    exec('/usr/lib/firefox/firefox/firefox failure.html', (err, stdout, stderr) => {
+    exec('/usr/bin/firefox failure.html', (err, stdout, stderr) => {
         if (err)
         {
             console.log("Could not open the browser!");

@@ -15,7 +15,7 @@ import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 import * as crypto from 'crypto';
 import { setInterval } from "timers";
-import { SSL_OP_LEGACY_SERVER_CONNECT } from "constants";
+import * as https from "https";
 var DatabaseManager = new dbManager();
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
@@ -58,6 +58,20 @@ export function getUsersFromDaysEvents() :Promise<Array<string> | null>{
         
 }
 
+function openAccessPage(type : string){
+  
+    https.get('localhost:42069/'+type, (resp) => {
+    let data = '';
+
+    // The whole response has been received. Print out the result.
+    resp.on('end', () => {
+        console.log("Display page opened");
+    });
+
+    }).on("error", (err) => {
+    console.log("Error: " + err.message);
+    });
+}
  /**
  * Validates that the given email at the given room has a booking at the current time
  * @param {string} email The array or single object to filter
@@ -112,15 +126,22 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                     
                     let message = "";
 
-                    if( Utils.inArray(email,Adapter.getEventAttendees(event)))
-                    message += "User has a booking in that room";
-                    else
-                    message += "User does not have a booking for that room";
-                    
-                    if(currentTime.getTime() > entranceAllowedToEvent.getTime())
-                    message += ",Room allows access now";
-                    else
-                    message += ",Room does not allow access yet";
+                    if( Utils.inArray(email,Adapter.getEventAttendees(event))){
+
+                        message += "User has a booking in that room";
+
+                        if(currentTime.getTime() > entranceAllowedToEvent.getTime()){
+                            message += ",Room allows access now";
+                            openAccessPage("allow");
+                        }else{
+                            message += ",Room does not allow access yet";
+                            openAccessPage("wait");
+                        }
+                            
+                    }else{
+                        message += "User does not have a booking for that room";
+                        openAccessPage("deny");
+                    }
                     
                     resolve(message);
                     
