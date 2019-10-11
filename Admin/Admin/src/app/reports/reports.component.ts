@@ -14,28 +14,70 @@ export class ReportsComponent implements OnInit {
 
   }
 
-  allReports: object;
+  allReports: any;
+  matchingReports: any;
   dataSaved = false;  
   reportForm: any;  
   diseaseIdUpdate = null;  
   message = null;
 
   ngOnInit() {    
-      this.reportForm = this.formbulider.group({  
-      Search: ['', [Validators.required]],  
-      TimeVal: ['', [Validators.required]],
-      DescriptionVal: ['', [Validators.required]]
+      
+    this.reportService.getAllReports().subscribe(res =>{
+      this.allReports = res;
+
+      this.allReports.forEach(report => {
+        report.dateTime = new Date(report.date._seconds * 1000);    
+      });
+      this.matchingReports = this.allReports;
     });
-    this.loadAllReports();  
+
+    this.reportForm = this.formbulider.group({  
+      // Search: ['', [Validators.required]],  
+      // TimeVal: ['', [Validators.required]],
+      // DescriptionVal: ['', [Validators.required]]
+      report:['', [Validators.required]]
+    });
   }  
   loadAllReports() {  
-    this.allReports = this.reportService.getAllReports();  
+      
   } 
   
+  search(searchTerm :string){
+    searchTerm = searchTerm.toLowerCase();
+
+    this.matchingReports = this.matchingReports.filter(report =>{
+      if(report.user.toLowerCase().includes(searchTerm) || report.description.toLowerCase().includes(searchTerm) 
+      || report.dateTime.toString().toLowerCase().includes(searchTerm) 
+      || report.category.toLowerCase().includes(searchTerm))
+        return true;
+      else
+        return false;
+    }); 
+    
+  }
+
+  undo(searchTerm :string){
+    searchTerm = searchTerm.toLowerCase();
+
+    console.log("Did a backspace");
+    this.matchingReports = this.allReports.filter(report =>{
+      if(report.user.toLowerCase().includes(searchTerm) || report.description.toLowerCase().includes(searchTerm) 
+        || report.dateTime.toString().toLowerCase().includes(searchTerm)
+        || report.category.toLowerCase().includes(searchTerm))
+        return true;
+      else
+        return false;
+    }); 
+  }
+
   onFormSubmit() {  
     this.dataSaved = false;  
-    const value = this.reportForm.Search.value;  
-    this.SearchReports(value);  
+    //const value = this.reportForm.report.value;  
+    console.log(this.reportForm);
+    console.log(this.reportForm.report);
+    
+    //this.SearchReports(value);  
     //this.reportForm.reset();  
   }  
 

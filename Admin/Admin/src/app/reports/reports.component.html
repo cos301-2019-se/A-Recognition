@@ -74,14 +74,14 @@
                         <div class="input-group-prepend">  
                           <span class="input-group-text"><i class="fa fa-search"></i></span>  
                         </div>  
-                        <input formControlName="Search" class="form-control sty1" placeholder="Search report" #username>
-                        <div *ngIf="reportForm.controls['username'].invalid && (reportForm.controls['username'].dirty || reportForm.controls['username'].touched)" class="alert alert-danger">
-                            <div *ngIf="reportForm.controls['username'].errors.required">User name is required.</div>
+                        <input formControlName="report" class="form-control sty1" placeholder="Search report" #searchTerm (keyup.backspace)="undo(searchTerm.value)" (keyup)="search(searchTerm.value)">
+                        <div *ngIf="reportForm.controls['report'].invalid && (reportForm.controls['report'].dirty || reportForm.controls['report'].touched)" class="alert alert-danger">
+                            <div *ngIf="reportForm.controls['report'].errors.required">User name is required.</div>
                         </div>
                       </div>  
                       <div class="row">  
                         <div class="col-6 text-right">  
-                          <button type="submit" class="btn btn-primary px-4 button" [disabled]="!userLogin.valid" style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645">Search</button>
+                          <button type="submit" class="btn btn-primary px-4 button"  style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645">Search</button>
                         </div>  
                         <div class="col-6 text-left">  
                           <button type="reset" class="btn btn-primary px-4 button" (click)="resetForm()" style="box-shadow: 0 8px 8px 0 black; background-color: #001645; border-color: #001645">Reset</button>  
@@ -94,10 +94,10 @@
                       <th class="tbl2">Date of Report</th> 
                       <th class="tbl2">Description</th>  
                     </tr>  
-                    <tr *ngFor="let report of allReports | async">  
-                      <td class="tbl2">{{report.Name}}</td>  
-                      <td class="tbl2">{{report.Time}}</td>  
-                      <td class="tbl2">{{report.Description}}</td>
+                    <tr *ngFor="let report of matchingReports">  
+                      <td class="tbl2">{{report.user}}</td>  
+                      <td class="tbl2">{{report.dateTime}}</td>
+                      <td class="tbl2">{{report.description}}</td>
                     </tr>  
             
                   </table>  
