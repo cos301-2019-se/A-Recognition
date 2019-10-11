@@ -69,15 +69,16 @@
                 <div class="card-body">    
                     <h1 style="text-align:center" style="color: #001645">Reports</h1> 
                     <br>
+                    <div *ngIf="reportForm.controls['report'].invalid && (reportForm.controls['report'].dirty || reportForm.controls['report'].touched)" class="alert alert-danger">
+                      <div *ngIf="reportForm.controls['report'].errors.required">Please input something to search.</div>
+                  </div>
                     <form [formGroup]="reportForm"(ngSubmit)="onFormSubmit(reportForm.value)">  
                       <div class="input-group mb-3">  
                         <div class="input-group-prepend">  
                           <span class="input-group-text"><i class="fa fa-search"></i></span>  
                         </div>  
                         <input formControlName="report" class="form-control sty1" placeholder="Search report" #searchTerm (keyup.backspace)="undo(searchTerm.value)" (keyup)="search(searchTerm.value)">
-                        <div *ngIf="reportForm.controls['report'].invalid && (reportForm.controls['report'].dirty || reportForm.controls['report'].touched)" class="alert alert-danger">
-                            <div *ngIf="reportForm.controls['report'].errors.required">User name is required.</div>
-                        </div>
+                     
                       </div>  
                       <div class="row">  
                         <div class="col-6 text-right">  
