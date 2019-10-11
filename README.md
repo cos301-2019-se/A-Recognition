@@ -37,7 +37,7 @@ The **overall requirements** of the system should be:
 ---
 
 ### The Team
-<details>
+### <details>
   
 ##### Jarrod Goschen
 <img src="https://img.icons8.com/color/30/000000/linkedin.png"> [LinkedIn](https://www.linkedin.com/in/jarrod-goschen) 
