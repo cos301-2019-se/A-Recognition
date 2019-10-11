@@ -42,8 +42,6 @@ app.listen(process.env.PORT || 3000, () => {
 //var LOCAL = true;
 
 app.post("/getUsersFromDaysEvents", (req, res) => { 
-
-    Main.log("Facial recognition shortlist updated","Facial recognition","System",false);
     Main.getUsersFromDaysEvents().then( users => res.json(users)).catch( err => res.send(err));
 });
 
@@ -54,14 +52,7 @@ app.post("/validateUserHasBooking", (req, res, next) => {
         let email = req["body"].email;
         let room = req["body"].room;
 
-        Main.validateUserHasBooking(email,room).then( msg => {
-            res.send(msg);
-            console.log(msg);
-            Main.log("Access Attempt","Facial recognition","System",false);
-        }).catch( err => {
-            res.send(err);
-            Main.log("Failed Access Attempt","Facial recognition","System",false);
-        });
+        Main.validateUserHasBooking(email,room).then( msg => {res.send(msg);console.log(msg)}).catch( err => res.send(err));
     }else{
         res.send("Please send email and room name");
     }    
@@ -71,7 +62,6 @@ app.post('/getEmails', (req, res) => {
 
     Main.getEmployeeEmails().then( employees =>{
         res.json(employees);
-        Main.log("Email list retrieved","Facial recognition","System",false);
     }).catch( err => res.send(err));
 });
 
@@ -97,15 +87,7 @@ app.post('/isEmployee', (req, res) => {
 app.post('/addEmployee',upload.single('image'), (req, res) => {
     //await delay(1000);
     res.json(Main.addEmplpoyee(req)); 
-    Main.log("User added","User",req["headers"]["authorization"],true);
 });
-/** 
- * Function Name:updateEmployee
- * Version: V1.0
- * Author: Richard McFadden
- * Funtional description: takes in formdata which contains everything
- * needed to update a  user.
-*/
 app.post('/updateEmployee',upload.single('image'), (req,res) =>
 {
     res.json(Main.updatingEmployee(req));
@@ -120,6 +102,26 @@ app.post('/updateEmployee',upload.single('image'), (req,res) =>
 app.post('/updateEmployeeWithout', (req, res)=>
 {
     res.json(Main.updatingEmployeeWithout(req));
+});
+/** 
+ * Function Name:getEmployeeList
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: list of employees
+*/
+app.post('/getEmployeeList',(req,res)=>
+{
+    Main.getEmployeeList().then( users => res.json(users)).catch( err => res.send(err));; 
+});
+/** 
+ * Function Name:DBUpdateEmployee
+ * Version: V1.0
+ * Author: Richard McFadden
+ * Funtional description: Updates the User on the DB
+*/
+app.post('/DBUpdateEmployee',(req,res)=>
+{
+    res.json(Main.DBUpdateEmployee(req));
 });
 /** 
  * Function Name:getEmployeeList
@@ -153,11 +155,8 @@ app.post('/getTitle',(req,res)=>
 app.post('/generateToken', (req, res) => {
     if( req["body"].hasOwnProperty("sender") != true)
     res.send("Invalid sender");
-    else{
-        Main.log("Token generated","Admin",req["headers"]["authorization"],true);
-        res.send(Main.generateToken(req["body"].sender));
-    }
-   
+    else
+    res.send(Main.generateToken(req["body"].sender));
 });
 
 app.post('/verifyToken', (req, res) => {
@@ -177,21 +176,16 @@ function delay(ms: number) {
 app.post('/getEventList',(req,res) => {
 
     Main.getEventList().then( events =>{
-        Main.log("Event list retrieved","Admin",req["headers"]["authorization"],true);
         res.json(events);
     })
 });
 
 app.post('/generateOTP',(req,res) => {
 
-    console.log(req["body"].eventId);
-    if(req["body"].hasOwnProperty("eventId")){
-        Main.log("Event OTP generated","Admin",req["headers"]["authorization"],true);
-        (Main.generateOTP(req["body"].eventId, req['body'].broadcast)).then(success => { res.send(success)}).catch(err => res.send(err));
-    }
-            
+    console.log(req["headers"].authorization);
+    if(req["body"].hasOwnProperty("eventId"))
+            (Main.generateOTP(req["body"].eventId, req['body'].broadcast)).then(success => { res.send(success)}).catch(err => res.send(err));
     else
-
         res.send("Invalid event ID supplied");
     
 });
@@ -201,14 +195,8 @@ app.post('/validateOTPByRoom', (req,res) => {
     if(req["body"].hasOwnProperty("roomID"))
     if(req["body"].hasOwnProperty("otp"))
         Main.validateRoomOTP(req["body"].roomID,req["body"].otp)
-        .then( entryAllowed => {
-            Main.log("Correct OTP used","App","Guest",false);
-            res.send(entryAllowed)
-        })
-        .catch( entryDenied => {
-            Main.log("Incorrect OTP used","App","Guest",false);
-            res.send(entryDenied)
-        });
+        .then( entryAllowed => res.send(entryAllowed))
+        .catch( entryDenied => res.send(entryDenied));
     else 
         res.send("Invalid otp");
 else
@@ -219,14 +207,8 @@ app.post('/validateOTP',(req,res) => {
     if(req["body"].hasOwnProperty("eventId"))
         if(req["body"].hasOwnProperty("otp"))
             Main.validateOTP(req["body"].eventId,req["body"].otp)
-            .then( entryAllowed => {
-                Main.log("Correct OTP used","Unknown","Unknown",false);
-                res.send(entryAllowed)
-            })
-            .catch( entryDenied => {
-                Main.log("Incorrect OTP used","Unknown","Unknown",false);
-                res.send(entryDenied)
-            });
+            .then( entryAllowed => res.send(entryAllowed))
+            .catch( entryDenied => res.send(entryDenied));
         else 
             res.send("Invalid otp");
     else
@@ -248,14 +230,8 @@ app.get('/', (req, res) => {
 
 app.post('/sync', (req, res) => {
 
-    Main.syncEventsToDB().then( ()=>{
-        res.send("Syncing database");
-        Main.log("Database synchronized","System","System",false);
-    })
-    .catch( err => {
-        res.send("Error syncing database");
-        Main.log("Database synchronization failed!","System","System",false);
-    });
+    Main.syncEventsToDB().then( ()=>res.send("Syncing database"))
+    .catch( err => res.send("Error syncing database"));
 });
 
 app.post('/log', (req, res)=>
@@ -278,7 +254,6 @@ app.post('/changeMailSettings', (req, res) => {
 
     if(req["body"].hasOwnProperty("setting")){
         res.send(Main.changeMailSetting(req["body"].setting));
-        Main.log("Mail settings changed","System","System",false);
     }else
         res.send("Invalid mail setting supplied");
 

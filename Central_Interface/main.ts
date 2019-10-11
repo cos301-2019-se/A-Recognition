@@ -372,11 +372,37 @@ export function addEmplpoyee(req : any)
  * Version: V2.7
  * Author: Richard McFadden
  * Funtional description: makes the request to the python file
- * to update the  employee to the database
+ * to update the  employee to the database (With picture)
 */
 export function updatingEmployee(req: any)
 {
+    let nameOfFile =req.file['filename'];
+    console.log(nameOfFile);
+   
+    let options = {
+        pythonOptions: ['-u'], // get print results in real-time
+        scriptPath: './Facial_Recogntion/',
+        args: [nameOfFile ,req.body.name, req.body.surname ,req.body.title, req.body.email ]
+      };
 
+      let shell = new PythonShell('encodingUpdate.py',options);
+      shell.on('message',(message)=>
+      {
+          console.log(message);
+      });
+
+      shell.end(function (err,code,signal) 
+      {
+        if(err)
+        {
+            throw err;
+        }
+        console.log('The exit code was: ' + code);
+        console.log('The exit signal was: ' + signal);
+
+        return true;
+      });
+      return true;
 }
 /** 
  * Function Name:updatingEmployeeWithout
@@ -388,6 +414,16 @@ export function updatingEmployee(req: any)
 export function updatingEmployeeWithout(req: any)
 {
 
+}
+export function DBUpdateEmployee(req: any)
+{
+    return new Promise( (resolve,reject) => {
+    DatabaseManager.update({body:{email: req.body.email,name:req.body.name,surname:req.body.surname,title:req.body.title,fd:req.body.fd,active:req.body.active}})
+    .then( (user) =>
+    {
+        resolve(user);
+    });
+});
 }
 /** 
  * Function Name:getTitle
