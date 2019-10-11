@@ -26,6 +26,17 @@ app.get('/deny', function (req, res) {
     res.end();
  })
 
+ app.get('/wait', function (req, res) {
+    exec('/usr/lib/firefox/firefox/firefox wait.html', (err, stdout, stderr) => {
+        if (err)
+        {
+            console.log("Could not open the browser!");
+        }
+        return;
+    });
+    res.end();
+ })
+
 var server = app.listen(42069, function ()
 {
    var host = server.address().address
