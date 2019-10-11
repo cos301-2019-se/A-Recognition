@@ -19,13 +19,13 @@
 ---
 
 ### Description 
-A system which uses **facial recognition** to facilitate access control over locations, with an OTP backup for when facial recognition is not suitable. 
+A system which uses **facial recognition** to facilitate access control over locations via online calendar bookings. 
 
-The system adheres to the **Protection of Personal Information Act (POPI)** as well as the **General Data Protection Regulation (GDPR)** to ensure that the users’ personal data is protected. 
+The system adheres to the **Protection of Personal Information Act (POPI)** as well as the **General Data Protection Regulation (GDPR)** to ensure that user personal data is protected. 
 
 The system is designed to integrate with existing organizational booking systems while administrators use the client to register and manage users, leaving the current booking procedures unchanged.
 
-Guests, or events where the registration of all attendees is deemed unnecessary, can be supplied with a One Time Pin (OTP) to allow access instead.
+Guests, or events where the registration of all attendees is deemed unnecessary, can be supplied with a OTP to allow access instead or when facial recognition is not available.
 
 ---
 
