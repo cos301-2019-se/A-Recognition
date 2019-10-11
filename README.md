@@ -37,10 +37,6 @@ The **overall requirements** of the system should be:
 ---
 
 ### The Team
-<img src="https://i.imgur.com/y2iKVw1m.jpg" title="source: imgur.com" />
-
-Alessio - Kyle - Richard - Adrian - Jarrod
-
 <details>
   
 ##### Jarrod Goschen
@@ -72,3 +68,9 @@ Alessio - Kyle - Richard - Adrian - Jarrod
 ---
 
 </details>
+
+<img src="https://i.imgur.com/y2iKVw1m.jpg" title="source: imgur.com" />
+
+Alessio - Kyle - Richard - Adrian - Jarrod
+
+
