@@ -10,7 +10,7 @@
 
 <img src="https://img.icons8.com/material-outlined/24/000000/document.png"> [Project Management](https://app.zenhub.com/workspaces/a-recognition-5cc3f20307a4ab52d27abc9b/board?repos=182155877)
 
-<img src="https://img.icons8.com/material-outlined/24/000000/document.png"> [User Manual](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/A-Recognition-UserManaul(Demo%204).pdf)
+<img src="https://img.icons8.com/material-outlined/24/000000/document.png"> [User Manual](https://github.com/cos301-2019-se/A-Recognition/blob/master/Documentation/A-Recognition_User%20Manaul%20Final.pdf)
 
 <img src="https://img.icons8.com/material/24/000000/teamwork.png"> [Team Profiles](https://github.com/cos301-2019-se/A-Recognition/blob/Team_Members/README.md)
 
