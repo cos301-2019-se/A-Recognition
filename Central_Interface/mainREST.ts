@@ -60,11 +60,12 @@ app.post("/validateUserHasBooking", (req, res, next) => {
 
         Main.validateUserHasBooking(email,room).then( msg => {
             res.send(msg);
-            console.log(msg);
             Main.log("Access Attempt","Facial recognition","System",false)
             .then(res => console.log("Item logged"))
             .catch(res => console.log("Log fail"));
         }).catch( err => {
+            console.log("err:",err);
+            
             res.send(err);
             Main.log("Failed Access Attempt","Facial recognition","System",false)
             .then(res => console.log("Item logged"))

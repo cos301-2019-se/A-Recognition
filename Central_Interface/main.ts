@@ -15,7 +15,7 @@ import * as jwt from "jsonwebtoken"; //npm install jsonwebtoken
 import * as fs from "fs";
 import * as crypto from 'crypto';
 import { setInterval } from "timers";
-import * as https from "https";
+import * as http from "http";
 var DatabaseManager = new dbManager();
 const CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME = 1;
 const MINUTES_BEFORE_EVENT_START_THAT_ENTRANCE_IS_ALLOWED = 15;
@@ -60,7 +60,7 @@ export function getUsersFromDaysEvents() :Promise<Array<string> | null>{
 
 function openAccessPage(type : string){
   
-    https.get('localhost:42069/'+type, (resp) => {
+    http.get('http://localhost:42069/'+type, (resp) => {
     let data = '';
 
     // The whole response has been received. Print out the result.
