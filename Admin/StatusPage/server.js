@@ -28,7 +28,7 @@ app.get('/deny', function (req, res) {
  })
 
  app.get('/wait', function (req, res) {
-    exec('/usr/lib/firefox/firefox/firefox wait.html', (err, stdout, stderr) => {
+    exec('/usr/bin/firefox wait.html', (err, stdout, stderr) => {
         if (err)
         {
             console.log("Could not open the browser!");
