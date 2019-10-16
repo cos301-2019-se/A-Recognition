@@ -5,6 +5,7 @@ var fs = require("fs");
 const { exec } = require('child_process');
 
 app.get('/allow', function (req, res) {
+    console.log("Allow");
     exec('/usr/bin/firefox success.html', (err, stdout, stderr) => {
         if (err)
         {
@@ -12,7 +13,7 @@ app.get('/allow', function (req, res) {
         }
         return;
     });
-    res.end();
+    res.end('DOne');
 })
 
 app.get('/deny', function (req, res) {
@@ -23,7 +24,7 @@ app.get('/deny', function (req, res) {
         }
         return;
     });
-    res.end();
+    res.end('Done');
  })
 
  app.get('/wait', function (req, res) {
@@ -34,7 +35,7 @@ app.get('/deny', function (req, res) {
         }
         return;
     });
-    res.end();
+    res.end('Done');
  })
 
 var server = app.listen(42069, function ()

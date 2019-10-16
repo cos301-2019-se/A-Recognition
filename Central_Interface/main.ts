@@ -110,7 +110,6 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                     }
                 }
             });
-            
             for (let i = 0; i < currentEvents.length; i++) {
                 let event = currentEvents[i];
                 let dateNow = currentTime.toISOString().substr(0,currentTime.toISOString().indexOf("T"));
@@ -148,7 +147,6 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                     found = true;
                     break;
                 }
-                
             }
             if(found)
                 resolve(message);

@@ -119,7 +119,6 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
             encoding = face_recognition.face_encodings(rgb, [(y, x+w, y+h, x)])[0]
             #For now we don't know the user's name
             name = "Unknown"
-            global email
             emails = []
             temp = data['user']
 
@@ -128,9 +127,9 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                 secondTemp = e['fd'][0]['encoding']
                 matches = face_recognition.compare_faces([secondTemp], encoding)
                 if True in matches:
-                    first_match_index = matches.index(True)
+                    #first_match_index = matches.index(True)
                     name = e["name"]
-                    emails.append(e['email'])                 
+                    emails.append(e['email'])          
 
             #Store the cropped face
             face = frame[y:y+h,x:x+w]
@@ -196,7 +195,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                     email = "UNKOWN"
                 else:
                     email = max(set(emails), key = emails.count)
- 
+
                 global pleaseStopTheScanning
                 pleaseStopTheScanning = True
 
