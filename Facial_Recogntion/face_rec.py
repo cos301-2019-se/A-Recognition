@@ -195,7 +195,7 @@ def detect_and_display(model, video_capture, face_detector, open_eyes_detector, 
                     email = "UNKOWN"
                 else:
                     email = max(set(emails), key = emails.count)
-                    
+
                 global pleaseStopTheScanning
                 pleaseStopTheScanning = True
 
@@ -257,11 +257,10 @@ if __name__ == "__main__":
                 try:
                     #we now need to compare and see if the email that appears the most is in this json object
                     for emailItem in emailList:
-                        print("Email " +email)
                         if email == emailItem:                         
                             validate(email,"Room 9")
                             lastSendTime = time.time()
-                            (str(emailItem))
+                            print(str(emailItem))
             
                     pleaseStopTheScanning = False 
                     isAllowed = False  
