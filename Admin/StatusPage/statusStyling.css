@@ -3,29 +3,55 @@
     color: white;
 }
 
-.popup-fail
+.popup-warning
 {
-    width: 60%;
+    position: fixed;
+    left: 3%;
+    width: 94%;
+    height: 88%;
     padding: 70px;
     margin: auto;
-    border: 3px solid #343a40;
+    background-color: #343a40;
     text-align: center;
-    background-image: linear-gradient(to right, rgb(207, 51, 12), rgb(223, 156, 140), rgb(207, 51, 12));
+    color: orangered;
+}
+
+.popup-fail
+{
+    position: fixed;
+    left: 3%;
+    width: 94%;
+    height: 88%;
+    padding: 70px;
+    margin: auto;
+    background-color: #343a40;
+    text-align: center;
+    color: red;
 }
 
 .popup-success
 {
-    width: 60%;
+    position: fixed;
+    left: 3%;
+    width: 94%;
+    height: 88%;
     padding: 70px;
     margin: auto;
-    border: 3px solid #343a40;
+    background-color: #343a40;
     text-align: center;
-    background-image: linear-gradient(to right, rgba(16, 173, 16, 1) , rgba(16, 173, 16, 0), rgba(16, 173, 16, 1));
+    color: rgb(0,255,0);    
+}
+
+.messageDetail{
+    font-family: 'Lato-Bold', sans-serif;
+    font-size: 2em;
+    font-weight: bold;
+    float: left;
 }
 
 .message
 {
     font-family: 'Lato-Bold', sans-serif;
-    font-size: 40px;
+    font-size: 8em;
     font-weight: bold;
 }
