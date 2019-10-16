@@ -84,6 +84,8 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
 
         let endTime = new Date();
         let currentTime = new Date();
+        let found = false;
+        let message ;
     
         endTime.setHours(endTime.getHours() + CHECK_BOOKINGS_HOURS_AHEAD_OF_TIME);
         
@@ -124,7 +126,7 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
 
                 if(room == event.location){
                     
-                    let message = "";
+                    message = "";
 
                     if( Utils.inArray(email,Adapter.getEventAttendees(event))){
 
@@ -142,13 +144,16 @@ export function validateUserHasBooking(email : string,room : string) : Promise<a
                         message += "User does not have a booking for that room";
                         openAccessPage("deny");
                     }
-                    
-                    resolve(message);
-                    
+            
+                    found = true;
+                    break;
                 }
                 
             }
-            resolve("There is no booking for that room now");
+            if(found)
+                resolve(message);
+            else
+                resolve("There is no booking for that room now");
             
         }).catch( err =>{
             reject(err);
