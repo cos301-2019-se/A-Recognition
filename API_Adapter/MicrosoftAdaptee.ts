@@ -2,10 +2,6 @@
 * Adaptee responsible for exchanging data with Microsoft Office 365
 * npm install simple-oauth2 --save
 */
-// const credentials = {
-//     userName : "8a223ec8-d71f-4",
-//     password : "ImOOkg/A+Rz4dN+3NO"
-// }
 
 // import { ExchangeService, ExchangeVersion, WebCredentials, Uri, DateTime, CalendarView, WellKnownFolderName, EwsLogging } from "ews-javascript-api";
 // EwsLogging.DebugLogEnabled = false;
