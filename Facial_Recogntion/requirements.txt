@@ -1,5 +1,5 @@
 opencv_python==4.1.0.25
-Flask_Cors==3.0.8
+Flask_Cors==3.0.9
 requests==2.22.0
 firebase_admin==2.16.0
 imutils==0.5.2
