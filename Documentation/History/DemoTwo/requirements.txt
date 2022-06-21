@@ -19,5 +19,5 @@ firebase_admin == 2.16.0
 
 # encoding.py: 3
 # fr.py: 4
-numpy == 1.16.3
+numpy == 1.22.0
 
