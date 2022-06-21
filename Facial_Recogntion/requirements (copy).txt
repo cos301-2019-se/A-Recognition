@@ -1,6 +1,6 @@
 imutils==0.5.2
 imageio==2.5.0
-numpy==1.16.3
+numpy==1.22.0
 tqdm==4.32.2
 firebase_admin==2.16.0
 opencv_python==4.1.0.25
